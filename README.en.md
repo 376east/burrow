@@ -1,8 +1,30 @@
 # Burrow
 
-A desktop Minecraft launcher for solo play, local packs and playing with friends. Four areas: play, library, together and settings. Development version: **1.0.0-next.6** ([package.json](package.json)).
+A desktop Minecraft launcher for solo play, your packs and playing with friends.
 
-[45-second demo with Russian narration](docs/assets/demo/burrow-next-demo.mp4) · [Review plan, Russian](PLAN.md) · [Agent guide, Russian](docs/AGENT_GUIDE.md) · [Русский](README.md)
+[![Electron](https://img.shields.io/badge/Electron-43-47848F?logo=electron&logoColor=white)](package.json) [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](package.json) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](package.json) [![Preview](https://img.shields.io/badge/1.0.0--next.6-preview-F0A43B)](CHANGELOG.md) [![CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next)](https://github.com/malyarq/burrow/actions/workflows/ci.yml?query=branch%3Arebuild%2Fburrow-next)
+
+Four areas: play, library, together and settings. Development version: **1.0.0-next.6** ([package.json](package.json)).
+
+[45-second demo with Russian narration](docs/assets/demo/burrow-next-demo.mp4) · [Quick start](#run) · [Review plan, Russian](PLAN.md) · [Agent guide, Russian](docs/AGENT_GUIDE.md) · [Русский](README.md)
+
+## Current UI
+
+Next.6, synthetic local packs; no real accounts or Minecraft launch.
+
+**Play: version, nickname and modloader in one place.**
+
+<img src="docs/assets/screenshots/next/play.png" width="840" alt="Burrow Next.6 play screen with a Minecraft panorama and launch controls">
+
+**Library: compact pack cards and filters.**
+
+<img src="docs/assets/screenshots/next/library.png" width="840" alt="Burrow Next.6 library with synthetic local packs">
+
+**Light theme: the same controls and layout.**
+
+<img src="docs/assets/screenshots/next/light.png" width="840" alt="Burrow Next.6 play screen in a warm light theme">
+
+[Capture provenance](docs/assets/screenshots/next/provenance.json). [Demo reproduction](docs/DEMO.md).
 
 ## Implemented paths
 
@@ -37,14 +59,15 @@ Node.js 24.x, npm 11.x and Git ([package.json](package.json)).
 ```bash
 git clone https://github.com/malyarq/burrow.git
 cd burrow
-git switch rebuild/burrow-next
 npm ci
 npm run dev
 ```
 
 No keys required for ordinary use. [`.env.example`](.env.example) documents optional variables; Electron main does not load it automatically. See the [agent guide](docs/AGENT_GUIDE.md).
 
-[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) contains stable-line packages, which may differ from Next. `npm run build -- --publish never` builds locally without publishing.
+[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) contains legacy-line packages, which differ from Next. They are not the current preview. `npm run build -- --publish never` builds locally without publishing.
+
+The default branch is `rebuild/burrow-next`; `main` is legacy. [Archive and rollback](docs/REPOSITORY.md).
 
 Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md) before collaborating. Assign ownership/file boundaries; commit and push small, complete, checked changes to a task branch. [Demo reproduction](docs/DEMO.md), [documentation](docs/README.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [changelog](CHANGELOG.md).
 

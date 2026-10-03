@@ -1,10 +1,32 @@
 # Burrow
 
+Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
+
+[![Electron](https://img.shields.io/badge/Electron-43-47848F?logo=electron&logoColor=white)](package.json) [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](package.json) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](package.json) [![Preview](https://img.shields.io/badge/1.0.0--next.6-preview-F0A43B)](CHANGELOG.md) [![CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next)](https://github.com/malyarq/burrow/actions/workflows/ci.yml?query=branch%3Arebuild%2Fburrow-next)
+
 **Играй локально. Зови друга.**
 
-Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями. Четыре раздела: играть, библиотека, вместе, настройки. Версия разработки - **1.0.0-next.6** ([package.json](package.json)).
+Четыре раздела: играть, библиотека, вместе, настройки. Версия разработки - **1.0.0-next.6** ([package.json](package.json)).
 
-[Демо с озвучкой, 45 секунд](docs/assets/demo/burrow-next-demo.mp4) · [План для ревью](PLAN.md) · [Вход для агента](docs/AGENT_GUIDE.md) · [English](README.en.md)
+[Демо с озвучкой, 45 секунд](docs/assets/demo/burrow-next-demo.mp4) · [Запуск](#запуск) · [План для ревью](PLAN.md) · [Вход для агента](docs/AGENT_GUIDE.md) · [English](README.en.md)
+
+## Как выглядит сейчас
+
+Next.6, синтетические локальные сборки. Без настоящих аккаунтов и запуска Minecraft.
+
+**Играть: версия, никнейм и модлоадер рядом.**
+
+<img src="docs/assets/screenshots/next/play.png" width="840" alt="Главный экран Burrow Next.6: панорама Minecraft и настройки запуска">
+
+**Библиотека: компактные карточки и фильтры сборок.**
+
+<img src="docs/assets/screenshots/next/library.png" width="840" alt="Библиотека Burrow Next.6 с синтетическими сборками">
+
+**Светлая тема: те же элементы и расположение.**
+
+<img src="docs/assets/screenshots/next/light.png" width="840" alt="Burrow Next.6 в тёплой светлой теме">
+
+[Источник снимков](docs/assets/screenshots/next/provenance.json). [Как переснять демо](docs/DEMO.md).
 
 ## Что есть
 
@@ -39,14 +61,15 @@ flowchart LR
 ```bash
 git clone https://github.com/malyarq/burrow.git
 cd burrow
-git switch rebuild/burrow-next
 npm ci
 npm run dev
 ```
 
 Для обычного запуска API-ключи не нужны. [`.env.example`](.env.example) описывает необязательные переменные; main не читает этот файл автоматически. Команды и окружение - во [входе для агента](docs/AGENT_GUIDE.md).
 
-[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) содержит опубликованные пакеты стабильной линии; их номер может отличаться от Next. Локальная сборка без публикации: `npm run build -- --publish never`.
+[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) содержит пакеты прежней линии. Они не являются актуальной Next-preview; старые релизы оставлены как архив. Локальная сборка без публикации: `npm run build -- --publish never`.
+
+Основная ветка GitHub - `rebuild/burrow-next`; `main` оставлена как legacy. [Архив и точная команда отката](docs/REPOSITORY.md).
 
 ## Работать вместе
 

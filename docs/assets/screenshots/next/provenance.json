@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0-next.6",
+  "sourceCommit": "f74c19b783a8c78440824260ed752c5d16bb354e",
+  "data": "synthetic local instances; Player nickname; no installed game or accounts",
+  "files": [
+    {
+      "file": "play.png",
+      "sha256": "991e5d1031f3998f0736d432b56a83487e68195eb299b4677f139d667e5a6d8d"
+    },
+    {
+      "file": "library.png",
+      "sha256": "1d102dca2e9ded9130cabbc917cb1514fa3af89d287f570d0416f78a0cca1621"
+    },
+    {
+      "file": "light.png",
+      "sha256": "a7bd78e5e85deb6e31504a6955cbf145708d75bfb50eb9733d33656b6bdd0aa4"
+    }
+  ]
+}
