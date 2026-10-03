@@ -1,89 +1,39 @@
 # Burrow
 
-[Русский](README.md) · [English](README.en.md) · [Скачать](https://github.com/malyarq/burrow/releases/latest) · [Документация](docs/README.md)
-
-[![CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg)](https://github.com/malyarq/burrow/actions/workflows/ci.yml) [![Релиз](https://img.shields.io/github/v/release/malyarq/burrow?display_name=tag&sort=semver)](https://github.com/malyarq/burrow/releases/latest) [![Лицензия MIT](https://img.shields.io/badge/license-MIT-58d6a6.svg)](LICENSE)
-
-<img src="public/launcher-mark.png" width="112" height="112" alt="Воксельная иконка Burrow с пещерой">
-
 **Играй локально. Зови друга.**
 
-Burrow — приватный настольный лаунчер Minecraft для обычной игры, изолированных модпаков, управления локальным контентом и прямой игры с другом. Работает на Windows, macOS и Linux.
+Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями. Текущая разработка - **Burrow Next**: играть, библиотека, вместе, настройки. Стабильная линия сохранена в `main`, текущий продукт и документация находятся в [`rebuild/burrow-next`](https://github.com/malyarq/burrow/tree/rebuild/burrow-next).
 
-![Первый запуск Burrow](docs/assets/screenshots/welcome-ru.png)
+[README Next](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/README.md) · [PLAN для ревью Данила](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/PLAN.md) · [Вход для агента](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/docs/AGENT_GUIDE.md) · [Демо с озвучкой, 45 секунд](https://raw.githubusercontent.com/malyarq/burrow/rebuild/burrow-next/docs/assets/demo/burrow-next-demo.mp4) · [English](README.en.md)
 
-## Зачем Burrow
+## Архитектура
 
-- **Играть вдвоём без аренды сервера.** Burrow Link соединяет открытый для LAN мир по копируемому приглашению. Второй игрок использует локальный адрес, который покажет Burrow.
-- **Сохранять контроль над данными.** Игровые данные, настройки, аккаунты и сборки остаются на компьютере. Анонимная продуктовая аналитика по умолчанию выключена, а список событий зафиксирован в документации.
-- **Запускать обычный и модифицированный Minecraft.** Burrow поддерживает Forge, Fabric, NeoForge, OptiFine, изолированные сборки и контент из Modrinth.
-- **Безопасно переносить настройки.** Настройки можно экспортировать без токенов аккаунтов и идентификатора аналитики, а важные модпаки — сохранить отдельными архивами.
-- **Понимать состояние операции.** Долгие установки и обновления показывают прогресс, отмену, восстановление и понятную причину ошибки.
+```mermaid
+flowchart LR
+  UI[React UI] --> IPC[Typed IPC через preload]
+  IPC --> Main[Electron: сервисы и операции]
+  Main --> Disk[Локальные сборки и журнал]
+  Main --> API[Minecraft / Java / Modrinth / сеть]
+```
 
-## Что уже работает
+UI отправляет запрос, main проверяет его и работает с файлами или провайдером, затем возвращает состояние. Подробный путь данных и владельцы - в [архитектуре Next](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/docs/ru/architecture.md). LLM-функции в лаунчере не реализованы; генерация иллюстрации и голоса относится к созданию материалов: [PLAN](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/PLAN.md).
 
-| Область | Возможности |
-| --- | --- |
-| Minecraft | Обычный запуск, автоматический выбор Java 8/17/21, Forge, Fabric, NeoForge, OptiFine |
-| Модпаки | Создание, импорт, экспорт, копирование, переименование, обновление, удаление, каталог Modrinth |
-| Контент | Моды, ресурспаки, шейдеры, миры, датапаки, скриншоты |
-| Аккаунты | Офлайн-профили и поддерживаемые сторонние Yggdrasil/authlib-injector провайдеры |
-| Совместная игра | Burrow Link, дополнительный поиск в LAN и диагностика UPnP |
-| Надёжность | Атомарная запись, восстановление операций, проверка архивов и путей, контрольные суммы релизов |
-| Языки | Русский и английский |
-
-Вход через Microsoft пока недоступен. Импорт и экспорт архивов CurseForge работает, но каталог CurseForge в официальных сборках выключен до полного решения вопросов API и правил распространения.
-
-## Установка
-
-Скачайте последний пакет и `SHA256SUMS.txt` со страницы [GitHub Releases](https://github.com/malyarq/burrow/releases/latest).
-
-| Платформа | Файл |
-| --- | --- |
-| Windows | `Burrow-Windows-<version>-Setup.exe` |
-| macOS | `Burrow-Mac-<version>-Installer.dmg` |
-| Linux | `Burrow-Linux-<version>.AppImage` |
-
-> [!WARNING]
-> Windows-пакеты и macOS DMG пока не подписаны издателем. Локальная macOS-сборка получает только ad-hoc подпись, чтобы приложение запускалось после настройки Electron fuses; личность издателя она не подтверждает. Скачивайте файлы только из этого репозитория и до запуска сверяйте SHA-256. Операционная система может показать предупреждение о неизвестном разработчике.
-
-Проверка контрольной суммы, первый запуск, Burrow Link, обновления и резервные копии описаны в [руководстве пользователя](docs/ru/user-guide.md).
-
-## Разработка
-
-Нужны Node.js 24.x, npm 11.x и Git.
+## Запустить текущий продукт
 
 ```bash
-nvm use
+git clone https://github.com/malyarq/burrow.git
+cd burrow
+git switch rebuild/burrow-next
 npm ci
-npm run verify
 npm run dev
 ```
 
-Локальная сборка пакетов без публикации:
+Нужны Node.js 24.x и npm 11.x. API-ключи для обычного запуска не требуются. Сборка, окружение и проверки - во [входе для агента](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/docs/AGENT_GUIDE.md).
 
-```bash
-npm run build -- --publish never
-```
+Next проверяли локально на Windows; эта версия требует отдельной проверки macOS/Linux и полного игрового маршрута. Microsoft-вход отсутствует. Production audit пока падает на цепочке XMCL; это отмечено в [плане](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/PLAN.md). Демо использует синтетические сборки и не запускает игру.
 
-`npm run verify` запускает модульные тесты, ESLint, TypeScript, проверки документации и IPC-контрактов и аудит production-зависимостей. Упаковка и реальная установка Minecraft проверяются отдельно; подробности — в документе [Тестирование](docs/ru/testing.md).
+[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) содержит опубликованные пакеты стабильной линии. Их номер может отличаться от Next. Стабильная документация - в [docs](docs/README.md). Как переснять актуальное демо - в [сценарии](https://github.com/malyarq/burrow/blob/rebuild/burrow-next/docs/DEMO.md).
 
-## Документация
+Для совместной работы прочитай [AGENTS.md](AGENTS.md): владелец и границы задачи, отдельная ветка, небольшие проверенные коммиты и push. Чужую работу не перезаписываем.
 
-- [Руководство пользователя](docs/ru/user-guide.md)
-- [Решение проблем](docs/ru/troubleshooting.md)
-- [Приватность](docs/ru/privacy.md)
-- [Безопасность](docs/ru/security.md)
-- [Разработка](docs/ru/development.md)
-- [Архитектура](docs/ru/architecture.md)
-- [Тестирование](docs/ru/testing.md)
-- [Выпуск релиза](docs/ru/releasing.md)
-- [Известные проблемы](docs/ru/known-issues.md)
-- [Участие в разработке](CONTRIBUTING.md)
-- [История изменений](CHANGELOG.md)
-
-## Состояние проекта
-
-Текущий набор функций доведён до инженерной готовности. Для уверенной публичной альфы ещё нужны проверки чистой установки на каждой целевой ОС. Подпись пакетов, вход Microsoft и проверка продукта внешними пользователями — отдельные условия. Краткое направление описано в [продуктовом ограничителе](docs/ru/roadmap.md).
-
-Burrow не связан с Mojang или Microsoft и не предоставляет право владения Minecraft. Проект распространяется по [лицензии MIT](LICENSE).
+Сохранена существующая [MIT-лицензия](LICENSE). Minecraft и сторонние компоненты сохраняют свои права: [уведомления](THIRD_PARTY_NOTICES.md). Burrow не связан с Mojang или Microsoft.

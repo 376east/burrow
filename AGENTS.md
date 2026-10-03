@@ -55,10 +55,15 @@ Stack: `Electron` + `React` + `TypeScript` + `TailwindCSS` + `Vite`.
 - Do not leave long-lived processes, terminals, browser sessions, watchers, or spawned agents running after the task.
 - Before final handoff, stop any `npm run dev`, `vite`, `electron`, `vitest --watch`, manual verification server, headless browser, or MCP watch that you started.
 - Reuse an existing interactive session when possible; do not open duplicate dev servers for the same repo.
-- If you are unsure what is still running, inspect with `ps -ax | rg '/Users/kszinikov/work/burrow|vite|electron|vitest|playwright|chromium'` and stop only the processes started for this repo/task.
+- Inspect command lines for this checkout and stop only helpers started for this task.
 - If you spawned sub-agents, watches, or background PTY sessions, close or unwatch them before finishing.
 
 ## Git
+- Пользователь разрешил routine commit/push в рамках порученных задач именно Burrow. Разрешение не касается других проектов, пользовательских данных, разрушительных действий или новых функций из `PLAN.md` без поручения.
+- До работы: `git fetch origin`, актуальные ветки, открытые PR/issues. У задачи должны быть владелец и границы файлов; не дублируй взятую работу. Отдельная ветка на задачу: Next от `rebuild/burrow-next`, стабильные исправления от `main`.
+- Коммить часто: после небольшого законченного проверенного изменения и перед передачей работы. Пушь рабочую ветку, чтобы прогресс был виден; не копи независимые готовые изменения в огромном коммите.
+- Не force-push, не перезаписывай чужие изменения и не переходи в занятую рабочую ветку. Пересечение границ согласуй с владельцем. Частые коммиты не заменяют координацию.
+- При передаче: ветка, SHA, файлы, проверки, блокеры. Падение verify на зависимости нельзя называть зелёным результатом.
 - Make one commit for one finished, coherent result; do not preserve intermediate agent iterations as history.
 - Read the staged diff before committing. Write a short, concrete lowercase English subject, usually three to eight words, that names the finished result without task context or a trailing period.
 - Do not add conventional prefixes such as `feat:` or `fix:`; the project history uses plain human-readable subjects.
