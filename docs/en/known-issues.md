@@ -24,6 +24,8 @@ Checksums detect corruption or asset replacement only when users compare them wi
 
 ## Verification and maintenance limits
 
+- On 2026-10-04 production audit reports a high advisory through `http-cache-semantics`, `@xmcl/file-transfer` and `@xmcl/installer`: [GHSA-ch52-4w7c-c8xp](https://github.com/advisories/GHSA-ch52-4w7c-c8xp). Full `npm run verify` is not green. Migration must preserve checksum validation and recovery; see the [plan and source pointers](../../PLAN.md).
+
 - The XMCL bytebuffer compatibility correction is applied by a validated postinstall script. It should be replaced by an upstream fix or a managed package patch.
 - Visual regression baselines are defined for macOS Chromium. Behavioral browser checks also run on Windows, but do not establish native-dialog, window-manager, or graphics-driver behavior on other platforms.
 - Full Minecraft installation, real routers, installed updates, and OS signing/notarization still require manual platform smoke tests.

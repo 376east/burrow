@@ -35,6 +35,10 @@ storybook-static
 
 # Agent / temp files
 work/
+.env
+.env.*
+!.env.example
+__pycache__/
 .agent
 lint_output.txt
 tsc_output*.txt

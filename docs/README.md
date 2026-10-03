@@ -6,6 +6,10 @@
 
 ## Русский
 
+- [Вход для нового агента](AGENT_GUIDE.md) - код, данные, API и проверки Next
+- [План для ревью](../PLAN.md) - реализованное, компромиссы, ближайшие задачи
+- [Демо и процесс записи](DEMO.md)
+
 ### Пользователям
 
 - [Руководство](ru/user-guide.md) — установка, первый запуск, обновления и сохранность данных
@@ -32,6 +36,8 @@
 - [Уведомления о сторонних компонентах](../THIRD_PARTY_NOTICES.md)
 
 ## English
+
+Next collaboration materials are in Russian: [agent guide](AGENT_GUIDE.md), [review plan](../PLAN.md), [demo reproduction](DEMO.md). Existing guides below retain their EN/RU mirrors.
 
 English documentation mirrors the Russian source and describes the same product behavior.
 
