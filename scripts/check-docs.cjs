@@ -115,7 +115,7 @@ function main() {
   if (!readme.includes('https://github.com/malyarq/burrow/releases/latest')) {
     failures.push('README.md does not link to the latest GitHub release')
   }
-  if (!readme.includes('[English](README.en.md)') || !readme.includes('**Играй локально. Зови друга.**')) {
+  if (!readme.includes('[English](README.en.md)') || !readme.includes('Настольный лаунчер Minecraft')) {
     failures.push('README.md must remain the Russian primary project page with an English mirror link')
   }
 

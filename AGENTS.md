@@ -72,3 +72,6 @@ Stack: `Electron` + `React` + `TypeScript` + `TailwindCSS` + `Vite`.
 - Never put phase, plan, wave, review, or agent-task numbers in commit messages. Avoid subjects such as `progress`, `checkpoint`, `address feedback`, or `continue work`.
 - Never add `Co-authored-by`, `Generated-by`, agent, model, or automation attribution to the subject, body, or trailers.
 - Add a body only when a maintainer needs the reason, migration consequence, or non-obvious tradeoff.
+
+## README maintenance
+- Keep the root README aligned with the shared project format: three local SVG badges (status, stack, mode), navigation and the six existing sections in their current order. Update screenshots, metadata and release archive labels together; preserve the English mirror and verify the rendered default-branch page through authorized access. Never imply CI success or stable release from a documentation update.

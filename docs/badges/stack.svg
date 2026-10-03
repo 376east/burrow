@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="24" viewBox="0 0 260 24" role="img" aria-label="Стек: Electron · React · TypeScript">
+ <title>Стек: Electron · React · TypeScript</title>
+ <defs><clipPath id="rounded"><rect width="260" height="24" rx="4"/></clipPath></defs>
+ <g clip-path="url(#rounded)"><rect width="52" height="24" fill="#334155"/><rect x="52" width="208" height="24" fill="#475569"/></g>
+ <g fill="#fff" font-family="Verdana, DejaVu Sans, sans-serif" font-size="11" text-anchor="middle"><text x="26.0" y="16">Стек</text><text x="156.0" y="16">Electron · React · TypeScript</text></g>
+</svg>
