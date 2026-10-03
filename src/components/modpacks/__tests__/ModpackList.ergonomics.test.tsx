@@ -159,7 +159,7 @@ describe('ModpackList ergonomics', () => {
     expect(cardScope.queryByText('Modrinth')).toBeNull();
     expect(cardScope.queryByText('Version')).toBeNull();
     expect(cardScope.queryByText('Modloader')).toBeNull();
-    expect(card?.className).toContain('min-h-[25rem]');
+    expect(card?.className).toContain('min-h-[17rem]');
 
     await waitFor(() => {
       expect(screen.getByRole('img', { name: 'Alpha Pack' }).getAttribute('src')).toBe(MEDIA_FALLBACK_PATH);

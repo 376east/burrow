@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ChartNoAxesCombined, Download, HardDrive, Palette, SlidersHorizontal, UserRound } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import type { AccentStyleType } from '../../contexts/settings/types';
 import {
@@ -99,6 +100,7 @@ export function SettingsTabsHeader(props: {
     >
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
+        const Icon = { appearance: Palette, downloads: Download, launcher: SlidersHorizontal, storage: HardDrive, accounts: UserRound, statistics: ChartNoAxesCombined }[tab.id];
         const activeLabel = isActive ? getAccentStyles('title') : undefined;
         const tabLabelId = getSettingsTabLabelId(tab.id);
 
@@ -119,13 +121,14 @@ export function SettingsTabsHeader(props: {
             data-state={isActive ? 'active' : 'inactive'}
             className={cn(
               layout === 'sidebar'
-                ? 'min-h-10 shrink-0 rounded-lg px-3 text-left transition-colors lg:w-full'
+                ? 'next-settings-tab flex min-h-10 shrink-0 items-center gap-3 rounded-lg px-3 text-left transition-colors lg:w-full'
                 : 'settings-tab-option w-full text-center',
               isActive
                 ? 'bg-[rgb(var(--accent-main)/0.1)] text-foreground'
                 : 'text-secondary hover:bg-card/70 hover:text-foreground',
             )}
           >
+            {layout === 'sidebar' && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
             <span
               id={tabLabelId}
               className={cn(

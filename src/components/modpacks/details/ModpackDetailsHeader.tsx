@@ -144,20 +144,20 @@ export const ModpackDetailsHeader: React.FC<ModpackDetailsHeaderProps> = ({
   };
 
   return (
-    <div className="min-w-0 space-y-5 pb-5">
-      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
+    <div className="modpack-details-header min-w-0 space-y-5 pb-5">
+      <div className="modpack-details-identity flex min-w-0 items-start gap-4 sm:gap-5">
         <LazyImage
           src={metadata?.iconUrl}
           alt={modpackName}
           fallbackKind="content-artwork"
-          className="h-16 w-16 shrink-0 self-start rounded-xl border border-border/70 object-cover shadow-sm sm:h-20 sm:w-20"
+          className="modpack-details-artwork h-16 w-16 shrink-0 self-start rounded-xl border border-border/70 object-cover shadow-sm sm:h-20 sm:w-20"
         />
         <div className="min-w-0 flex-1 space-y-4">
           <div className="space-y-1">
-            <h2 className="break-words text-2xl font-bold leading-tight tracking-[-0.035em] text-foreground sm:text-3xl lg:text-4xl">{modpackName}</h2>
+            <h2 className="modpack-details-title break-words text-2xl font-bold leading-tight tracking-[-0.035em] text-foreground sm:text-3xl">{modpackName}</h2>
           </div>
           {metadataEntries.length > 0 && (
-            <div className="grid min-w-0 gap-x-6 gap-y-2 sm:grid-cols-2" data-testid="modpack-details-metadata">
+            <div className="modpack-details-metadata grid min-w-0 gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-4" data-testid="modpack-details-metadata">
               {metadataEntries.map((entry) => (
                 <div key={entry.label} className="min-w-0 border-l-2 border-border/65 pl-3 py-0.5">
                   <span className="block text-[11px] font-medium uppercase tracking-[0.08em] text-muted">{entry.label}</span>
@@ -170,7 +170,7 @@ export const ModpackDetailsHeader: React.FC<ModpackDetailsHeaderProps> = ({
       </div>
 
       <div
-        className="flex flex-wrap gap-1"
+        className="modpack-details-tabs flex flex-wrap gap-1"
         role="tablist"
         aria-label={t('modpacks.details_title') || 'Modpack details'}
         aria-orientation="horizontal"

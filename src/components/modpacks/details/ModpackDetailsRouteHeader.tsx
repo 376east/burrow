@@ -15,8 +15,8 @@ export function ModpackDetailsRouteHeader({
   backLabel,
   onBack,
 }: ModpackDetailsRouteHeaderProps) {
-  return <div className="border-b border-border/70 bg-card/78 px-6 py-3 backdrop-blur-md" data-testid="modpack-details-route-top">
-    <div className="flex flex-wrap items-center justify-between gap-3">
+  return <div className="modpack-details-route-header border-b border-border/70 bg-card/78 px-4 py-3 backdrop-blur-md sm:px-7 lg:px-10" data-testid="modpack-details-route-top">
+    <div className="mx-auto flex w-full max-w-[67rem] flex-wrap items-center justify-between gap-3">
       <Breadcrumbs items={[{ label: modpacksLabel, onClick: onBack }, { label: modpackName, active: true }]} />
       <Button variant="secondary" size="sm" onClick={onBack} className="flex items-center gap-2">
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />

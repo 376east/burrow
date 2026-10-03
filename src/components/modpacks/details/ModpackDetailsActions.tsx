@@ -34,10 +34,10 @@ export const ModpackDetailsActions: React.FC<ModpackDetailsActionsProps> = ({
 }) => {
   return (
     <section
-      className="flex min-w-0 flex-wrap items-start gap-3 border-t border-border/65 pt-4"
+      className="modpack-details-actions flex min-w-0 flex-wrap items-start gap-3 border-t border-border/65 pt-4"
       data-testid="modpack-details-actions"
     >
-      <div className="min-w-[8rem] w-32">
+      <div className="modpack-details-play min-w-[8rem] w-32">
         <Button
           variant="primary"
           size="sm"
@@ -82,7 +82,7 @@ export const ModpackDetailsActions: React.FC<ModpackDetailsActionsProps> = ({
 
       <div className="min-w-0 flex-[1_1_30rem]">
         <span className="sr-only">{t('modpacks.actions_title')}</span>
-        <div className="flex flex-wrap gap-2">
+        <div className="modpack-details-secondary-actions flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" onClick={onRename} className="min-w-[8rem] flex-1 whitespace-normal sm:flex-none">
             {t('modpacks.rename')}
           </Button>

@@ -124,7 +124,7 @@ export const ModpackDetails: React.FC<ModpackDetailsProps> = ({
         ) : (
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
             <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-              <div className="flex min-h-full flex-col gap-6 p-6 pb-8">
+              <div className="modpack-details-workspace mx-auto flex min-h-full w-full max-w-[72rem] flex-col gap-6 px-4 py-6 pb-8 sm:px-7 lg:px-10">
                 <ModpackDetailsOperationNotices
                   {...controller.operationNotices}
                   t={t}
@@ -161,7 +161,7 @@ export const ModpackDetails: React.FC<ModpackDetailsProps> = ({
                     'min-w-0',
                     secondarySurfaceTab
                       ? MODPACK_SECONDARY_CONTENT_WORKSPACE.host
-                      : 'surface-panel p-4 sm:p-5',
+                      : selectedTab === 'info' ? '' : 'surface-panel p-4 sm:p-5',
                   )}
                   id={getModpackDetailsPanelId(selectedTab)}
                   role="tabpanel"

@@ -349,3 +349,30 @@ test('settings tab orientation follows its responsive layout and keyboard direct
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('#settings-tab-launcher')).toBeFocused();
 });
+
+test('hero hover feedback keeps launch controls fixed and respects reduced motion', async ({ page }) => {
+  await openProduct(page);
+  const artwork = page.locator('.next-play-landscape');
+  await expect(artwork).toHaveJSProperty('complete', true);
+  expect(await artwork.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  const launchBefore = await page.getByTestId('play-workspace-launch').boundingBox();
+  await page.locator('.next-play-heading').hover();
+  await expect.poll(() => artwork.evaluate((el) => getComputedStyle(el).transform)).not.toBe('none');
+  expect(await page.getByTestId('play-workspace-launch').boundingBox()).toEqual(launchBefore);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => artwork.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
+  expect(parseFloat(await artwork.evaluate((el) => getComputedStyle(el).transitionDuration))).toBeLessThanOrEqual(.001);
+});
+
+test('pack information uses separate sections and a labeled theme-aware description', async ({ page }) => {
+  await openProduct(page);
+  await page.getByTestId('next-nav-library').click();
+  await page.getByRole('button', { name: 'Open details: Alpha Pack', exact: true }).click();
+  const host = page.getByTestId('modpack-details-content-host');
+  expect(await host.evaluate((el) => getComputedStyle(el).borderTopWidth)).toBe('0px');
+  const summary = page.locator('.modpack-details-runtime-summary');
+  expect(await summary.evaluate((el) => getComputedStyle(el).borderTopWidth)).toBe('0px');
+  await expect(page.getByRole('textbox', { name: 'Description', exact: true })).toBeVisible();
+  await assertNoHorizontalOverflow(page);
+});

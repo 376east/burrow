@@ -13,7 +13,7 @@ export function registerAssetsHandlers() {
     // In prod: file should be in dist/icon.ico inside asar
     // When using loadFile(path.join(RENDERER_DIST, 'index.html')),
     // relative paths like /icon.ico should work relative to dist/
-    const isDev = process.env['VITE_DEV_SERVER_URL'] !== undefined
+    const isDev = Boolean(process.env['VITE_DEV_SERVER_URL'])
 
     if (isDev) {
       // Development: Vite dev server serves files from public
@@ -59,7 +59,7 @@ export function registerAssetsHandlers() {
             } catch {
               // Fallback to relative path
               console.warn(`[IPC] Icon file not found, using relative path`)
-              return `/${iconFileName}`
+              return `./${iconFileName}`
             }
           }
         }

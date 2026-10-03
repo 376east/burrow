@@ -118,17 +118,18 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
 
   return (
     <main className="h-full overflow-y-auto" aria-label={text(t, 'play_workspace.title', 'Играть')}>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
+      <div className="next-play-body mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
         <header className="next-play-heading">
-          <div className="space-y-2">
-          <p className="kicker-label">{text(t, 'play_workspace.kicker', 'Minecraft launcher')}</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{text(t, 'play_workspace.title', 'Играть')}</h1>
-          <p className="text-sm leading-6 text-secondary">{text(t, 'play_workspace.intro', 'Выберите версию и профиль, затем запустите игру.')}</p>
+          <img src="./burrow-campfire.webp" alt="" className="next-play-landscape" fetchPriority="high" />
+          <div className="next-play-hero-copy">
+            <p className="next-hero-kicker">{text(t, 'play_workspace.kicker', 'Minecraft launcher')}</p>
+            <h1>{text(t, 'play_workspace.title', 'Играть')}</h1>
+            <p className="next-hero-intro">{text(t, 'play_workspace.intro', 'Выберите версию и профиль, затем запустите игру.')}</p>
+            <span className="next-edition-badge">Java Edition</span>
           </div>
-          <img src="./burrow-next-landscape.png" alt="" className="next-play-landscape" />
         </header>
 
-        <section className="surface-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
+        <section className="next-launch-panel surface-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
           <div className="next-launch-fields">
             <Select
               label={text(t, 'modpacks.minecraft_version', 'Версия Minecraft')}
@@ -202,7 +203,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
           </section>
         ) : null}
 
-        <section className="order-last border-t border-border/70 pt-6">
+        <section className="next-advanced-section order-last border-t border-border/70 pt-6">
           <button type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}
             aria-controls={advancedId} onClick={() => setAdvancedOpen((open) => !open)}>
             <ChevronDown className={advancedOpen ? 'rotate-180' : ''} aria-hidden="true" />
@@ -243,7 +244,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
         </section>
 
         {runtimeSummary ? (
-          <section className="border-t border-border/70 pt-6" aria-labelledby="play-workspace-content">
+          <section className="next-content-section" aria-labelledby="play-workspace-content">
             <div className="mb-4">
               <p className="kicker-label">{text(t, 'play_workspace.content_kicker', 'Library')}</p>
               <h2 id="play-workspace-content" className="mt-1 text-xl font-semibold text-foreground">{text(t, 'dashboard.content', 'Контент')}</h2>

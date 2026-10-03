@@ -444,7 +444,7 @@
      every cover and shadow in a large library. The browser remembers real sizes. */
   .installed-modpack-card {
     content-visibility: auto;
-    contain-intrinsic-block-size: auto 27rem;
+    contain-intrinsic-block-size: auto 20rem;
   }
 
   .app-drag-region {

@@ -66,7 +66,7 @@ export function ProductShell(props: AppLayoutProps) {
     { id: 'settings', icon: Settings2, tour: 'settings' },
   ] as const;
   return (
-    <div className={`${props.theme === 'dark' ? 'dark ' : ''}next-product`}>
+    <div className={`${props.theme === 'dark' ? 'dark ' : ''}next-product`} data-motion={!disableAnimations}>
       <BackgroundLayer />
       <div className="next-window" data-testid="app-shell-frame">
         <TitleBar />

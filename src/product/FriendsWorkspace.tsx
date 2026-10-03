@@ -35,7 +35,7 @@ export function FriendsWorkspace() {
           <MultiplayerConnectionControls multiplayer={multiplayer} />
         </section>
       </div>
-      <details className="mt-8 border-t border-border pt-5">
+      <details className="next-friends-guide mt-8">
         <summary className="cursor-pointer rounded-md text-base font-semibold">{t('next.friends.guide_title')}</summary>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-6 text-secondary">
           <li>{t('next.friends.guide_prepare')}</li>

@@ -128,8 +128,8 @@ describe('Modpack details runtime truth', () => {
     );
 
     expect(screen.getByTestId('modpack-details-runtime-panel')).toBeTruthy();
-    expect(screen.getByText('Runtime and dependency state')).toBeTruthy();
-    expect(screen.getByText('Burrow is still reading runtime details from pack metadata. Saved modpack settings can still replace this.')).toBeTruthy();
+    expect(screen.getByText('What you need to play')).toBeTruthy();
+    expect(screen.getByText('Taken from the pack metadata. Check the game settings before launching.')).toBeTruthy();
     expect(screen.getByTestId('modpack-dependency-status').textContent).toBe('Unverified');
     expect(screen.getByTestId('modpack-dependency-status').getAttribute('data-tone')).toBe('unverified');
     expect(within(screen.getByTestId('modpack-dependency-summary')).getByText('Forge')).toBeTruthy();
@@ -161,11 +161,11 @@ describe('Modpack details runtime truth', () => {
       />,
     );
 
-    expect(screen.getByText("Burrow is reading runtime details from this modpack's saved configuration.")).toBeTruthy();
+    expect(screen.getByText('The Minecraft version and modloader selected for this pack.')).toBeTruthy();
     expect(screen.getByTestId('modpack-dependency-status').textContent).toBe('Ready');
     expect(screen.getByTestId('modpack-dependency-status').getAttribute('data-tone')).toBe('healthy');
     expect(within(screen.getByTestId('modpack-details-metadata')).getByText('Forge 47.2.0')).toBeTruthy();
-    expect(screen.queryByText('Burrow is still reading runtime details from pack metadata. Saved modpack settings can still replace this.')).toBeNull();
+    expect(screen.queryByText('Taken from the pack metadata. Check the game settings before launching.')).toBeNull();
     expect(view.container.querySelector('.custom-scrollbar')).toBe(scrollWorkspace);
     expect(scrollWorkspace!.scrollTop).toBe(240);
   });

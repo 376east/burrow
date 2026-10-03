@@ -23,15 +23,17 @@ export const ModpackDetailsInfoTab: React.FC<ModpackDetailsInfoTabProps> = ({
   metadata,
   runtimeSummary,
   t,
-}) => (
-  <div className="space-y-4">
-    <section className="surface-card space-y-4 p-4" data-testid="modpack-details-runtime-panel">
+}) => {
+  const descriptionId = React.useId();
+
+  return (
+  <div className="modpack-details-info space-y-5">
+    <section className="modpack-details-runtime-section surface-card space-y-4 p-4 sm:p-5" data-testid="modpack-details-runtime-panel">
       <div className="space-y-2">
-        <div className="kicker-label">{t('sidebar.current_runtime')}</div>
         <div>
           <h3 className="text-lg font-semibold text-foreground">
             {t('modpacks.runtime_summary_title') === 'modpacks.runtime_summary_title'
-              ? 'Runtime and dependency state'
+              ? 'What you need to play'
               : t('modpacks.runtime_summary_title')}
           </h3>
           <p className="text-sm leading-6 text-secondary">
@@ -40,16 +42,22 @@ export const ModpackDetailsInfoTab: React.FC<ModpackDetailsInfoTabProps> = ({
         </div>
       </div>
 
-      <ModpackDependencySummary runtime={runtimeSummary.runtime} status={runtimeSummary.status} t={t} />
+      <ModpackDependencySummary
+        runtime={runtimeSummary.runtime}
+        status={runtimeSummary.status}
+        t={t}
+        className="modpack-details-runtime-summary rounded-none border-0 bg-transparent p-0 shadow-none"
+      />
     </section>
 
-    <section className="surface-card space-y-4 p-4">
+    <section className="modpack-details-description-section surface-card space-y-4 p-4 sm:p-5">
       <div>
-        <h4 className="mb-2 text-sm font-semibold text-zinc-900 dark:text-white">
+        <label htmlFor={descriptionId} className="mb-2 block text-sm font-semibold text-foreground">
           {t('modpacks.description')}
-        </h4>
+        </label>
         <textarea
-          className="w-full min-h-[80px] rounded-md border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/60 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 resize-y focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+          id={descriptionId}
+          className="w-full min-h-[80px] resize-y rounded-lg border border-border bg-background/70 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-[rgb(var(--accent-main))]"
           value={descriptionDraft}
           onChange={(e) => onDescriptionChange(e.target.value)}
           placeholder={
@@ -70,10 +78,10 @@ export const ModpackDetailsInfoTab: React.FC<ModpackDetailsInfoTabProps> = ({
       </div>
       {metadata?.source && (
         <div>
-          <h4 className="mb-2 text-sm font-semibold text-zinc-900 dark:text-white">
+          <h4 className="mb-2 text-sm font-semibold text-foreground">
             {t('modpacks.source') || 'Источник'}
           </h4>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 capitalize">
+          <p className="text-sm text-secondary capitalize">
             {metadata.source === 'curseforge'
               ? t('modpacks.platform_curseforge')
               : metadata.source === 'modrinth'
@@ -84,4 +92,5 @@ export const ModpackDetailsInfoTab: React.FC<ModpackDetailsInfoTabProps> = ({
       )}
     </section>
   </div>
-);
+  );
+};

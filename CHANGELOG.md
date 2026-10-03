@@ -4,6 +4,24 @@
 
 This file summarizes current product versions. Git history remains the detailed development record, and [GitHub Releases](https://github.com/malyarq/burrow/releases) is the canonical source for downloadable artifacts.
 
+## [1.0.0-next.6] - 2026-10-03
+
+### Русский
+
+- Главный экран получил панораму блочного мира с домиком, костром и порталом, крупную типографику и короткое вступление. Иллюстрация хранится в WebP.
+- Обновлена навигация; настройки, кнопки и панели используют согласованные размеры и закругления. У настроек появились иконки, у выбранного модлоадера — заметная рамка.
+- Карточки сборок стали компактнее: квадратная обложка, название рядом, действия внизу. В деталях убраны лишние вложенные панели; подписи требований к игре стали понятнее.
+- Добавлены короткие отклики на нажатие и наведение без сдвига раскладки. Движение отключается настройкой и системным режимом уменьшения анимаций.
+- Обновлена сетевая библиотека Undici; исправлен путь к значку окна при пустом адресе сервера разработки.
+
+### English
+
+- Play now features a block-world panorama with a cabin, campfire and portal, stronger typography and a shorter introduction. Artwork is stored as WebP.
+- Refreshed navigation and consistent controls and panel geometry. Settings has icons; the selected modloader has a clearer border.
+- Pack cards use compact square covers with adjacent titles and bottom-aligned actions. Details removes redundant nested panels and uses clearer game requirement labels.
+- Added brief press and hover feedback without layout shifts. Motion respects the launcher setting and the system reduced-motion preference.
+- Updated the Undici network library and fixed the window icon path when the development server address is empty.
+
 ## [1.0.0-next.5] - 2026-09-16
 
 ### Русский
