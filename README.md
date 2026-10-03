@@ -2,7 +2,9 @@
 
 Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
 
-[![Electron](https://img.shields.io/badge/Electron-43-47848F?logo=electron&logoColor=white)](package.json) [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](package.json) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](package.json) [![Preview](https://img.shields.io/badge/1.0.0--next.6-preview-F0A43B)](CHANGELOG.md) [![CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next)](https://github.com/malyarq/burrow/actions/workflows/ci.yml?query=branch%3Arebuild%2Fburrow-next)
+[![Electron](https://img.shields.io/badge/Electron-43-47848F?logo=electron&logoColor=white)](package.json) [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](package.json) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](package.json) [![Preview](https://img.shields.io/badge/1.0.0--next.6-preview-F0A43B)](CHANGELOG.md)
+
+[CI (авторизованный доступ)](https://github.com/malyarq/burrow/actions/workflows/ci.yml?query=branch%3Arebuild%2Fburrow-next). Репозиторий PRIVATE; динамическая плашка CI удалена, чтобы не показывать недоступный статус.
 
 **Играй локально. Зови друга.**
 
