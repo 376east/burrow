@@ -9,7 +9,7 @@ import { PLAYWRIGHT_CLOSEOUT_VIEWS } from '../../src/verification/manual/views';
 // Keep the configured executable and other launch settings for this closeout suite.
 const test = base.extend({
   launchOptions: [async ({ launchOptions }, use) => {
-    await use({ ...launchOptions, args: [...(launchOptions.args ?? []), '--disable-gpu', '--disable-skia-runtime-opts'] });
+    await use({ ...launchOptions, args: [...(launchOptions.args ?? []), '--disable-gpu', '--disable-skia-runtime-opts', '--disable-partial-raster'] });
   }, { scope: 'worker' }],
 });
 
