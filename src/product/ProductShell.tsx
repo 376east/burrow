@@ -16,6 +16,7 @@ import { BurrowEasterEgg } from './BurrowEasterEgg';
 import { PlayWorkspace } from './PlayWorkspace';
 import { SettingsWorkspace } from './SettingsWorkspace';
 import { FriendsWorkspace } from './FriendsWorkspace';
+import { RestartGameButton } from './RestartGameButton';
 import './product.css';
 
 type Page = 'play' | 'library' | 'friends' | 'settings';
@@ -88,7 +89,11 @@ export function ProductShell(props: AppLayoutProps) {
               ))}
             </nav>
           </header>
-          {runtime.isLaunching && <div className="next-runtime-strip" role="status"><span className="next-status-dot" />{runtime.statusText}<span className="truncate text-secondary">{runtime.statusDetail}</span></div>}
+          {runtime.isLaunching && <div className="next-runtime-strip" role="status">
+            <span className="next-status-dot" />
+            <div className="min-w-0 flex-1 truncate">{runtime.statusText}<span className="ml-2 text-secondary">{runtime.statusDetail}</span></div>
+            {runtime.canForceRestart && page !== 'play' && <div className="ml-auto min-w-0 max-w-[60%] shrink-0"><RestartGameButton /></div>}
+          </div>}
           <div className="next-content" data-testid="app-layout-main">
             {page === 'play' && <PlayWorkspace launch={props.launch} runtime={runtime} actions={actions} />}
             {page === 'library' && <div className="next-library-workspace"><ModpackRouter onLaunch={props.modpackOnLaunch ?? runtime.onLaunch} /><LibraryLaunchDock {...props} /></div>}
