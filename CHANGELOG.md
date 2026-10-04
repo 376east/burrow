@@ -12,6 +12,7 @@ This file summarizes current product versions. Git history remains the detailed 
 - Принудительный перезапуск показывает ожидание и ошибку, допускает повторную попытку и не отправляет повторную остановку процесса при переходе между экранами.
 - Гайды больше не называют исправленный XMCL audit текущим блокером; пример проверки пакета соответствует Next.7.
 - Ошибки полей ввода и подсказки выбора связаны с полем для экранного диктора; внешние описания поля сохраняются.
+- Настройки Java показывают сбой поиска или выбора и позволяют повторить попытку; ошибка чтения сохранённого выбора не маскируется доступным режимом «Авто».
 
 ### English
 
@@ -19,6 +20,7 @@ This file summarizes current product versions. Git history remains the detailed 
 - Force restart shows pending and failure states, allows retry and shares a pending process-stop request across navigation.
 - Guides no longer list the resolved XMCL audit as a current blocker; the package smoke example now matches Next.7.
 - Input errors and select hints are associated with their controls for screen readers, preserving caller-provided descriptions.
+- Java settings show scan/selection failures and allow retry; failure to read the saved choice no longer presents Auto as an available confirmed setting.
 
 ## [1.0.0-next.7] - 2026-10-04
 

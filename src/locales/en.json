@@ -703,6 +703,8 @@
     "status.running_detail": "Minecraft is running. Live game logs will appear here.",
     "status.exit_code": "Minecraft closed with exit code {{code}}",
     "status.force_restart": "Force restart",
+    "settings.java_scan_failed": "Could not load Java installations. Rescan to try again.",
+    "settings.java_select_failed": "Could not confirm the Java selection. Rescan and try again.",
     "status.force_restart_pending": "Restarting…",
     "status.force_restart_failed": "Could not stop the game and restart Burrow. Try again.",
     "status.progress.java": "Java runtime",
