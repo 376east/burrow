@@ -1,34 +1,20 @@
 export type { LauncherAPI, LauncherLaunchOptions, LauncherProgressEvent, LauncherSessionSnapshot, LauncherVersionListResponse } from './launcher';
 export { PROVIDER_CATALOG_CHANNELS } from './providerCatalog';
 export type {
-  ProviderCatalogAPI,
-  ProviderCatalogChannel,
-  ProviderCatalogContentEntry,
-  ProviderCatalogContents,
-  ProviderCatalogContentsRequest,
-  ProviderCatalogPlatform,
-  ProviderCatalogSearchRequest,
-  ProviderCatalogSearchResult,
-  ProviderCatalogSearchResultItem,
-  ProviderCatalogSort,
-  ProviderCatalogVersionDescriptor,
-  ProviderCatalogVersionsRequest,
+  ProviderCatalogAPI, ProviderCatalogChannel, ProviderCatalogContentEntry,
+  ProviderCatalogContents, ProviderCatalogContentsRequest, ProviderCatalogPlatform,
+  ProviderCatalogSearchRequest, ProviderCatalogSearchResult, ProviderCatalogSearchResultItem,
+  ProviderCatalogSort, ProviderCatalogVersionDescriptor, ProviderCatalogVersionsRequest,
 } from './providerCatalog';
 export { STORAGE_MAINTENANCE_CHANNELS } from './storageMaintenance';
 export type {
-  StorageMaintenanceAPI,
-  StorageMaintenanceChannel,
-  StorageMaintenanceCleanupResult,
+  StorageMaintenanceAPI, StorageMaintenanceChannel, StorageMaintenanceCleanupResult,
   StorageMaintenanceStats,
 } from './storageMaintenance';
 export { JAVA_RUNTIME_CHANNELS } from './javaRuntime';
 export type {
-  JavaRuntimeAPI,
-  JavaRuntimeChannel,
-  JavaRuntimeGetRequest,
-  JavaRuntimeGetResponse,
-  JavaRuntimeInstallationDto,
-  JavaRuntimeSelectRequest,
+  JavaRuntimeAPI, JavaRuntimeChannel, JavaRuntimeGetRequest,
+  JavaRuntimeGetResponse, JavaRuntimeInstallationDto, JavaRuntimeSelectRequest,
   JavaRuntimeSelectResponse,
 } from './javaRuntime';
 export { SYSTEM_READINESS_CHANNELS } from './systemReadiness';
@@ -38,30 +24,17 @@ export { INSTANCE_MODS_CHANNELS } from './instanceMods';
 export type { InstanceModRegistrationRequest, InstanceModsAPI, InstanceModsChannel } from './instanceMods';
 export { NETWORK_CHANNELS } from './network';
 export type {
-  BurrowLinkAPI,
-  BurrowLinkSnapshot,
-  BurrowLinkMetrics,
-  LanDiscoverEvent,
-  LanDiscoveryAPI,
-  LanDiscoverySnapshot,
-  MinecraftServerStatus,
-  MinecraftServerStatusResult,
-  NetworkAPI,
-  NetworkChannel,
-  NetworkDiagnostic,
-  NetworkDiagnosticCode,
-  NetworkLifecycleState,
-  PortMappingAPI,
-  PortMappingDto,
+  BurrowLinkAPI, BurrowLinkSnapshot, BurrowLinkMetrics,
+  LanDiscoverEvent, LanDiscoveryAPI, LanDiscoverySnapshot,
+  MinecraftServerStatus, MinecraftServerStatusResult, NetworkAPI,
+  NetworkChannel, NetworkDiagnostic, NetworkDiagnosticCode,
+  NetworkLifecycleState, PortMappingAPI, PortMappingDto,
   PortMappingSnapshot,
 } from './network';
 export type { WindowControlsAPI } from './windowControls';
 export type {
-  CacheAPI,
-  CacheActionResult,
-  ImageCacheCleanupResult,
-  ImageCacheResolveResult,
-  ImageCacheState,
+  CacheAPI, CacheActionResult, ImageCacheCleanupResult,
+  ImageCacheResolveResult, ImageCacheState,
 } from './cache';
 export type { SettingsAPI } from './settings';
 export type { AssetsAPI } from './assets';
@@ -69,42 +42,22 @@ export type { AppUpdaterAPI, AppUpdaterAvailableInfo, AppUpdaterProgress } from 
 export type { AllowedIpcChannel } from './ipcChannels';
 export { ARCHIVE_INSPECTION_CHANNELS } from './archiveInspection';
 export type {
-  ArchiveInspectionAPI,
-  ArchiveInspectionFormat,
-  ArchiveInspectionResponse,
-  ArchiveManifestMetadata,
-  SelectedArchiveInspection,
+  ArchiveInspectionAPI, ArchiveInspectionFormat, ArchiveInspectionResponse,
+  ArchiveManifestMetadata, SelectedArchiveInspection,
 } from './archiveInspection';
 export {
   INSTANCE_CHANNELS,
 } from './instances';
 export type {
-  InstanceChannel,
-  InstanceCatalogItemDto,
-  InstanceConfigDto,
-  InstanceConfigRequest,
-  InstanceConfigResponse,
-  InstanceCreateRequest,
-  InstanceFailure,
-  InstanceListItemDto,
-  InstanceListRequest,
-  InstanceListResponse,
-  InstancesAPI,
-  InstanceMetadataDto,
-  InstanceMetadataRequest,
-  InstanceMetadataResponse,
-  InstanceMetadataUpdate,
-  InstanceMutationResponse,
-  InstancePrepareRequest,
-  InstancePrepareResponse,
-  InstanceRenameRequest,
-  InstanceResult,
-  InstanceSelectRequest,
-  InstanceSnapshotDto,
-  InstanceSnapshotRequest,
-  InstanceSnapshotResponse,
-  InstanceSourceDto,
-  InstanceSummaryDto,
+  InstanceChannel, InstanceCatalogItemDto, InstanceConfigDto,
+  InstanceConfigRequest, InstanceConfigResponse, InstanceCreateRequest,
+  InstanceFailure, InstanceListItemDto, InstanceListRequest,
+  InstanceListResponse, InstancesAPI, InstanceMetadataDto,
+  InstanceMetadataRequest, InstanceMetadataResponse, InstanceMetadataUpdate,
+  InstanceMutationResponse, InstancePrepareRequest, InstancePrepareResponse,
+  InstanceRenameRequest, InstanceResult, InstanceSelectRequest,
+  InstanceSnapshotDto, InstanceSnapshotRequest, InstanceSnapshotResponse,
+  InstanceSourceDto, InstanceSummaryDto,
 } from './instances';
 export type { BurrowApi } from './windowApi';
 export type { AccountAPI, AccountSkinState } from './account';
@@ -113,43 +66,26 @@ export type { StatisticsAPI, StatisticsExportPayload, StatisticsExportResult, St
 export type { ShareAPI } from './share';
 export type { ExternalLinksAPI, ExternalLinkRequest, ExternalLinkOpenResult, ExternalLinkOpenStatus } from './externalLinks';
 export type {
-  ResourcePacksAPI,
-  ResourcePackAcquisitionIssue,
-  ResourcePackAcquisitionIssueStatus,
-  ResourcePackAcquisitionResult,
-  ResourcePackAcquisitionStatus,
+  ResourcePacksAPI, ResourcePackAcquisitionIssue, ResourcePackAcquisitionIssueStatus,
+  ResourcePackAcquisitionResult, ResourcePackAcquisitionStatus,
 } from './resourcePacks';
 export type {
-  ShadersAPI,
-  ShaderPackAcquisitionIssue,
-  ShaderPackAcquisitionIssueStatus,
-  ShaderPackAcquisitionResult,
-  ShaderPackAcquisitionStatus,
+  ShadersAPI, ShaderPackAcquisitionIssue, ShaderPackAcquisitionIssueStatus,
+  ShaderPackAcquisitionResult, ShaderPackAcquisitionStatus,
 } from './shaders';
 export type { WorldInfo, WorldsAPI } from './worlds';
 export type {
-  DatapackInfo,
-  DatapackSearchResult,
-  DatapackSearchResultItem,
-  DatapackVersion,
-  DatapacksAPI,
+  DatapackInfo, DatapackSearchResult, DatapackSearchResultItem,
+  DatapackVersion, DatapacksAPI,
 } from './datapacks';
 export type {
-  DialogsAPI,
-  OpenDialogResult,
-  SaveDialogResult,
-  ShowOpenDialogOptions,
-  ShowSaveDialogOptions,
+  DialogsAPI, OpenDialogResult, SaveDialogResult,
+  ShowOpenDialogOptions, ShowSaveDialogOptions,
 } from './dialogs';
 export type { ScreenshotsAPI } from './screenshots';
 export type { Screenshot } from '../types/screenshots';
 export type {
-  OperationKind,
-  OperationPhase,
-  OperationProgress,
-  OperationResult,
-  OperationSnapshot,
-  OperationStartRequest,
-  OperationStatus,
-  OperationsAPI,
+  OperationKind, OperationPhase, OperationProgress,
+  OperationResult, OperationSnapshot, OperationStartRequest,
+  OperationStatus, OperationsAPI,
 } from './operations';

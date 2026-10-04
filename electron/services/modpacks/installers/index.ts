@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { download } from '@xmcl/file-transfer';
+import { DownloadManager } from '../../download/downloadManager';
 import { extractZipSafely, openValidatedZip } from '../../../security/archivePolicy';
 import { assertPublicHttpsUrl, getPublicHttpsDispatcher } from '../../../security/remoteUrls';
 import type { InstanceSourceMetadata } from '../../../domains/instances/instanceTypes';
@@ -34,12 +34,10 @@ export type ProviderStagedInstall = Readonly<{
 }>;
 
 export const nodeProviderDownloadPort: ProviderDownloadPort = {
-  download: async ({ urls, destination, sha1, label }) => await download({
-    url: urls.map((url) => assertPublicHttpsUrl(url, label)),
-    destination,
+  download: async ({ urls, destination, sha1, label }) => await DownloadManager.downloadSingle(urls.map((url) => assertPublicHttpsUrl(url, label)), destination, {
     // The lookup guard runs at connection time, closing DNS-rebinding paths.
     dispatcher: getPublicHttpsDispatcher(),
-    ...(sha1 === undefined ? {} : { validator: { algorithm: 'sha1', hash: sha1 } }),
+    ...(sha1 === undefined ? {} : { checksum: { algorithm: 'sha1', hash: sha1 } }),
   }),
 };
 

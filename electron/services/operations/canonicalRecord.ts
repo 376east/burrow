@@ -36,6 +36,33 @@ function loader(value: unknown, label: string): Readonly<{ type: InstanceLoader;
   return { type: type as InstanceLoader, ...(version === undefined ? {} : { version }) };
 }
 
+function applyLegacyGameConfig(candidate: JsonObject, config: MutableConfig): void {
+  if (candidate.game !== undefined) {
+    const game = object(candidate.game, 'Staged modpack game');
+    const next: NonNullable<MutableConfig['game']> = {};
+    if (game.resolution !== undefined) {
+      const resolution = object(game.resolution, 'Staged modpack resolution');
+      if ((resolution.width !== undefined && typeof resolution.width !== 'number')
+        || (resolution.height !== undefined && typeof resolution.height !== 'number')
+        || (resolution.fullscreen !== undefined && typeof resolution.fullscreen !== 'boolean')) throw new Error('Staged modpack resolution is invalid');
+      next.resolution = {
+        ...(typeof resolution.width === 'number' ? { width: resolution.width } : {}),
+        ...(typeof resolution.height === 'number' ? { height: resolution.height } : {}),
+        ...(typeof resolution.fullscreen === 'boolean' ? { fullscreen: resolution.fullscreen } : {}),
+      };
+    }
+    if (game.extraArgs !== undefined) {
+      if (!Array.isArray(game.extraArgs) || game.extraArgs.some((entry) => typeof entry !== 'string')) throw new Error('Staged modpack extraArgs are invalid');
+      next.extraArgs = [...game.extraArgs];
+    }
+    if (game.useOptiFine !== undefined) {
+      if (typeof game.useOptiFine !== 'boolean') throw new Error('Staged modpack OptiFine option is invalid');
+      next.useOptiFine = game.useOptiFine;
+    }
+    config.game = next;
+  }
+}
+
 function configFromLegacy(value: unknown, expectedId: string): Readonly<{ name: string; createdAt: string; updatedAt: string; config: InstanceEditableConfig }> {
   const candidate = object(value, 'Staged modpack config');
   if (nonEmptyString(candidate.id, 'Staged modpack config id') !== expectedId) throw new Error('Staged modpack config id does not match destination');
@@ -61,30 +88,7 @@ function configFromLegacy(value: unknown, expectedId: string): Readonly<{ name: 
     if (!Array.isArray(candidate.vmOptions) || candidate.vmOptions.some((entry) => typeof entry !== 'string')) throw new Error('Staged modpack vmOptions are invalid');
     config.vmOptions = [...candidate.vmOptions];
   }
-  if (candidate.game !== undefined) {
-    const game = object(candidate.game, 'Staged modpack game');
-    const next: NonNullable<MutableConfig['game']> = {};
-    if (game.resolution !== undefined) {
-      const resolution = object(game.resolution, 'Staged modpack resolution');
-      if ((resolution.width !== undefined && typeof resolution.width !== 'number')
-        || (resolution.height !== undefined && typeof resolution.height !== 'number')
-        || (resolution.fullscreen !== undefined && typeof resolution.fullscreen !== 'boolean')) throw new Error('Staged modpack resolution is invalid');
-      next.resolution = {
-        ...(typeof resolution.width === 'number' ? { width: resolution.width } : {}),
-        ...(typeof resolution.height === 'number' ? { height: resolution.height } : {}),
-        ...(typeof resolution.fullscreen === 'boolean' ? { fullscreen: resolution.fullscreen } : {}),
-      };
-    }
-    if (game.extraArgs !== undefined) {
-      if (!Array.isArray(game.extraArgs) || game.extraArgs.some((entry) => typeof entry !== 'string')) throw new Error('Staged modpack extraArgs are invalid');
-      next.extraArgs = [...game.extraArgs];
-    }
-    if (game.useOptiFine !== undefined) {
-      if (typeof game.useOptiFine !== 'boolean') throw new Error('Staged modpack OptiFine option is invalid');
-      next.useOptiFine = game.useOptiFine;
-    }
-    config.game = next;
-  }
+  applyLegacyGameConfig(candidate, config);
   if (candidate.server !== undefined) {
     const server = object(candidate.server, 'Staged modpack server');
     if (typeof server.host !== 'string' || typeof server.port !== 'number') throw new Error('Staged modpack server is invalid');

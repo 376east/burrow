@@ -1,5 +1,5 @@
+import { CollapsedSidebarActions } from './sidebar/CollapsedSidebarActions';
 import { useMemo, useState, useEffect } from 'react';
-import { Globe2, Settings2 } from 'lucide-react';
 import pkg from '../../package.json';
 import { CLASSIC_MODPACK_ID } from '../../shared/constants';
 import { useSettings, useUIMode } from '../contexts/SettingsContext';
@@ -8,14 +8,11 @@ import { formatLastLaunch, loadRecentLaunch } from '../features/launcher/service
 import type { MCVersion } from '../services/versions/types';
 import type { VersionHint } from '../utils/minecraftVersions';
 import { SidebarHeader } from './sidebar/SidebarHeader';
-import { SIDEBAR_COMPACT_CONTROL_CLASSNAME } from './sidebar/controlGeometry';
 import { NicknameSection } from './sidebar/NicknameSection';
 import { LaunchControls } from './sidebar/LaunchControls';
 import { ModloaderSection } from './sidebar/ModloaderSection';
 import { OptifineToggle } from './sidebar/OptifineToggle';
-import { Button } from './ui/Button';
 import { Select } from './ui/Select';
-import { Tooltip } from './ui/Tooltip';
 import type { LaunchStage } from '../features/launcher/services/launcherService';
 import { useModpackPrimaryActionOwnership } from './modpacks/primaryActionOwnership';
 import {
@@ -262,39 +259,7 @@ const Sidebar = ({
 
             {/* Icons that move from header to center when collapsed - using staggered animation */}
             {isCollapsed && (
-                <div className="flex-1 flex flex-col items-center gap-2 opacity-100 pointer-events-auto">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        geometry="compact-control"
-                        onClick={actions.onShowMultiplayer}
-                        disabled={runtime.isLaunching}
-                        aria-label={t('multiplayer.title') || 'Multiplayer'}
-                        className={SIDEBAR_COMPACT_CONTROL_CLASSNAME}
-                        style={{
-                            transitionDelay: '100ms',
-                        }}
-                        title={t('multiplayer.title') || 'Multiplayer'}
-                    >
-                        <Globe2 className="h-5 w-5" />
-                    </Button>
-                    <Tooltip content={<span>{t('general.settings')} <span className="text-zinc-400 text-xs ml-1">Ctrl+,</span></span>} position="right">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            geometry="compact-control"
-                            onClick={actions.onShowSettings}
-                            disabled={runtime.isLaunching}
-                            aria-label={t('general.settings') || 'Settings'}
-                            className={SIDEBAR_COMPACT_CONTROL_CLASSNAME}
-                            style={{
-                                transitionDelay: '200ms',
-                            }}
-                        >
-                            <Settings2 className="h-5 w-5" />
-                        </Button>
-                    </Tooltip>
-                </div>
+                <CollapsedSidebarActions actions={actions} isLaunching={runtime.isLaunching} t={t} />
             )}
 
             <div className="mt-auto">

@@ -1,7 +1,7 @@
 {
   "name": "burrow-next",
   "private": true,
-  "version": "1.0.0-next.6",
+  "version": "1.0.0-next.7",
   "description": "Privacy-first desktop Minecraft launcher for local play, modpacks, and Burrow Link multiplayer.",
   "desktopName": "com.malyarq.burrow.next",
   "author": "Burrow Contributors",
@@ -49,10 +49,10 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
     "@xmcl/client": "^3.2.0",
-    "@xmcl/core": "^2.15.1",
+    "@xmcl/core": "2.16.2",
     "@xmcl/curseforge": "^2.2.0",
-    "@xmcl/file-transfer": "^2.0.3",
-    "@xmcl/installer": "^6.1.2",
+    "@xmcl/file-transfer": "^2.1.4",
+    "@xmcl/installer": "file:vendor/xmcl-installer-6.3.1-fixed.tgz",
     "@xmcl/mod-parser": "^3.4.2",
     "@xmcl/modrinth": "^2.5.0",
     "@xmcl/task": "^4.1.1",
@@ -119,7 +119,10 @@
       "uuid": "^11.1.1"
     },
     "js-yaml": "^4.3.2",
-    "smol-toml": "^1.8.0"
+    "smol-toml": "^1.8.0",
+    "@xmcl/core": {
+      "@xmcl/unzip": "2.1.2"
+    }
   },
   "main": "dist-electron/main.js"
 }

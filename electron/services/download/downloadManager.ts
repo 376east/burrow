@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Dispatcher } from 'undici';
-import { DefaultRangePolicy, download, type ChecksumValidatorOptions } from '@xmcl/file-transfer';
+import { DefaultRangePolicy, download } from '@xmcl/file-transfer';
 import { reportMirrorFailure, reportMirrorSuccess } from '../mirrors/scoring';
 import { DEFAULT_RANGE_CONCURRENCY, DEFAULT_RANGE_THRESHOLD, HTML_PROBE_BYTES, PROGRESS_STALL_TIMEOUT } from '@shared/constants';
 import { getDispatcher } from './dispatcherFactory';
@@ -11,9 +11,10 @@ import { probeHtmlChallenge, readFileSnippet, isHtmlChallenge } from './htmlChal
 import { normalizeHeaders, shouldValidateZip } from './headers';
 import { monitorDownloadProgress } from './progressMonitor';
 import { validateZipIntegrity } from './zipValidator';
+import { validateDownloadChecksum, hasValidDownloadChecksum, type DownloadChecksum } from './checksum';
 
 type DownloadSingleOptions = {
-  checksum?: ChecksumValidatorOptions;
+  checksum?: DownloadChecksum;
   expectedTotal?: number;
   headers?: Record<string, string>;
   maxRedirections?: number;
@@ -24,22 +25,6 @@ type DownloadSingleOptions = {
   validateZip?: boolean;
   dispatcher?: Dispatcher;
 };
-
-const CORRUPTION_MESSAGE_PATTERNS = [
-  'checksum',
-  'sha1',
-  'hash',
-  'empty',
-  '0 bytes',
-  'File size mismatch',
-  'Downloaded HTML challenge',
-  'Mirror returned HTML challenge',
-  'Invalid ZIP',
-];
-
-function isCorruptedDownloadError(message: string): boolean {
-  return CORRUPTION_MESSAGE_PATTERNS.some((pattern) => message.includes(pattern));
-}
 
 export class DownloadManager {
   /**
@@ -74,11 +59,12 @@ export class DownloadManager {
     const errors: Error[] = [];
     for (const candidate of candidates) {
       const startedAt = Date.now();
-      let downloaded = false;
       try {
         const cacheEntry = ETagCache.get(candidate);
-        if (fs.existsSync(dest)) {
-          const { skip } = await tryConditionalHead(candidate, cacheEntry);
+        // Custom dispatchers may enforce DNS/security policy; do not bypass them with global fetch.
+        if (!options.dispatcher && fs.existsSync(dest)) {
+          const validCachedFile = await hasValidDownloadChecksum(dest, options.checksum);
+          const { skip } = validCachedFile ? await tryConditionalHead(candidate, cacheEntry) : { skip: false };
           if (skip) {
             reportMirrorSuccess(candidate, Date.now() - startedAt);
             return;
@@ -99,32 +85,15 @@ export class DownloadManager {
         try {
           const downloadPromise = download({
             url: candidate,
-            destination: dest,
-            pendingFile,
+            destination: pendingFile,
+            signal: progressAbortController.signal,
             headers,
             expectedTotal: options.expectedTotal,
-            validator: options.checksum,
-            // Type conflict between undici versions - @xmcl/file-transfer uses different undici types
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            dispatcher: dispatcher as any,
+            dispatcher,
             rangePolicy,
           });
 
-          const progressMonitorPromise = new Promise<never>((_, reject) => {
-            progressAbortController.signal.addEventListener('abort', () => {
-              // Remove pending file so download can't use it
-              try {
-                if (fs.existsSync(pendingFile)) {
-                  fs.unlinkSync(pendingFile);
-                }
-              } catch {
-                // Ignore deletion errors
-              }
-              reject(new Error(`Download stalled - no progress for ${PROGRESS_STALL_TIMEOUT / 1000}s`));
-            });
-          });
-
-          await Promise.race([downloadPromise, progressMonitorPromise]);
+          await downloadPromise;
         } catch (downloadErr) {
           stopMonitoring();
           // If download was aborted due to no progress, try next source
@@ -140,52 +109,44 @@ export class DownloadManager {
             }
             throw downloadErr;
           }
+          if (progressAbortController.signal.aborted) {
+            throw new Error(`Download stalled - no progress for ${PROGRESS_STALL_TIMEOUT / 1000}s`, { cause: downloadErr });
+          }
           throw downloadErr;
         } finally {
           stopMonitoring();
         }
-        downloaded = true;
 
         if (shouldProbe) {
-          const snippet = readFileSnippet(dest, HTML_PROBE_BYTES);
+          const snippet = readFileSnippet(pendingFile, HTML_PROBE_BYTES);
           if (isHtmlChallenge(snippet, null)) {
             throw new Error('Downloaded HTML challenge instead of file');
           }
         }
 
         // Check file size before validation - truncated downloads are a common issue
-        const stats = fs.statSync(dest);
+        const stats = fs.statSync(pendingFile);
         if (stats.size === 0) {
           throw new Error('Downloaded file is empty (0 bytes)');
         }
         
-        // Quick check: if file is suspiciously small (< 100 bytes) and we have a checksum,
-        // verify it's not the empty file SHA1 before proceeding
-        // SHA1 of empty file: da39a3ee5e6b4b0d3255bfef95601890afd80709
-        if (stats.size < 100 && options.checksum) {
-          const crypto = await import('node:crypto');
-          const hash = crypto.createHash('sha1');
-          const fileContent = fs.readFileSync(dest);
-          hash.update(fileContent);
-          const actualSha1 = hash.digest('hex');
-          const emptyFileSha1 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
-          if (actualSha1 === emptyFileSha1) {
-            throw new Error('Downloaded file is empty (SHA1 matches empty file hash)');
-          }
-        }
-        
+        if (options.checksum) await validateDownloadChecksum(pendingFile, options.checksum);
+
         if (options.expectedTotal && stats.size !== options.expectedTotal) {
           throw new Error(`File size mismatch: expected ${options.expectedTotal} bytes, got ${stats.size} bytes`);
         }
 
         if (shouldValidateZip(dest, options.validateZip)) {
-          await validateZipIntegrity(dest);
+          await validateZipIntegrity(pendingFile);
         }
 
+        fs.renameSync(pendingFile, dest);
         reportMirrorSuccess(candidate, Date.now() - startedAt);
         try {
-          const res = await fetch(candidate, { method: 'HEAD' });
-          if (res.ok) updateEtagCacheFromResponse(candidate, res);
+          if (!options.dispatcher) {
+            const res = await fetch(candidate, { method: 'HEAD' });
+            if (res.ok) updateEtagCacheFromResponse(candidate, res);
+          }
         } catch {
           // Ignore cache update errors
         }
@@ -196,36 +157,9 @@ export class DownloadManager {
         // Preserve URL context for callers (and for RuntimeDownloadService.recordBadHosts).
         (e as Error & { url?: string }).url = candidate;
         
-        // Check if error is related to checksum validation or empty file
-        const isCorruptedCandidate = isCorruptedDownloadError(e.message);
-        
-        // Add file size info to error message if file exists
-        try {
-          if (fs.existsSync(dest)) {
-            const stats = fs.statSync(dest);
-            const sizeInfo = stats.size > 0 ? ` (file size: ${stats.size} bytes)` : ' (file is empty)';
-            e.message = `${e.message}${sizeInfo}`;
-            
-            // Corrupted or truncated candidates should never survive into later fallback attempts.
-            if (isCorruptedCandidate || stats.size === 0) {
-              try {
-                fs.unlinkSync(dest);
-                e.message = `${e.message} [corrupted candidate rejected]`;
-              } catch {
-                // Ignore deletion errors
-              }
-            }
-          }
-        } catch {
-          // Ignore stat errors
-        }
-        
         errors.push(e);
         try {
-          // Always clean up downloaded files on error to prevent reuse of corrupted files
-          if (downloaded && fs.existsSync(dest)) {
-            fs.unlinkSync(dest);
-          }
+          // Failed candidates only own the pending file; preserve any existing final file.
           if (fs.existsSync(pendingFile)) {
             fs.unlinkSync(pendingFile);
           }

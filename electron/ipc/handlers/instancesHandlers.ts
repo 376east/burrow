@@ -1,3 +1,4 @@
+import { isPublicFailure, publicText, optionalPublicText } from './instancePublicValues';
 import {
   INSTANCE_CHANNELS,
   type InstanceChannel,
@@ -51,27 +52,6 @@ function uninitialized(): InstanceFailure {
 
 function missing(): InstanceFailure {
   return { code: 'INSTANCE_NOT_FOUND', message: 'Instance was not found.' };
-}
-
-function isPublicFailure(value: unknown): value is InstanceFailure {
-  return typeof value === 'object'
-    && value !== null
-    && 'code' in value
-    && 'message' in value
-    && typeof value.code === 'string'
-    && typeof value.message === 'string';
-}
-
-function publicText(value: string): string {
-  if (value.includes('/') || value.includes('\\') || value.startsWith('~') || /^[a-z]:/i.test(value) || /^file:/i.test(value)) {
-    throw unavailable();
-  }
-
-  return value;
-}
-
-function optionalPublicText(value: string | undefined): string | undefined {
-  return value === undefined ? undefined : publicText(value);
 }
 
 function toSummary(record: CanonicalInstanceRecord): InstanceSummaryDto {

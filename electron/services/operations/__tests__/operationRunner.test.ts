@@ -35,6 +35,22 @@ describe('OperationRunner', () => {
     expect(runner.get(started.id)).toEqual(completed);
   });
 
+  it.each([
+    ['long transport error', 'Transport failed: ' + 'x'.repeat(500), ('Transport failed: ' + 'x'.repeat(500)).slice(0, 240)],
+    ['empty error', '', 'Operation failed'],
+    ['whitespace error', '   ', 'Operation failed'],
+  ])('persists a terminal failure for a %s', async (_label, message, expected) => {
+    const rootPath = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-operation-error-'));
+    tempDirs.push(rootPath);
+    const runner = new OperationRunner([{ kind: 'duplicate', run: async () => { throw new Error(message); } }]);
+    const started = runner.start({ kind: 'duplicate', rootPath, sourceId: 'source' });
+
+    const completed = await runner.waitFor(started.id);
+    expect(completed).toMatchObject({ status: 'failed', phase: 'failed', result: { status: 'failed', message: expected } });
+    expect(new OperationJournal(rootPath).get(started.id)).toEqual(completed);
+    expect(runner.get(started.id)).toEqual(completed);
+  });
+
   it('rescans the durable journal under every writer acquisition', async () => {
     const rootPath = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-operation-rescan-'));
     tempDirs.push(rootPath);

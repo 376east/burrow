@@ -74,4 +74,6 @@ Stack: `Electron` + `React` + `TypeScript` + `TailwindCSS` + `Vite`.
 - Add a body only when a maintainer needs the reason, migration consequence, or non-obvious tradeoff.
 
 ## README maintenance
-- Keep the root README aligned with the shared project format: three local SVG badges (status, stack, mode), navigation and the six existing sections in their current order. Update screenshots, metadata and release archive labels together; preserve the English mirror and verify the rendered default-branch page through authorized access. Never imply CI success or stable release from a documentation update.
+- Keep the root README aligned with the shared project format: useful standard Shields.io flat badges at their natural size, navigation and the six existing sections in their current order. Update screenshots, metadata and release archive labels together; preserve the English mirror and verify the rendered default-branch page through authorized access. Never imply CI success or stable release from a documentation update.
+
+- Badge links must support their claim. CI requires a live status badge visible through authorized access or an ordinary workflow link; never fake green CI. Do not send private metadata or credentials to badge services.

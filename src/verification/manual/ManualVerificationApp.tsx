@@ -1,6 +1,6 @@
 import { Profiler, type ProfilerOnRenderCallback, useCallback, useMemo, useState } from 'react';
 import { ManualVerificationNavigation, ManualVerificationScenarios } from './scenarios';
-import { type ManualVerificationView, getManualVerificationView } from './views';
+import { CLOSEOUT_VIEWS, type ManualVerificationView, getManualVerificationView } from './views';
 import { manualPerformanceProfilerRecorder } from './performanceProfiler';
 import { SettingsProvider } from '../../contexts/SettingsContext';
 import { AnalyticsProvider } from '../../features/analytics/AnalyticsProvider';
@@ -20,7 +20,7 @@ type VerificationStatus = {
 export function ManualVerificationApp() {
   const params = new URLSearchParams(window.location.search);
   const view = getManualVerificationView(params.get('view'));
-  const isViewportBoundProof = view === 'phase-41-surfaces-en' || view === 'phase-41-surfaces-ru';
+  const isViewportBoundProof = CLOSEOUT_VIEWS.some((candidate) => candidate.id === view) || view === 'phase-41-surfaces-en' || view === 'phase-41-surfaces-ru';
 
   const [status, setStatus] = useState<VerificationStatus>({
     view,

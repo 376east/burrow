@@ -2,7 +2,7 @@
 
 A desktop Minecraft launcher for solo play, your packs and playing with friends.
 
-<p><img src="docs/badges/status.svg" alt="Статус: в разработке" height="24"> <img src="docs/badges/stack.svg" alt="Стек: Electron · React · TypeScript" height="24"> <img src="docs/badges/mode.svg" alt="Запуск: локально" height="24"></p>
+<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-1.0.0--next.7-blue?style=flat" alt="version: 1.0.0-next.7"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next" alt="CI: live workflow status"></a></p>
 
 **[Demo](docs/assets/demo/burrow-next-demo.mp4) · [Run](#run) · [Architecture](#architecture) · [Plan](PLAN.md) · [For agents](AGENTS.md)**
 
@@ -65,11 +65,11 @@ Actions cross [IPC wrappers](src/services/ipc) and [contracts](shared/contracts)
 
 ## Status and limitations
 
-Version **1.0.0-next.6**, **preview, in development**: [package.json](package.json), [PLAN](PLAN.md).
+Version **1.0.0-next.7**, **preview, in development**: [package.json](package.json), [PLAN](PLAN.md).
 
 These are code paths, not guarantees for every game version, mod or router. The demo uses synthetic packs and does not launch Minecraft. The latest local Next installer smoke was on Windows; this version still needs macOS/Linux checks. Microsoft authentication and Quilt are unavailable. [Known issues](docs/en/known-issues.md).
 
-On 2026-10-04 production audit reports a high advisory through `http-cache-semantics`, `@xmcl/file-transfer` and `@xmcl/installer`. Full `verify` is not green. Migration must preserve download integrity: [PLAN](PLAN.md).
+The updated XMCL chain reports 0 vulnerabilities in the local production audit on 2026-10-04. Integrity and cancellation are checked with local HTTP fixtures; this does not establish installation compatibility with every game version. [Package provenance and repairs](vendor/README.md), [download fixtures](electron/services/runtime/__tests__/installerIntegrity.fixture.test.ts), [live CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml).
 
 No AI/LLM features run in the application. Guides, filters and validation use ordinary code; generated artwork and narration are production materials only: [PLAN](PLAN.md).
 

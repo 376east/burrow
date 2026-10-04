@@ -4,6 +4,22 @@
 
 This file summarizes current product versions. Git history remains the detailed development record, and [GitHub Releases](https://github.com/malyarq/burrow/releases) is the canonical source for downloadable artifacts.
 
+## [1.0.0-next.7] - 2026-10-04
+
+### Русский
+
+- Выделены функции сервисов и компоненты интерфейса, чтобы соблюдать закреплённые лимиты сложности без изменения лимитов.
+- Обновлена цепочка XMCL и проверка целостности загрузок: конечный файл заменяется после проверки хеша; неудачная загрузка сохраняет существующий файл.
+- Исправлены готовность английского/русского каталога, размеры и служебная навигация стенда визуальных проверок.
+- Длинные и пустые ошибки операций сохраняются в журнале; проверка окружения запускает npm через активный CLI на Windows.
+
+### English
+
+- Split service functions and UI components to meet existing complexity limits without raising budgets.
+- Updated the XMCL dependency chain and download integrity checks; files are published after hash validation and failed candidates preserve existing files.
+- Fixed English/Russian catalog readiness, viewport dimensions and fixture navigation.
+- Long or empty operation errors remain journal-compatible; environment preflight uses the active npm CLI on Windows.
+
 ## [1.0.0-next.6] - 2026-10-03
 
 ### Русский

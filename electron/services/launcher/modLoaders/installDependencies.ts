@@ -1,5 +1,5 @@
 import { Version } from '@xmcl/core';
-import { installDependenciesTask } from '@xmcl/installer';
+import { installDependenciesTask } from '../../runtime/installerTasks';
 import type { DownloadProvider } from '../../mirrors/providers';
 import type { TaskRunner } from '../../runtime/taskRunner';
 import type { TaskProgressData } from '../types';

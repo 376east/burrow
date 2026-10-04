@@ -6,7 +6,10 @@ import { ZipFile } from 'yazl';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocked = vi.hoisted(() => ({ download: vi.fn() }));
-vi.mock('@xmcl/file-transfer', () => ({ download: mocked.download }));
+vi.mock('@xmcl/file-transfer', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@xmcl/file-transfer')>(),
+  download: mocked.download,
+}));
 import { createImportOperationAdapter } from '../importOperation';
 import { stageArchiveImport } from '../../modpacks/importers/localInstaller';
 import { OperationRunner } from '../operationRunner';
@@ -17,6 +20,7 @@ describe('staged archive import operation', () => {
   const tempDirs: string[] = [];
   afterEach(() => {
     mocked.download.mockReset();
+    vi.unstubAllGlobals();
     for (const dir of tempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -55,6 +59,7 @@ describe('staged archive import operation', () => {
   it('downloads URL-only required Modrinth files, preserves the descriptor, and reports an explicit optional miss as degraded', async () => {
     const rootPath = seedRoot();
     tempDirs.push(rootPath);
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 404 })));
     mocked.download.mockImplementation(async ({ destination }: { destination: string }) => {
       fs.mkdirSync(path.dirname(destination), { recursive: true });
       fs.writeFileSync(destination, 'downloaded required bytes');
@@ -80,9 +85,31 @@ describe('staged archive import operation', () => {
       record: expect.objectContaining({ id: 'modrinth-import', name: 'Test pack' }),
     }));
     expect(mocked.download).toHaveBeenCalledWith(expect.objectContaining({
-      url: ['https://cdn.example.com/required.txt'],
-      validator: { algorithm: 'sha1', hash: crypto.createHash('sha1').update('downloaded required bytes').digest('hex') },
+      url: 'https://cdn.example.com/required.txt',
+      destination: expect.stringMatching(/required\.txt\.pending$/),
+      signal: expect.any(AbortSignal),
     }));
+  });
+
+  it('rejects a corrupted URL-only required Modrinth file before publishing', async () => {
+    const rootPath = seedRoot();
+    tempDirs.push(rootPath);
+    const before = capture(rootPath);
+    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => {
+      fs.mkdirSync(path.dirname(destination), { recursive: true });
+      fs.writeFileSync(destination, 'corrupted required bytes');
+    });
+    const archivePath = await writeModrinthArchive(rootPath);
+    const { runner, execute } = createRunner();
+    const started = runner.start({ kind: 'import', rootPath, filePath: archivePath, destinationId: 'corrupted-import' });
+
+    await expect(runner.waitFor(started.id)).resolves.toMatchObject({
+      status: 'failed', result: { status: 'failed', message: expect.stringMatching(/checksum/i) },
+    });
+    expect(capture(rootPath)).toEqual(before);
+    expect(execute).not.toHaveBeenCalled();
+    expect(fs.existsSync(path.join(rootPath, 'modpacks', 'corrupted-import'))).toBe(false);
+    expect(fs.existsSync(path.join(rootPath, '.burrow-operations', 'staging', started.id))).toBe(false);
   });
 
   it('rejects a CurseForge archive before publishing when its provider capability is unavailable', async () => {

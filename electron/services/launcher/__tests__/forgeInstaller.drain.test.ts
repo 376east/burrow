@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Task } from '@xmcl/task';
 
 const mocked = vi.hoisted(() => ({ prefetch: vi.fn() }));
-vi.mock('@xmcl/installer', () => ({ getForgeVersionList: vi.fn(async () => []), installForgeTask: vi.fn(() => ({})) }));
+vi.mock('@xmcl/installer', () => ({ getForgeVersionList: vi.fn(async () => []) }));
+vi.mock('../../runtime/installerTasks', () => ({ installForgeTask: vi.fn(() => ({})) }));
 vi.mock('../forge/forgeVersionSelection', () => ({ selectForgeVersion: () => ({ version: '47.0.0' }), getForgeVersionFromPromotions: vi.fn() }));
 vi.mock('../forgePatches', () => ({ ensureVersionInheritsFromBase: vi.fn(), rewriteForgeInstallProfile: () => true, rewriteForgeVersionJson: () => true }));
 vi.mock('../forge/createForgeDispatcher', () => ({ createForgeDispatcher: () => ({}) }));

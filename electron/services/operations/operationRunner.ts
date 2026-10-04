@@ -1,3 +1,4 @@
+import { isCancelled, isTerminal, isArchiveExportRecovery, hasCanonicalRecoveryCommand, canonicalCommandInstanceId, sameJson, toSafeMessage, rootMutationFailure, clone } from './operationSnapshotUtils';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import { OperationJournal } from './operationJournal';
@@ -533,53 +534,4 @@ export class OperationRunner {
     for (const listener of this.listeners.get(snapshot.id) ?? []) listener(clone(snapshot));
     if (isTerminal(snapshot)) this.listeners.delete(snapshot.id);
   }
-}
-
-function isCancelled(snapshot: OperationSnapshot): boolean {
-  return snapshot.status === 'cancelling';
-}
-
-function isTerminal(snapshot: OperationSnapshot): boolean {
-  return ['succeeded', 'recovered', 'degraded', 'cancelled', 'failed', 'recovery-required'].includes(snapshot.status);
-}
-
-function isArchiveExportRecovery(snapshot: OperationSnapshot): boolean {
-  return snapshot.kind === 'export'
-    && snapshot.input.kind === 'export'
-    && (snapshot.input.format === 'zip' || snapshot.input.format === 'multimc')
-    && snapshot.recovery !== undefined
-    && 'outputPath' in snapshot.recovery;
-}
-
-function hasCanonicalRecoveryCommand(snapshot: OperationSnapshot): boolean {
-  return snapshot.recovery?.canonicalCommand !== undefined;
-}
-
-function canonicalCommandInstanceId(command: InstanceCommand, result: RootMutationCommandResult): string | undefined {
-  if ('code' in result) return undefined;
-  switch (command.type) {
-    case 'commit-published':
-    case 'reconcile-update':
-      return command.record.id;
-    case 'create':
-      return result.snapshot.selectedId ?? undefined;
-    default:
-      return command.id;
-  }
-}
-
-function sameJson(left: unknown, right: unknown): boolean {
-  return JSON.stringify(left) === JSON.stringify(right);
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'Operation failed';
-}
-
-function rootMutationFailure(code: RootMutationFailure['code'], message: string): RootMutationFailure {
-  return { status: 'failed', code, message };
-}
-
-function clone<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
 }

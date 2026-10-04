@@ -1,20 +1,13 @@
+import { type ArchiveWriteTask, normalizeArchiveRelativePath, collectZipExtractionTasks, buildZipEntryLookup, writeArchiveTasks, writeArchiveEntry, verifyManifestFile, extractOverrides } from './archiveExtraction';
 import fs from 'node:fs';
 import path from 'node:path';
-import crypto from 'node:crypto';
-import { pipeline } from 'node:stream/promises';
-import { assertAbsolutePath, assertRelativePath, resolvePathWithinRoot } from '../../../security/pathGuards';
+import { assertAbsolutePath, resolvePathWithinRoot } from '../../../security/pathGuards';
 import { resolveApprovedInstancePath } from '../../instances/paths';
 import { parseCurseForgeManifest } from '../parsers/curseforgeParser';
 import { parseModrinthManifest } from '../parsers/modrinthParser';
 import { nodeProviderDownloadPort } from '../installers';
 import type { ModpackManifest } from '../../../../shared/types/modpack';
-import { openValidatedZip, type ValidatedZip, type ValidatedZipEntry } from '../../../security/archivePolicy';
-
-type ArchiveWriteTask = {
-  entry: ValidatedZipEntry;
-  targetPath: string;
-  overwrite?: boolean;
-};
+import { openValidatedZip } from '../../../security/archivePolicy';
 
 type ModpackFormat = 'curseforge' | 'modrinth' | 'zip' | 'multimc';
 type ModpackInfo = {
@@ -22,55 +15,6 @@ type ModpackInfo = {
   manifest: ModpackManifest | null;
   error?: string;
 };
-
-function normalizeArchiveRelativePath(value: string, label: string): string {
-  const trimmedValue = value.replace(/[\\/]+$/, '');
-  if (!trimmedValue) throw new Error(`${label} must stay inside the launcher root`);
-  return assertRelativePath(trimmedValue, label).split(path.sep).join('/');
-}
-
-function collectZipExtractionTasks(zip: ValidatedZip, targetDir: string): ArchiveWriteTask[] {
-  const safeTargetDir = resolveApprovedInstancePath(targetDir);
-  const tasks: ArchiveWriteTask[] = [];
-  for (const entry of zip.getEntries()) {
-    const normalizedEntryPath = normalizeArchiveRelativePath(entry.fileName, 'Archive entry path');
-    if (entry.fileName.endsWith('/')) continue;
-    tasks.push({
-      entry,
-      targetPath: resolvePathWithinRoot(safeTargetDir, normalizedEntryPath, `Archive entry "${entry.fileName}"`),
-    });
-  }
-  return tasks;
-}
-
-function buildZipEntryLookup(zip: ValidatedZip): Map<string, ValidatedZipEntry> {
-  const entryMap = new Map<string, ValidatedZipEntry>();
-  for (const entry of zip.getEntries()) {
-    const normalizedEntryPath = normalizeArchiveRelativePath(entry.fileName, 'Archive entry path');
-    const existingEntry = entryMap.get(normalizedEntryPath);
-    if (!existingEntry || existingEntry.fileName.endsWith('/')) entryMap.set(normalizedEntryPath, entry);
-  }
-  return entryMap;
-}
-
-async function writeArchiveTasks(zip: ValidatedZip, tasks: ArchiveWriteTask[]): Promise<void> {
-  for (const task of tasks) {
-    await fs.promises.mkdir(path.dirname(task.targetPath), { recursive: true });
-    const output = fs.createWriteStream(task.targetPath, { flags: task.overwrite ? 'w' : 'wx' });
-    try {
-      const input = await zip.openReadStream(task.entry);
-      await pipeline(input, output);
-    } catch (error) {
-      output.destroy();
-      if (!task.overwrite && (error as NodeJS.ErrnoException).code !== 'EEXIST') await fs.promises.rm(task.targetPath, { force: true });
-      throw error;
-    }
-  }
-}
-
-async function writeArchiveEntry(zip: ValidatedZip, entry: ValidatedZipEntry, targetPath: string): Promise<void> {
-  await writeArchiveTasks(zip, [{ entry, targetPath }]);
-}
 
 export async function detectModpackFormat(filePath: string): Promise<ModpackFormat | null> {
   const safeFilePath = assertAbsolutePath(filePath, 'Modpack file path');
@@ -256,28 +200,7 @@ export async function stageArchiveImport(filePath: string, stagingDir: string): 
         }
       }
       await writeArchiveTasks(zip, tasks);
-      for (const file of info.manifest.files) {
-        if (!file.path) continue;
-        if (file.env?.client === 'unsupported') continue;
-        const normalizedFilePath = normalizeArchiveRelativePath(file.path, 'Modrinth file path');
-        const targetPath = resolvePathWithinRoot(safeStagingDir, normalizedFilePath, `Modrinth file "${file.path}"`);
-        if (fs.existsSync(targetPath)) {
-          await verifyManifestFile(targetPath, file.path, file.hashes);
-          continue;
-        }
-        try {
-          if (!file.downloads?.length) throw new Error('Modrinth manifest file has no download URL');
-          await nodeProviderDownloadPort.download({
-            urls: file.downloads,
-            destination: targetPath,
-            sha1: file.hashes?.sha1,
-            label: `Modrinth file ${file.path} download URL`,
-          });
-        } catch (error) {
-          if (file.required) throw new Error(`Required Modrinth file could not be staged: ${file.path}: ${error instanceof Error ? error.message : 'download failed'}`);
-          missing.push(file.path);
-        }
-      }
+      await stageMissingModrinthFiles(info.manifest, safeStagingDir, missing);
       await extractOverrides(zip, safeStagingDir, 'overrides');
       await extractOverrides(zip, safeStagingDir, 'client-overrides');
     } else {
@@ -300,34 +223,27 @@ export async function stageArchiveImport(filePath: string, stagingDir: string): 
   }
 }
 
-async function verifyManifestFile(filePath: string, label: string, hashes: { sha1?: string; sha512?: string } | undefined): Promise<void> {
-  const checks = ([['sha1', hashes?.sha1], ['sha512', hashes?.sha512]] as const)
-    .flatMap(([algorithm, expected]) => expected ? [{ hash: crypto.createHash(algorithm), expected }] : []);
-  if (checks.length === 0) return;
-  for await (const chunk of fs.createReadStream(filePath)) {
-    for (const { hash } of checks) hash.update(chunk);
-  }
-  for (const { hash, expected } of checks) {
-    if (hash.digest('hex').toLowerCase() !== expected.toLowerCase()) {
-      throw new Error(`Bundled Modrinth file hash mismatch: ${label}`);
+async function stageMissingModrinthFiles(manifest: ModpackManifest, safeStagingDir: string, missing: string[]): Promise<void> {
+  for (const file of manifest.files) {
+    if (!file.path) continue;
+    if (file.env?.client === 'unsupported') continue;
+    const normalizedFilePath = normalizeArchiveRelativePath(file.path, 'Modrinth file path');
+    const targetPath = resolvePathWithinRoot(safeStagingDir, normalizedFilePath, `Modrinth file "${file.path}"`);
+    if (fs.existsSync(targetPath)) {
+      await verifyManifestFile(targetPath, file.path, file.hashes);
+      continue;
+    }
+    try {
+      if (!file.downloads?.length) throw new Error('Modrinth manifest file has no download URL');
+      await nodeProviderDownloadPort.download({
+        urls: file.downloads,
+        destination: targetPath,
+        sha1: file.hashes?.sha1,
+        label: `Modrinth file ${file.path} download URL`,
+      });
+    } catch (error) {
+      if (file.required) throw new Error(`Required Modrinth file could not be staged: ${file.path}: ${error instanceof Error ? error.message : 'download failed'}`);
+      missing.push(file.path);
     }
   }
-}
-
-async function extractOverrides(zip: ValidatedZip, targetDir: string, zipPath: string): Promise<void> {
-  const safeTargetDir = assertAbsolutePath(targetDir, 'Overrides directory');
-  const safeZipPath = normalizeArchiveRelativePath(zipPath, 'Archive overrides path');
-  const tasks: ArchiveWriteTask[] = [];
-  for (const entry of zip.getEntries()) {
-    const normalizedEntryPath = normalizeArchiveRelativePath(entry.fileName, 'Archive entry path');
-    if (normalizedEntryPath !== safeZipPath && !normalizedEntryPath.startsWith(`${safeZipPath}/`)) continue;
-    const relativePath = normalizedEntryPath === safeZipPath ? '' : normalizedEntryPath.slice(safeZipPath.length + 1);
-    if (!relativePath || entry.fileName.endsWith('/')) continue;
-    tasks.push({
-      entry,
-      targetPath: resolvePathWithinRoot(safeTargetDir, relativePath, `Archive entry "${entry.fileName}"`),
-      overwrite: true,
-    });
-  }
-  await writeArchiveTasks(zip, tasks);
 }

@@ -15,7 +15,7 @@ const mocked = vi.hoisted(() => ({
 }));
 const fetchPublicHttpsUrlMock = mocked.fetchPublicHttpsUrl;
 vi.mock('../../../../security/remoteUrls', () => ({ fetchPublicHttpsUrl: (...args: unknown[]) => fetchPublicHttpsUrlMock(...args) }));
-vi.mock('@xmcl/file-transfer', () => ({ download: (...args: unknown[]) => mocked.download(...args) }));
+vi.mock('../../../download/downloadManager', () => ({ DownloadManager: { downloadSingle: (...args: unknown[]) => mocked.download(...args) } }));
 
 type ModrinthSearchResult = Awaited<ReturnType<ModrinthV2Client['searchProjects']>>;
 type ModrinthSearchHit = ModrinthSearchResult['hits'][number];
@@ -168,13 +168,14 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
       resolveRoot: async () => ({} as LauncherRoot),
       getModpackDir: () => instancePath,
     });
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce({
-      files: [{ primary: true, filename: 'project-v2.jar', url: 'https://example.test/project-v2.jar', hashes: {} }],
-    } as Awaited<ReturnType<ModrinthV2Client['getProjectVersion']>>);
+      files: [{ primary: true, filename: 'project-v2.jar', url: 'https://example.test/project-v2.jar', hashes: { sha1: 'a1047eab1035d58682a53557e0b2a75edbfd15fd', sha512: '' } }],
+    } as unknown as Awaited<ReturnType<ModrinthV2Client['getProjectVersion']>>);
 
     try {
       await service.installModFile({ platform: 'modrinth', projectId: 'project', versionId: 'v2', instanceId: 'alpha', contentType: 'mod' }, rootPath);
+      expect(mocked.download).toHaveBeenCalledWith(['https://example.test/project-v2.jar'], expect.any(String), { checksum: { algorithm: 'sha1', hash: 'a1047eab1035d58682a53557e0b2a75edbfd15fd' } });
       expect(fs.existsSync(path.join(instancePath, 'mods', 'project-v1.jar'))).toBe(false);
       expect(fs.readFileSync(path.join(instancePath, 'mods', 'project-v2.jar'), 'utf8')).toBe('v2');
       expect(manifests.loadManifest(instancePath).mods).toMatchObject([{ fileName: 'project-v2.jar', projectId: 'project', versionId: 'v2' }]);
@@ -214,7 +215,7 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
 
   it('keeps a replacement disabled when the tracked version is disabled', async () => {
     const fixture = createReplacementFixture(true);
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(fixture.service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce(providerVersion('project-v2.jar'));
 
     try {
@@ -227,7 +228,7 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
 
   it('does not remove the existing version when creating its backup fails', async () => {
     const fixture = createReplacementFixture();
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(fixture.service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce(providerVersion('project-v2.jar'));
     const originalMove = fsExtra.move.bind(fsExtra);
     const move = vi.spyOn(fsExtra, 'move');
@@ -246,7 +247,7 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
 
   it('preserves the committed new version if backup cleanup fails', async () => {
     const fixture = createReplacementFixture();
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(fixture.service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce(providerVersion('project-v2.jar'));
     const originalRemove = fsExtra.remove.bind(fsExtra);
     const remove = vi.spyOn(fsExtra, 'remove');
@@ -264,7 +265,7 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
 
   it('restores the previous version when committing the manifest fails', async () => {
     const fixture = createReplacementFixture();
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(fixture.service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce(providerVersion('project-v2.jar'));
     vi.spyOn(InstanceManifestManager.prototype, 'addMod').mockImplementation(() => { throw new Error('manifest failed'); });
 
@@ -284,7 +285,7 @@ describe('ModPlatformService alphabetical modpack pagination', () => {
       version: 1,
       mods: [{ fileName: '../escape.jar', source: 'modrinth', projectId: 'project', versionId: 'v1', installDate: '2026-09-01T00:00:00.000Z' }],
     }));
-    mocked.download.mockImplementation(async ({ destination }: { destination: string }) => fs.writeFileSync(destination, 'v2'));
+    mocked.download.mockImplementation(async (_url: string | string[], destination: string) => fs.writeFileSync(destination, 'v2'));
     vi.spyOn(fixture.service.getModrinthClient(), 'getProjectVersion').mockResolvedValueOnce(providerVersion('project-v2.jar'));
 
     try {

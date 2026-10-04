@@ -1,3 +1,5 @@
+import { PlayLaunchStatus } from './PlayLaunchStatus';
+import { resolvePlayLoaderVersions } from './playLoaderVersions';
 import { useCallback, useId, useMemo, useState } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
 import type { AppLayoutProps } from '../components/AppLayout';
@@ -7,7 +9,6 @@ import { DegradedStateView } from '../components/layout/DegradedStateView';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { ProgressBar } from '../components/ui/ProgressBar';
 import { Select } from '../components/ui/Select';
 import { useSettings, useUIMode } from '../contexts/SettingsContext';
 import { useEffectiveInstance } from '../features/instances/hooks/useEffectiveInstance';
@@ -19,12 +20,10 @@ import { useInstanceInvalidation } from '../features/instances/hooks/useInstance
 import { useModSupportedVersions } from '../features/launcher/hooks/useModSupportedVersions';
 import {
   getLaunchActionLabel,
-  getLaunchStageTitle,
   isLoaderSupported,
 } from '../features/launcher/services/launcherService';
 import { buildModpackRuntimeSummary } from '../features/modpacks/hooks/useModpackRuntimeSummary';
 import { usePersistentModpackNavigation } from '../features/modpacks/navigation/ModpackNavigationContext';
-import { RestartGameButton } from './RestartGameButton';
 import { OptifineToggle } from '../components/sidebar/OptifineToggle';
 import { CLASSIC_MODPACK_ID } from '../../shared/constants';
 import { toDisplayErrorMessage } from '../utils/displayError';
@@ -52,15 +51,13 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
   const runtimeSummary = useMemo(() => (
     config ? buildModpackRuntimeSummary({ config, optiFineVersions }) : null
   ), [config, optiFineVersions]);
+  const loaderVersions = resolvePlayLoaderVersions(launch, { forgeVersions, fabricVersions, neoForgeVersions });
   const loaderSupported = isLoaderSupported({
     loaderType: launch.loaderType,
     mcVersion: launch.version,
-    forgeVersions: launch.supportedVersions.forge.length ? launch.supportedVersions.forge : forgeVersions,
-    fabricVersions: launch.supportedVersions.fabric.length ? launch.supportedVersions.fabric : fabricVersions,
-    neoForgeVersions: launch.supportedVersions.neoForge.length ? launch.supportedVersions.neoForge : neoForgeVersions,
+    ...loaderVersions,
   });
   const canLaunch = !busy && loaderSupported && effectiveInstance.status === 'ready';
-  const stageTitle = getLaunchStageTitle(runtime.launchStage, t);
   const actionLabel = getLaunchActionLabel(runtime.launchStage, t);
   const showProgress = busy && runtime.launchStage === 'downloading' && typeof runtime.progress === 'number';
 
@@ -173,9 +170,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               {(['vanilla', 'fabric', 'forge', 'neoforge'] as const).map((loader) => {
                 const supported = isLoaderSupported({
                   loaderType: loader, mcVersion: launch.version,
-                  forgeVersions: launch.supportedVersions.forge.length ? launch.supportedVersions.forge : forgeVersions,
-                  fabricVersions: launch.supportedVersions.fabric.length ? launch.supportedVersions.fabric : fabricVersions,
-                  neoForgeVersions: launch.supportedVersions.neoForge.length ? launch.supportedVersions.neoForge : neoForgeVersions,
+                  ...loaderVersions,
                 });
                 return <button key={loader} type="button" aria-pressed={launch.loaderType === loader}
                   disabled={busy || !supported} onClick={() => updateLoader(loader)}>
@@ -192,16 +187,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
           </p>
         ) : null}
 
-        {runtime.statusText || runtime.statusDetail ? (
-          <section className="border-y border-border/70 py-4" aria-live="polite" aria-label={text(t, 'dashboard.launch_status', 'Статус запуска')}>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <p className="text-sm font-medium text-foreground">{runtime.statusText || stageTitle}</p>
-              {runtime.canForceRestart && <RestartGameButton />}
-            </div>
-            {runtime.statusDetail ? <p className="mt-1 text-sm leading-6 text-secondary">{runtime.statusDetail}</p> : null}
-            {showProgress ? <ProgressBar className="mt-4" value={runtime.progress ?? 0} valueLabel={`${Math.round(runtime.progress ?? 0)}%`} /> : null}
-          </section>
-        ) : null}
+        <PlayLaunchStatus runtime={runtime} showProgress={showProgress} t={t} />
 
         <section className="next-advanced-section order-last border-t border-border/70 pt-6">
           <button type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}

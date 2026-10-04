@@ -36,18 +36,7 @@ export function createImportOperationAdapter(options: ImportOperationOptions = {
         throwIfCancelled(context);
         const staged = await stageArchiveImport(input.filePath, workspace.stagedModpack(destinationId));
         missing = staged.missing;
-        if (staged.format === 'curseforge' && staged.manifest.files.length > 0) {
-          if (!options.installManifestContent) {
-            throw new Error('CurseForge archive content cannot be imported because the CurseForge provider is unavailable. Configure a CurseForge API key and retry; your existing files were not changed.');
-          }
-          const failures = await options.installManifestContent(workspace.stagingRoot, destinationId, staged.manifest);
-          for (const failure of failures) {
-            const file = staged.manifest.files[failure.index];
-            const label = `curseforge:${file?.projectID ?? 'missing'}/${file?.fileID ?? 'missing'}`;
-            if (file?.required ?? true) throw new Error(`Required CurseForge file could not be staged: ${label}: ${failure.reason}`);
-            missing.push(label);
-          }
-        }
+        await stageProviderContent(options, workspace.stagingRoot, destinationId, staged.format, staged.manifest, missing);
         const loaderId = staged.manifest.minecraft.modLoaders[0]?.id;
         if (parseLoader(loaderId)?.type === 'quilt') throw new Error('Quilt modpacks are not supported');
         const config = buildConfig(destinationId, input.name?.trim() || staged.manifest.name, staged.manifest.minecraft.version, loaderId);
@@ -147,4 +136,19 @@ function writeStagedConfig(instancePath: string, config: ModpackConfig): void {
 
 function throwIfCancelled(context: OperationContext): void {
   if (context.isCancelled()) throw new Error('Operation cancelled');
+}
+
+async function stageProviderContent(options: ImportOperationOptions, stagingRoot: string, destinationId: string, format: string, manifest: ModpackManifest, missing: string[]): Promise<void> {
+  if (format === 'curseforge' && manifest.files.length > 0) {
+    if (!options.installManifestContent) {
+      throw new Error('CurseForge archive content cannot be imported because the CurseForge provider is unavailable. Configure a CurseForge API key and retry; your existing files were not changed.');
+    }
+    const failures = await options.installManifestContent(stagingRoot, destinationId, manifest);
+    for (const failure of failures) {
+      const file = manifest.files[failure.index];
+      const label = `curseforge:${file?.projectID ?? 'missing'}/${file?.fileID ?? 'missing'}`;
+      if (file?.required ?? true) throw new Error(`Required CurseForge file could not be staged: ${label}: ${failure.reason}`);
+      missing.push(label);
+    }
+  }
 }

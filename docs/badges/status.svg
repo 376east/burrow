@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="180" height="24" viewBox="0 0 180 24" role="img" aria-label="Статус: в разработке">
- <title>Статус: в разработке</title>
- <defs><clipPath id="rounded"><rect width="180" height="24" rx="4"/></clipPath></defs>
- <g clip-path="url(#rounded)"><rect width="62" height="24" fill="#334155"/><rect x="62" width="118" height="24" fill="#92400e"/></g>
- <g fill="#fff" font-family="Verdana, DejaVu Sans, sans-serif" font-size="11" text-anchor="middle"><text x="31.0" y="16">Статус</text><text x="121.0" y="16">в разработке</text></g>
-</svg>

@@ -1,7 +1,8 @@
+import { isForgeInstallerSupportedMcVersion, getForgeArtifactVersion } from './forge/forgeArtifact';
+import { installForgeTask } from '../runtime/installerTasks';
 import type { Task } from '@xmcl/task';
 import {
   getForgeVersionList,
-  installForgeTask,
   type ForgeVersion,
 } from '@xmcl/installer';
 import path from 'node:path';
@@ -18,37 +19,6 @@ import { DownloadManager } from '../download/downloadManager';
 import { validateZipIntegrity } from '../download/zipValidator';
 import { DEFAULT_USER_AGENT } from '@shared/constants';
 import { BMCL_ROOT, BMCL_ROOT_FALLBACK } from '../mirrors/providers';
-
-function isForgeInstallerSupportedMcVersion(versionId: string): boolean {
-  const m = versionId.match(/^(\d+)\.(\d+)(?:\.(\d+))?$/);
-  if (!m) return false;
-  const major = Number(m[1]);
-  const minor = Number(m[2]);
-  if (!Number.isFinite(major) || !Number.isFinite(minor)) return false;
-  return major > 1 || (major === 1 && minor >= 6);
-}
-
-function getForgeArtifactVersion(version: { mcversion: string; version: string }) {
-  // Keep this logic in sync with @xmcl/installer `getForgeArtifactVersion`.
-  // For MC 1.7+ (minor >= 7), Forge uses artifact version with MC version suffix.
-  // Examples:
-  // - 1.7.10 -> 1.7.10-10.13.4.1614-1.7.10
-  // - 1.8.9 -> 1.8.9-11.15.1.2318-1.8.9
-  // - 1.9.4 -> 1.9.4-12.17.0.2317-1.9.4
-  // - 1.10 -> 1.10-12.18.0.2000-1.10.0 (no patch, so add .0)
-  const [, minor] = version.mcversion.split('.');
-  const minorVersion = Number.parseInt(minor, 10);
-  if (minorVersion >= 7) {
-    // If mcversion has no patch (e.g., "1.10"), add ".0" suffix.
-    const parts = version.mcversion.split('.');
-    const suffix = parts.length >= 3 ? version.mcversion : `${version.mcversion}.0`;
-    return `${version.mcversion}-${version.version}-${suffix}`;
-  }
-  if (version.version.startsWith(version.mcversion)) {
-    return version.version;
-  }
-  return `${version.mcversion}-${version.version}`;
-}
 
 async function prefetchForgeInstallerJar(params: {
   rootPath: string;
@@ -193,23 +163,39 @@ export async function installForge(options: {
     }
 
     const forgeDispatcher = createForgeDispatcher();
+    let profilePatched = false;
+    let mcpPrefetchStarted = false;
+    let mcpPrefetch: Promise<void> | undefined;
+    const patchProfile = () => {
+      if (profilePatched) return;
+      const patchedProfile = rewriteForgeInstallProfile(rootPath, forgeVersionId, downloadProvider, onLog);
+      const patchedVersion = rewriteForgeVersionJson(rootPath, forgeVersionId, downloadProvider, onLog);
+      profilePatched = patchedProfile || patchedVersion;
+
+      // Best-effort: start mcp_config prefetch ASAP to avoid multi-minute stalls.
+      // Keep the scheduler callback synchronous; drain this work before returning.
+      if (!mcpPrefetchStarted) {
+        mcpPrefetchStarted = true;
+        onLog('[Forge] Prefetching mcp_config in background (to prevent stalls)...');
+        mcpPrefetch = ensureForgeMcpConfig({ rootPath, versionId: forgeVersionId, provider: downloadProvider, onLog })
+          .then((ok) => {
+            if (ok) onLog('[Forge] mcp_config prefetch ✓');
+          })
+          .catch((e: unknown) => {
+            const msg = e instanceof Error ? e.message : String(e);
+            onLog(`[Forge] mcp_config prefetch failed (will retry on error): ${msg}`);
+          });
+      }
+    };
     const forgeTask = installForgeTask(forgeVersion as ForgeVersion, rootPath, {
       ...(downloadOptions as Record<string, unknown>),
       java: javaPath,
-      // Help upstream downloader avoid HTML placeholders / challenges.
-      headers: {
-        'user-agent': DEFAULT_USER_AGENT,
-        accept: '*/*',
-        'accept-encoding': 'identity',
-      },
       // Override dispatcher for Forge to reduce long "silent" stalls.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       dispatcher: forgeDispatcher as any,
       mavenHost: downloadProvider.injectURLWithCandidates('https://maven.minecraftforge.net/'),
+      tracker: (event) => { if (event.phase === 'libraries') patchProfile(); },
     });
-    let profilePatched = false;
-    let mcpPrefetchStarted = false;
-    let mcpPrefetch: Promise<void> | undefined;
     try {
       return await runTaskWithProgress(
       forgeTask,
@@ -217,29 +203,7 @@ export async function installForge(options: {
       onLog,
       'Forge installation',
       'Forge',
-      (t) => {
-        if (profilePatched) return;
-        if (t.path.includes('installForge.library')) {
-          const patchedProfile = rewriteForgeInstallProfile(rootPath, forgeVersionId, downloadProvider, onLog);
-          const patchedVersion = rewriteForgeVersionJson(rootPath, forgeVersionId, downloadProvider, onLog);
-          profilePatched = patchedProfile || patchedVersion;
-
-          // Best-effort: start mcp_config prefetch ASAP to avoid multi-minute stalls.
-          // Keep the scheduler callback synchronous; drain this work before returning.
-          if (!mcpPrefetchStarted) {
-            mcpPrefetchStarted = true;
-            onLog('[Forge] Prefetching mcp_config in background (to prevent stalls)...');
-            mcpPrefetch = ensureForgeMcpConfig({ rootPath, versionId: forgeVersionId, provider: downloadProvider, onLog })
-              .then((ok) => {
-                if (ok) onLog('[Forge] mcp_config prefetch ✓');
-              })
-              .catch((e: unknown) => {
-                const msg = e instanceof Error ? e.message : String(e);
-                onLog(`[Forge] mcp_config prefetch failed (will retry on error): ${msg}`);
-              });
-          }
-        }
-      }
+      (t) => { if (t.path.includes('installForge.library')) patchProfile(); }
       );
     } finally {
       await mcpPrefetch;

@@ -1,3 +1,4 @@
+import { type PersistedAccount, type PersistedAccountState, isPersistedAccountState } from './persistedAccount';
 import path from 'path';
 import { randomUUID } from 'crypto';
 import { safeStorage } from 'electron';
@@ -17,43 +18,6 @@ type InternalAccountState = {
     accounts: InternalAccount[];
     selectedAccountId: string | null;
 };
-
-type PersistedAccount = Account & {
-    accessToken?: string;
-    clientToken?: string;
-    encryptedAccessToken?: string;
-    encryptedClientToken?: string;
-};
-
-type PersistedAccountState = {
-    accounts: PersistedAccount[];
-    selectedAccountId: string | null;
-};
-
-function isOptionalString(value: unknown): value is string | undefined {
-    return value === undefined || typeof value === 'string';
-}
-
-function isPersistedAccount(value: unknown): value is PersistedAccount {
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-    const account = value as Partial<PersistedAccount>;
-    return typeof account.id === 'string'
-        && typeof account.name === 'string'
-        && (account.type === 'offline' || account.type === 'third-party')
-        && isOptionalString(account.authServerUrl)
-        && isOptionalString(account.accessToken)
-        && isOptionalString(account.clientToken)
-        && isOptionalString(account.encryptedAccessToken)
-        && isOptionalString(account.encryptedClientToken);
-}
-
-function isPersistedAccountState(value: unknown): value is PersistedAccountState {
-    if (!value || typeof value !== 'object') return false;
-    const candidate = value as Partial<PersistedAccountState>;
-    return Array.isArray(candidate.accounts)
-        && candidate.accounts.every(isPersistedAccount)
-        && (candidate.selectedAccountId === null || typeof candidate.selectedAccountId === 'string');
-}
 
 function hasSecureCredentialStorage(): boolean {
     if (!safeStorage.isEncryptionAvailable()) return false;

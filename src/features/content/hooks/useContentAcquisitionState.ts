@@ -1,3 +1,6 @@
+import { contentRuntimeKey } from './contentRuntimeKey';
+import { useAcquisitionSelectionStore } from './useAcquisitionSelectionStore';
+import { useAcquisitionQuery } from './useAcquisitionQuery';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   AcquisitionOutcome,
@@ -9,15 +12,6 @@ import type {
   ContentAcquisitionSelection,
   ContentRuntimeInput,
 } from '../contentAcquisitionTypes';
-
-function contentRuntimeKey(runtime: ContentRuntimeInput<ContentAcquisitionKind>) {
-  return [
-    runtime.instanceId,
-    runtime.minecraftVersion ?? '',
-    'loader' in runtime ? runtime.loader ?? '' : '',
-    'shaderSupport' in runtime ? runtime.shaderSupport : '',
-  ].join('\u0000');
-}
 
 export type UseContentAcquisitionStateOptions<
   K extends ContentAcquisitionKind,
@@ -42,15 +36,13 @@ export function useContentAcquisitionState<
   initialFilters = {},
   debounceMs = 300,
 }: UseContentAcquisitionStateOptions<K, Item, Selection>): ContentAcquisitionController<Item, Selection> {
-  const [query, setQueryState] = useState(initialQuery);
-  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
+  const { query, setQueryState, debouncedQuery, setDebouncedQuery } = useAcquisitionQuery(initialQuery, debounceMs);
+  const { checkedIds, selections, checkedRef, selectionsRef, publishChecked, publishSelections } = useAcquisitionSelectionStore<Selection>();
   const [filters, setFilters] = useState<ContentAcquisitionFilters>({ ...initialFilters });
   const [items, setItems] = useState<readonly Item[]>([]);
   const [nextPage, setNextPage] = useState<number | null>(null);
   const [total, setTotal] = useState<number | undefined>(undefined);
-  const [checkedIds, setCheckedIds] = useState<ReadonlySet<string>>(new Set());
   const [resolvingIds, setResolvingIds] = useState<ReadonlySet<string>>(new Set());
-  const [selections, setSelections] = useState<ReadonlyMap<string, Selection>>(new Map());
   const [searchStatus, setSearchStatus] = useState<ContentAcquisitionController<Item, Selection>['searchStatus']>('idle');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isImportingLocal, setIsImportingLocal] = useState(false);
@@ -65,8 +57,6 @@ export function useContentAcquisitionState<
   const runtimeEpochRef = useRef(0);
   const initialFiltersRef = useRef(initialFilters);
   initialFiltersRef.current = initialFilters;
-  const checkedRef = useRef<ReadonlySet<string>>(new Set());
-  const selectionsRef = useRef<ReadonlyMap<string, Selection>>(new Map());
   const installingRef = useRef(false);
   const importingLocalRef = useRef(false);
   const lastMutationRef = useRef<'catalog' | 'local' | null>(null);
@@ -74,16 +64,6 @@ export function useContentAcquisitionState<
 
   const runtimeKey = contentRuntimeKey(runtime);
   const previousRuntimeKeyRef = useRef(runtimeKey);
-
-  const publishChecked = useCallback((next: ReadonlySet<string>) => {
-    checkedRef.current = next;
-    setCheckedIds(next);
-  }, []);
-
-  const publishSelections = useCallback((next: ReadonlyMap<string, Selection>) => {
-    selectionsRef.current = next;
-    setSelections(next);
-  }, []);
 
   const clearSelection = useCallback(() => {
     selectionEpochRef.current += 1;
@@ -112,15 +92,6 @@ export function useContentAcquisitionState<
       selectionGenerations.clear();
     };
   }, []);
-
-  useEffect(() => {
-    if (debounceMs <= 0) {
-      setDebouncedQuery(query);
-      return;
-    }
-    const timeoutId = window.setTimeout(() => setDebouncedQuery(query), debounceMs);
-    return () => window.clearTimeout(timeoutId);
-  }, [debounceMs, query]);
 
   const executeSearch = useCallback(async (page: number, append: boolean) => {
     const requestRuntime = runtimeRef.current;
@@ -166,7 +137,7 @@ export function useContentAcquisitionState<
     lastMutationRef.current = null;
     setOutcome(null);
     setError(null);
-  }, [clearSelection]);
+  }, [clearSelection, setQueryState]);
 
   const setFilter = useCallback((key: string, value: string) => {
     if (installingRef.current || importingLocalRef.current) return;
@@ -227,7 +198,7 @@ export function useContentAcquisitionState<
         });
       }
     }
-  }, [adapter, filters, publishChecked, publishSelections]);
+  }, [adapter, checkedRef, filters, publishChecked, publishSelections, selectionsRef]);
 
   const applyOutcome = useCallback((nextOutcome: AcquisitionOutcome) => {
     setOutcome(
@@ -241,7 +212,7 @@ export function useContentAcquisitionState<
     );
     publishSelections(nextSelections);
     publishChecked(new Set(nextSelections.keys()));
-  }, [publishChecked, publishSelections]);
+  }, [publishChecked, publishSelections, selectionsRef]);
 
   const install = useCallback(async (requestedSelections: readonly Selection[]) => {
     if (installingRef.current || importingLocalRef.current || requestedSelections.length === 0) return null;
@@ -270,7 +241,7 @@ export function useContentAcquisitionState<
       return resolved ? [resolved] : [];
     });
     return install(ready);
-  }, [install]);
+  }, [checkedRef, install, selectionsRef]);
 
   const loadNextPage = useCallback(async () => {
     if (nextPage === null || searchStatus === 'loading' || searchStatus === 'loading-more') return;
@@ -321,7 +292,7 @@ export function useContentAcquisitionState<
     setSearchStatus('idle');
     setError(null);
     setOutcome(null);
-  }, [clearSelection, initialFilters, initialQuery]);
+  }, [clearSelection, initialFilters, initialQuery, setDebouncedQuery, setQueryState]);
 
   return {
     query,

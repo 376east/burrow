@@ -41,9 +41,9 @@ export class JavaManager {
     patchUndiciThrowOnError();
     const {
       fetchJavaRuntimeManifest,
-      installJavaRuntimeTask,
       JavaRuntimeTargetType,
     } = await import('@xmcl/installer');
+    const { installJavaRuntimeTask } = await import('../runtime/installerTasks');
     let runtimeDir: string;
     let targetCandidates: Array<JavaRuntimeTargetType | string>;
 

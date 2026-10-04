@@ -9,6 +9,7 @@ vi.mock('../scenarios', () => ({
 }));
 
 import { ManualVerificationApp } from '../ManualVerificationApp';
+import { CLOSEOUT_VIEWS } from '../views';
 
 function renderView(view: string) {
   window.history.replaceState({}, '', `?view=${view}`);
@@ -20,8 +21,9 @@ describe('ManualVerificationApp viewport containment', () => {
     window.history.replaceState({}, '', '/');
   });
 
-  it('bounds the viewport only for the provider proof routes with an element scroll owner', () => {
-    const { container } = renderView('phase-41-surfaces-en');
+  it.each([...CLOSEOUT_VIEWS.map((view) => view.id), 'phase-41-surfaces-en', 'phase-41-surfaces-ru'])(
+    'contains %s and its fixed modal backdrop within the product viewport', (view) => {
+    const { container } = renderView(view);
 
     expect(container.firstElementChild?.className).toContain('h-screen');
     expect(container.querySelector('main')?.className).toContain('overflow-hidden');

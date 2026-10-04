@@ -1,4 +1,5 @@
-import { installTask as installMinecraftTask, type MinecraftVersion } from '@xmcl/installer';
+import type { MinecraftVersion } from '@xmcl/installer';
+import { installTask as installMinecraftTask } from './installerTasks';
 import type { TaskProgressData } from '@shared/types';
 import type { DownloadProvider } from '../mirrors/providers';
 import { RuntimeDownloadService } from './downloadService';

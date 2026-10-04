@@ -1,5 +1,5 @@
 import type { Task } from '@xmcl/task';
-import { installNeoForgedTask } from '@xmcl/installer';
+import { installNeoForgedTask } from '../runtime/installerTasks';
 import type { DownloadProvider } from '../mirrors/providers';
 import type { TaskProgressData } from './types';
 

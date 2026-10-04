@@ -48,6 +48,24 @@ test.describe('current release-candidate closeout screenshots', () => {
         `,
       });
       await page.waitForTimeout(150);
+      // Closeout routes model one launcher window, including fixed modal backdrops.
+      expect(await page.evaluate(() => document.documentElement.scrollHeight))
+        .toBeLessThanOrEqual(getViewport(view.viewport).height);
+
+      // DOM readiness alone does not prove that the screenshot contains the evidence.
+      const proofHeadings = view.id === 'phase-24-modpacks-closeout'
+        ? ['Alpha Pack']
+        : view.id === 'phase-24-degraded-closeout'
+          ? ['Unable to search right now', 'Failed to load screenshots.']
+          : [];
+      for (const name of proofHeadings) {
+        const heading = page.getByRole('heading', { name, exact: true });
+        await expect(heading).toBeVisible();
+        await expect(heading).toBeInViewport({ ratio: 1 });
+      }
+      for (const closeout of PLAYWRIGHT_CLOSEOUT_VIEWS) {
+        await expect(page.getByRole('link', { name: closeout.label, exact: true })).toBeVisible();
+      }
 
       for (const forbidden of view.forbidText ?? []) {
         await expect(page.locator('body')).not.toContainText(forbidden);

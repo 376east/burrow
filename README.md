@@ -2,7 +2,7 @@
 
 Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
 
-<p><img src="docs/badges/status.svg" alt="Статус: в разработке" height="24"> <img src="docs/badges/stack.svg" alt="Стек: Electron · React · TypeScript" height="24"> <img src="docs/badges/mode.svg" alt="Запуск: локально" height="24"></p>
+<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-1.0.0--next.7-blue?style=flat" alt="version: 1.0.0-next.7"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next" alt="CI: live workflow status"></a></p>
 
 **[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Запуск](#запуск) · [Архитектура](#архитектура) · [План](PLAN.md) · [Для агента](AGENTS.md)**
 
@@ -65,11 +65,11 @@ flowchart LR
 
 ## Статус и ограничения
 
-Текущая версия **1.0.0-next.6**, стадия **preview, в разработке**: [package.json](package.json), [PLAN](PLAN.md).
+Текущая версия **1.0.0-next.7**, стадия **preview, в разработке**: [package.json](package.json), [PLAN](PLAN.md).
 
 Это реализованные пути в коде, не обещание совместимости со всеми играми, модами и роутерами. Демо использует синтетические сборки без запуска Minecraft. Последний локальный smoke установщика Next выполнен на Windows; macOS/Linux требуют проверки этой версии. Microsoft-вход отсутствует, Quilt не поддерживается. [Остальные ограничения](docs/ru/known-issues.md).
 
-На 04.10.2026 production audit сообщает high advisory в цепочке `http-cache-semantics → @xmcl/file-transfer → @xmcl/installer`. Поэтому полный `npm run verify` пока не зелёный. Миграция должна сохранить хеш-проверки загрузок: [PLAN](PLAN.md#ближайшие-задачи).
+Цепочка XMCL обновлена: локальный production audit на 04.10.2026 сообщает 0 уязвимостей. Проверки целостности и отмены выполняются на локальном HTTP-стенде; это не подтверждает установку всех игровых версий. [Исходник и поправки пакета](vendor/README.md), [проверки загрузок](electron/services/runtime/__tests__/installerIntegrity.fixture.test.ts), [живой CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml).
 
 AI/LLM-функций в приложении нет. Инструкции, фильтры и проверки выполняются обычной логикой; генерация иллюстрации и озвучки используется только при подготовке материалов: [PLAN](PLAN.md).
 

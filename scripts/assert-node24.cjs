@@ -26,7 +26,10 @@ function readCommit(cwd) {
 }
 
 function readNpmVersion(cwd) {
-  return childProcess.execFileSync('npm', ['--version'], {
+  const npmCli = process.env.npm_execpath
+  const command = npmCli ? process.execPath : 'npm'
+  const args = npmCli ? [npmCli, '--version'] : ['--version']
+  return childProcess.execFileSync(command, args, {
     cwd,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],

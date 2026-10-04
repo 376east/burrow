@@ -1,3 +1,5 @@
+import { translateWithFallback, type ThemeTranslator } from './themePresetTranslation';
+import { normalizeThemeConfig } from './normalizeThemeConfig';
 import type { AccentColor, CustomThemeConfig, Theme, ThemePresetId } from './types';
 
 export interface ThemePreset {
@@ -9,69 +11,12 @@ export interface ThemePreset {
     themes: Record<Theme, CustomThemeConfig>;
 }
 
-type ThemeTranslator = (key: string, params?: Record<string, string | number>) => string;
-
-function translateWithFallback(
-    t: ThemeTranslator,
-    key: string,
-    fallback: string,
-    params?: Record<string, string | number>,
-): string {
-    const translated = t(key, params);
-    if (translated !== key) {
-        return translated;
-    }
-
-    if (!params) {
-        return fallback;
-    }
-
-    return Object.entries(params).reduce(
-        (text, [paramKey, value]) => text.replace(new RegExp(`{{${paramKey}}}`, 'g'), String(value)),
-        fallback,
-    );
-}
-
 function createPresetColors(colors: NonNullable<CustomThemeConfig['colors']>): CustomThemeConfig {
     return { colors };
 }
 
 function createPresetConfig(config: CustomThemeConfig): CustomThemeConfig {
     return config;
-}
-
-function normalizeThemeConfig(config: CustomThemeConfig, options?: { includeBrand?: boolean }): string {
-    const colors = config.colors
-        ? Object.fromEntries(
-            Object.entries(config.colors)
-                .filter(([, value]) => Boolean(value))
-                .sort(([left], [right]) => left.localeCompare(right))
-        )
-        : undefined;
-
-    const background = config.background
-        ? Object.fromEntries(
-            Object.entries(config.background)
-                .filter(([, value]) => value !== undefined)
-                .sort(([left], [right]) => left.localeCompare(right))
-        )
-        : undefined;
-
-    const brand = options?.includeBrand === false || !config.brand
-        ? undefined
-        : config.brand
-        ? Object.fromEntries(
-            Object.entries(config.brand)
-                .filter(([, value]) => Boolean(value))
-                .sort(([left], [right]) => left.localeCompare(right))
-        )
-        : undefined;
-
-    return JSON.stringify({
-        ...(colors ? { colors } : {}),
-        ...(background ? { background } : {}),
-        ...(brand ? { brand } : {}),
-    });
 }
 
 export const THEME_PRESETS: ThemePreset[] = [

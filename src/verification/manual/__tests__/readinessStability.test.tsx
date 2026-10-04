@@ -11,6 +11,7 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.clearAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe('manual verification readiness', () => {
@@ -67,6 +68,27 @@ describe('manual verification readiness', () => {
     expect(close).toHaveBeenCalledWith(0);
     unsubscribeLog();
     unsubscribeClose();
+  });
+
+  it.each(['phase-24-modpacks-closeout', 'phase-24-locale-en', 'phase-24-locale-ru'] satisfies ManualVerificationView[])(
+    'publishes %s readiness from visible headings and loaded fixture content', async (view) => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    window.history.replaceState({}, '', `?view=${view}`);
+    seedManualVerificationStorage(view);
+    installManualVerificationEnvironment();
+    const onReady = vi.fn();
+
+    render(<ManualVerificationScenarios view={view} onReady={onReady} />);
+
+    await waitFor(() => {
+      const isRussian = view === 'phase-24-locale-ru';
+      expect(screen.getAllByRole('heading', { name: isRussian ? 'Найти сборки' : 'Discover modpacks' })).toHaveLength(2);
+      if (view !== 'phase-24-modpacks-closeout') {
+        expect(screen.getByRole('dialog', { name: isRussian ? 'Датапаки для мира Alpha World' : 'Datapacks for Alpha World' })).toBeTruthy();
+      }
+      expect(screen.getByRole('heading', { name: 'Alpha Pack' })).toBeTruthy();
+      expect(onReady).toHaveBeenCalledTimes(1);
+    }, { timeout: 4000 });
   });
 
   it('publishes degraded closeout readiness from the current visible error copy', async () => {

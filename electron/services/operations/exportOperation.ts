@@ -1,6 +1,6 @@
+import { digestFile, publishArchiveNoReplace, fsyncDirectory, validateClosedArchive } from './archivePublication';
 import fs from 'node:fs';
 import path from 'node:path';
-import { createHash } from 'node:crypto';
 import { assertAbsolutePath, assertChildName, resolvePathWithinRoot } from '../../security/pathGuards';
 import type { InstanceCommand } from '../../domains/instances/instanceTypes';
 import { getModpackDir, resolveLauncherRootPath } from '../instances/paths';
@@ -254,42 +254,6 @@ function recoverArchiveExport(context: OperationContext): OperationResult {
   // Keep every artifact intact for explicit user recovery.
   void context;
   return { status: 'recovery-required', message: 'Archive export recovery requires manual verification' };
-}
-
-function digestFile(filePath: string): string {
-  return createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
-}
-
-/** Link+unlink gives no-replace publish semantics on the sibling filesystem. */
-function publishArchiveNoReplace(stagedPath: string, outputPath: string): void {
-  fs.linkSync(stagedPath, outputPath);
-  fsyncDirectory(path.dirname(outputPath));
-  fs.unlinkSync(stagedPath);
-  fsyncDirectory(path.dirname(stagedPath));
-}
-
-function fsyncDirectory(directory: string): void {
-  try {
-    const descriptor = fs.openSync(directory, 'r');
-    try { fs.fsyncSync(descriptor); } finally { fs.closeSync(descriptor); }
-  } catch (error) {
-    const code = (error as NodeJS.ErrnoException).code;
-    if (!['EINVAL', 'ENOTSUP', 'EPERM', 'EISDIR'].includes(code ?? '')) throw error;
-  }
-}
-
-function validateClosedArchive(stagedPath: string): void {
-  const stats = fs.statSync(stagedPath);
-  if (!stats.isFile() || stats.size === 0) throw new Error('Staged archive output is invalid');
-  const descriptor = fs.openSync(stagedPath, 'r');
-  try {
-    const header = Buffer.alloc(4);
-    if (fs.readSync(descriptor, header, 0, header.length, 0) !== header.length || !header.subarray(0, 2).equals(Buffer.from('PK'))) {
-      throw new Error('Staged archive output is invalid');
-    }
-  } finally {
-    fs.closeSync(descriptor);
-  }
 }
 
 function throwIfCancelled(context: OperationContext): void {

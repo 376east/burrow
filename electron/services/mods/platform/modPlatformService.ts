@@ -1,8 +1,10 @@
+import { pickPreferredMinecraftVersion, isGuidedContentType, readPreviewContents, downloadPreviewArchive, createGuidedContentInstallIssue, createGuidedContentInstallResult, validateGuidedContentArchive, getGuidedContentFailureMessage } from './contentArchive';
+export { classifyPackPath, PREVIEW_ARCHIVE_MAX_BYTES } from './contentArchive';
 import path from 'node:path';
 import os from 'node:os';
 import { randomUUID } from 'node:crypto';
 import fs from 'fs-extra';
-import { download } from '@xmcl/file-transfer';
+import { DownloadManager } from '../../download/downloadManager';
 import { ModrinthV2Client } from '@xmcl/modrinth';
 import { CurseforgeV1Client, type File as CurseforgeFile, type Mod as CurseforgeMod } from '@xmcl/curseforge';
 import type { InstanceApplication } from '../../../domains/instances/instanceApplication';
@@ -13,15 +15,8 @@ import { ensureDir } from './fsUtils';
 import { CF_SORT_POPULARITY, CF_SORT_LAST_UPDATED, CF_SORT_NAME, mapLoaderToCurseforge, mapLoaderToModrinth } from './loaderMapping';
 import { pickPrimaryModrinthFile } from './modrinthUtils';
 import { InstanceManifestManager } from '../../instances/manifestManager';
-import { openValidatedZip } from '../../../security/archivePolicy';
-import { fetchPublicHttpsUrl } from '../../../security/remoteUrls';
 import { assertChildName, resolvePathWithinRoot } from '../../../security/pathGuards';
-import { parseCurseForgeManifest } from '../../modpacks/parsers/curseforgeParser';
-import { parseModrinthManifest } from '../../modpacks/parsers/modrinthParser';
 import {
-  type GuidedContentInstallIssue,
-  type GuidedContentInstallIssueStatus,
-  type GuidedContentInstallResult,
   isManifestManagedContentType,
   type ModInstallResult,
   type ModSearchQuery,
@@ -51,87 +46,6 @@ export interface ModPlatformContentPort {
   getModpackDir(rootPath: string, instanceId: string): string;
 }
 
-function isReleaseMinecraftVersion(value: string | null | undefined): value is string {
-  return typeof value === 'string' && /^\d+\.\d+(?:\.\d+)?$/.test(value.trim());
-}
-
-function compareMinecraftReleaseVersions(left: string, right: string): number {
-  const leftParts = left.split('.').map((part) => Number.parseInt(part, 10));
-  const rightParts = right.split('.').map((part) => Number.parseInt(part, 10));
-  const maxLength = Math.max(leftParts.length, rightParts.length);
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const leftPart = leftParts[index] ?? 0;
-    const rightPart = rightParts[index] ?? 0;
-
-    if (leftPart !== rightPart) {
-      return rightPart - leftPart;
-    }
-  }
-
-  return 0;
-}
-
-function pickPreferredMinecraftVersion(values: Array<string | null | undefined>): string | undefined {
-  const versions = Array.from(
-    new Set(values.map((value) => value?.trim()).filter(isReleaseMinecraftVersion)),
-  );
-
-  versions.sort(compareMinecraftReleaseVersions);
-  return versions[0];
-}
-
-function isGuidedContentType(contentType: ModInstallRequest['contentType']): contentType is 'resourcepack' | 'shader' {
-  return contentType === 'resourcepack' || contentType === 'shader';
-}
-
-const DEFAULT_OVERRIDE_ROOTS = ['overrides', 'client-overrides', 'server-overrides'];
-
-export function classifyPackPath(value: string | undefined, overrideRoots: readonly string[] = DEFAULT_OVERRIDE_ROOTS): 'mod' | 'resourcepack' | 'shader' | 'other' {
-  const normalized = value?.replace(/\\/g, '/') ?? '';
-  const root = overrideRoots.find((candidate) => normalized.toLowerCase().startsWith(`${candidate.toLowerCase()}/`));
-  const path = (root ? normalized.slice(root.length + 1) : normalized).toLowerCase();
-  if (path.startsWith('mods/')) return 'mod';
-  if (path.startsWith('resourcepacks/')) return 'resourcepack';
-  if (path.startsWith('shaderpacks/')) return 'shader';
-  return 'other';
-}
-
-export const PREVIEW_ARCHIVE_MAX_BYTES = 32 * 1024 * 1024;
-const PREVIEW_ARCHIVE_TIMEOUT_MS = 20_000;
-
-async function downloadPreviewArchive(url: string, destination: string, label: string): Promise<void> {
-  const response = await fetchPublicHttpsUrl(url, label, { signal: AbortSignal.timeout(PREVIEW_ARCHIVE_TIMEOUT_MS) });
-  if (!response.ok || !response.body) throw new Error(`${label} could not be downloaded (${response.status})`);
-  const length = Number(response.headers.get('content-length'));
-  if (Number.isFinite(length) && length > PREVIEW_ARCHIVE_MAX_BYTES) {
-    await response.body.cancel();
-    throw new Error(`${label} exceeds the ${PREVIEW_ARCHIVE_MAX_BYTES / (1024 * 1024)} MB preview limit`);
-  }
-  const handle = await fs.promises.open(destination, 'w');
-  let received = 0;
-  try {
-    const reader = response.body.getReader();
-    try {
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        received += value.byteLength;
-        if (received > PREVIEW_ARCHIVE_MAX_BYTES) {
-          await reader.cancel();
-          throw new Error(`${label} exceeds the ${PREVIEW_ARCHIVE_MAX_BYTES / (1024 * 1024)} MB preview limit`);
-        }
-        await handle.writeFile(value);
-      }
-    } finally {
-      await reader.cancel().catch(() => undefined);
-      reader.releaseLock();
-    }
-  } finally {
-    await handle.close();
-  }
-}
-
 export class ModPlatformService {
   private readonly modrinth: ModrinthV2Client;
   private readonly curseforge: CurseforgeV1Client | null;
@@ -148,94 +62,6 @@ export class ModPlatformService {
   }
 
   private manifestManager = new InstanceManifestManager();
-
-  private createGuidedContentInstallIssue(
-    fileName: string,
-    status: GuidedContentInstallIssueStatus,
-    message: string,
-  ): GuidedContentInstallIssue {
-    return { fileName, status, message };
-  }
-
-  private createGuidedContentInstallResult(
-    status: GuidedContentInstallResult['status'],
-    details: Partial<Omit<GuidedContentInstallResult, 'status' | 'issues'>> = {},
-    issues: GuidedContentInstallIssue[] = [],
-  ): GuidedContentInstallResult {
-    return {
-      status,
-      destination: details.destination,
-      filename: details.filename,
-      usedUrl: details.usedUrl,
-      issues,
-    };
-  }
-
-  private async hasResourcePackPayload(filePath: string): Promise<boolean> {
-    try {
-      if (!filePath.toLowerCase().endsWith('.zip')) {
-        return false;
-      }
-
-      const zip = await openValidatedZip(filePath, 'Mod archive');
-      try {
-        const mcmetaEntry = zip.getEntry('pack.mcmeta');
-        if (!mcmetaEntry) return false;
-
-        const content = JSON.parse((await zip.getData(mcmetaEntry, 1024 * 1024)).toString('utf8')) as {
-          pack?: { pack_format?: number };
-        };
-        return typeof content.pack?.pack_format === 'number';
-      } finally {
-        zip.close();
-      }
-    } catch {
-      return false;
-    }
-  }
-
-  private async hasShaderPayload(filePath: string): Promise<boolean> {
-    try {
-      if (!filePath.toLowerCase().endsWith('.zip')) {
-        return false;
-      }
-
-      const zip = await openValidatedZip(filePath, 'Mod archive');
-      try {
-        return zip.getEntries().some((entry) => entry.fileName.startsWith('shaders/'));
-      } finally {
-        zip.close();
-      }
-    } catch {
-      return false;
-    }
-  }
-
-  private async validateGuidedContentArchive(
-    filePath: string,
-    fileName: string,
-    contentType: 'resourcepack' | 'shader',
-  ): Promise<GuidedContentInstallIssue | null> {
-    const isValid = contentType === 'resourcepack'
-      ? await this.hasResourcePackPayload(filePath)
-      : await this.hasShaderPayload(filePath);
-
-    if (isValid) {
-      return null;
-    }
-
-    const message = contentType === 'resourcepack'
-      ? 'The downloaded archive is missing a readable pack.mcmeta file.'
-      : 'The downloaded archive does not contain a shaders/ directory.';
-
-    return this.createGuidedContentInstallIssue(fileName, 'invalid-archive', message);
-  }
-
-  private getGuidedContentFailureMessage(contentType: 'resourcepack' | 'shader'): string {
-    return contentType === 'resourcepack'
-      ? 'Burrow could not download this resource pack into the current modpack.'
-      : 'Burrow could not download this shader pack into the current modpack.';
-  }
 
   public async searchMods(query: ModSearchQuery): Promise<ModSearchResult> {
     const sort = query.sort ?? 'popularity';
@@ -463,8 +289,8 @@ export class ModPlatformService {
 
       if (guidedContentType) {
         if (await fs.pathExists(destination)) {
-          return this.createGuidedContentInstallResult('duplicate', {}, [
-            this.createGuidedContentInstallIssue(
+          return createGuidedContentInstallResult('duplicate', {}, [
+            createGuidedContentInstallIssue(
               filename,
               'duplicate',
               guidedContentType === 'resourcepack'
@@ -482,14 +308,12 @@ export class ModPlatformService {
           await fs.remove(tempDestination);
         }
 
-        await download({
-          url: [primaryUrl, ...(fallbackUrls ?? [])],
-          destination: tempDestination,
-          validator: sha1 ? { algorithm: 'sha1', hash: sha1 } : undefined,
+        await DownloadManager.downloadSingle([primaryUrl, ...(fallbackUrls ?? [])], tempDestination, {
+          checksum: sha1 ? { algorithm: 'sha1', hash: sha1 } : undefined,
         });
 
         if (guidedContentType) {
-          const validationIssue = await this.validateGuidedContentArchive(
+          const validationIssue = await validateGuidedContentArchive(
             tempDestination,
             filename,
             guidedContentType,
@@ -497,11 +321,11 @@ export class ModPlatformService {
 
           if (validationIssue) {
             await fs.remove(tempDestination);
-            return this.createGuidedContentInstallResult('invalid-archive', {}, [validationIssue]);
+            return createGuidedContentInstallResult('invalid-archive', {}, [validationIssue]);
           }
 
           await fs.move(tempDestination, destination, { overwrite: false });
-          return this.createGuidedContentInstallResult(
+          return createGuidedContentInstallResult(
             'success',
             {
               destination,
@@ -517,11 +341,11 @@ export class ModPlatformService {
             await fs.remove(tempDestination);
           }
 
-          return this.createGuidedContentInstallResult('failure', {}, [
-            this.createGuidedContentInstallIssue(
+          return createGuidedContentInstallResult('failure', {}, [
+            createGuidedContentInstallIssue(
               filename,
               'failure',
-              this.getGuidedContentFailureMessage(guidedContentType),
+              getGuidedContentFailureMessage(guidedContentType),
             ),
           ]);
         }
@@ -946,32 +770,7 @@ export class ModPlatformService {
     try {
       const source = await this.resolveModpackArchive(request);
       await downloadPreviewArchive(source.url, archivePath, `${request.platform} modpack preview URL`);
-      const archive = await openValidatedZip(archivePath, `${request.platform} modpack preview`);
-      try {
-        const manifestName = request.platform === 'modrinth' ? 'modrinth.index.json' : 'manifest.json';
-        const manifestEntry = archive.getEntry(manifestName);
-        if (!manifestEntry) throw new Error(`${request.platform} modpack does not contain ${manifestName}`);
-        const manifest = request.platform === 'modrinth'
-          ? parseModrinthManifest((await archive.getData(manifestEntry, 8 * 1024 * 1024)).toString('utf8'))
-          : parseCurseForgeManifest((await archive.getData(manifestEntry, 8 * 1024 * 1024)).toString('utf8'));
-        const overrideRoots = Array.from(new Set(['overrides', 'client-overrides', 'server-overrides', manifest.overrides]
-          .filter((root): root is string => typeof root === 'string' && root.length > 0)
-          .map((root) => root.replace(/\\/g, '/').replace(/^\/+|\/+$/g, ''))));
-        const entries = manifest.files.map((file) => ({
-          kind: file.path ? classifyPackPath(file.path) : 'mod' as const,
-          label: file.path ?? `CurseForge project ${file.projectID ?? '?'} / file ${file.fileID ?? '?'}`,
-          required: file.required,
-        }));
-        for (const entry of archive.getEntries()) {
-          if (entry.fileName === manifestName || entry.fileName.endsWith('/')) continue;
-          const normalized = entry.fileName.replace(/\\/g, '/');
-          if (!overrideRoots.some((root) => normalized.toLowerCase().startsWith(`${root.toLowerCase()}/`))) continue;
-          entries.push({ kind: classifyPackPath(normalized, overrideRoots), label: normalized, required: true });
-        }
-        return { entries: entries.slice(0, 500), truncated: entries.length > 500 };
-      } finally {
-        archive.close();
-      }
+      return await readPreviewContents(archivePath, request);
     } finally {
       fs.rmSync(temporaryDirectory, { recursive: true, force: true });
     }

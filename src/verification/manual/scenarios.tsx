@@ -43,7 +43,6 @@ import MultiplayerPage from '../../components/MultiplayerPage';
 import { cn } from '../../utils/cn';
 import {
   CLOSEOUT_VIEWS,
-  CORE_VIEWS,
   GENERAL_VIEWS,
   LEGACY_VIEWS,
   type ManualVerificationView,
@@ -1270,7 +1269,7 @@ function Phase21BrowserDensityScenario({ onReady }: ManualVerificationScenarioPr
 function Phase24ModpacksCloseoutScenario({ onReady }: ManualVerificationScenarioProps) {
   useReadyByText(
     onReady,
-    ['Burrow', 'Modpack Browser', 'Alpha Pack', 'Modpacks closeout'],
+    ['Burrow', 'Discover modpacks', 'Alpha Pack', 'Modpacks closeout'],
     'Phase 24 modpacks closeout rendered inside the real shell with deterministic browse-state proof for final release review.',
   );
 
@@ -1842,7 +1841,7 @@ function Phase22LocaleEnScenario({ onReady }: ManualVerificationScenarioProps) {
 function Phase24LocaleEnScenario({ onReady }: ManualVerificationScenarioProps) {
   useReadyByText(
     onReady,
-    ['Burrow', 'Modpack Browser', 'Alpha Pack', 'Datapacks for Alpha World', 'English closeout pair'],
+    ['Burrow', 'Discover modpacks', 'Alpha Pack', 'Datapacks for Alpha World', 'English closeout pair'],
     'Phase 24 English locale closeout rendered inside the real shell with deterministic route and secondary-content proof.',
   );
 
@@ -1876,7 +1875,7 @@ function Phase24LocaleEnScenario({ onReady }: ManualVerificationScenarioProps) {
 function Phase24LocaleRuScenario({ onReady }: ManualVerificationScenarioProps) {
   useReadyByText(
     onReady,
-    ['Burrow', 'Браузер модпаков', 'Alpha Pack', 'Датапаки для мира Alpha World', 'Russian closeout pair'],
+    ['Burrow', 'Найти сборки', 'Alpha Pack', 'Датапаки для мира Alpha World', 'Russian closeout pair'],
     'Phase 24 Russian locale closeout rendered inside the real shell with deterministic route and secondary-content proof.',
   );
 
@@ -1955,7 +1954,7 @@ function Phase24DegradedCloseoutScenario({ onReady }: ManualVerificationScenario
           title="Representative degraded-state closeout"
           detail="This closeout view pairs a route-level catalog failure with a secondary-content load failure inside the real shell. It is meant to prove the shipped degraded-state language on the same launcher chrome used by success-path closeout views."
         />
-        <div className="grid min-h-0 gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(22rem,0.9fr)]">
+        <div className="grid min-h-0 gap-4 xl:grid-cols-2">
           <div className="min-h-0 overflow-hidden rounded-3xl border border-border/70 bg-card/60">
             <AddModPage modpackId="alpha" onBack={() => undefined} />
           </div>
@@ -2247,59 +2246,4 @@ export function ManualVerificationScenarios(props: { view: ManualVerificationVie
   return <OverviewScenario />;
 }
 
-export function ManualVerificationNavigation(props: { activeView: ManualVerificationView }) {
-  const sections: Array<{ title: string; views: ManualVerificationViewMeta[] }> = [
-    { title: 'Closeout', views: CLOSEOUT_VIEWS },
-    { title: 'Shared', views: GENERAL_VIEWS },
-    { title: 'Legacy', views: LEGACY_VIEWS },
-  ];
-
-  return (
-    <nav className="flex flex-col gap-3">
-      <div className="flex flex-wrap gap-2">
-        {CORE_VIEWS.filter((view) => view.group === 'hub').map((view) => {
-          const isActive = props.activeView === view.id;
-          return (
-            <a
-              key={view.id}
-              href={`?view=${view.id}`}
-              className={[
-                'rounded-full border px-3 py-1.5 text-sm transition-colors',
-                isActive
-                  ? 'border-border-active bg-card text-foreground'
-                  : 'border-border/70 text-secondary hover:border-border-active hover:text-foreground',
-              ].join(' ')}
-            >
-              {view.label}
-            </a>
-          );
-        })}
-      </div>
-
-      {sections.map((section) => (
-        <div key={section.title} className="space-y-2">
-          <div className="kicker-label">{section.title}</div>
-          <div className="flex flex-wrap gap-2">
-            {section.views.map((view) => {
-              const isActive = props.activeView === view.id;
-              return (
-                <a
-                  key={view.id}
-                  href={`?view=${view.id}`}
-                  className={[
-                    'rounded-full border px-3 py-1.5 text-sm transition-colors',
-                    isActive
-                      ? 'border-border-active bg-card text-foreground'
-                      : 'border-border/70 text-secondary hover:border-border-active hover:text-foreground',
-                  ].join(' ')}
-                >
-                  {view.label}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </nav>
-  );
-}
+export { ManualVerificationNavigation } from './ManualVerificationNavigation';
