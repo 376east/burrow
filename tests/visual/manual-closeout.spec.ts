@@ -1,5 +1,13 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test as base, type Page } from '@playwright/test';
 import { PLAYWRIGHT_CLOSEOUT_VIEWS } from '../../src/verification/manual/views';
+
+// Use software compositing for backdrop filters instead of runner-dependent GPU paths.
+// Keep the configured executable and other launch settings for this closeout suite.
+const test = base.extend({
+  launchOptions: [async ({ launchOptions }, use) => {
+    await use({ ...launchOptions, args: [...(launchOptions.args ?? []), '--disable-gpu'] });
+  }, { scope: 'worker' }],
+});
 
 function getViewport(viewport: 'desktop' | 'wide' | undefined) {
   if (viewport === 'wide') {
