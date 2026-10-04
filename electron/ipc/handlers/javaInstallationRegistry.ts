@@ -70,4 +70,3 @@ export class JavaInstallationRegistry {
       && detection.majorVersion > 0;
   }
 }
-
