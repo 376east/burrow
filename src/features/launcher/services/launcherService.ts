@@ -35,10 +35,10 @@ function isRecentLaunch(value: unknown): value is RecentLaunch {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as RecentLaunch;
   return (
-    typeof candidate.versionId === 'string'
+    typeof candidate.versionId === 'string' && candidate.versionId.length > 0
     && typeof candidate.nickname === 'string'
-    && typeof candidate.timestamp === 'number'
-    && typeof candidate.launchVersion === 'string'
+    && typeof candidate.timestamp === 'number' && Number.isFinite(candidate.timestamp)
+    && typeof candidate.launchVersion === 'string' && candidate.launchVersion.length > 0
     && ['vanilla', 'forge', 'fabric', 'neoforge'].includes(candidate.loader)
   );
 }
@@ -51,8 +51,9 @@ export function loadRecentLaunch(instanceId: string): RecentLaunch | null {
       if (raw) {
         try {
           const parsed = JSON.parse(raw) as unknown;
-          if (parsed && typeof parsed === 'object' && typeof (parsed as RecentLaunch).timestamp === 'number') {
-            saveRecentLaunch(instanceId, parsed as RecentLaunch);
+          if (isRecentLaunch(parsed)) {
+            // Remove the source only after its replacement was persisted.
+            localStorage.setItem(RECENT_LAUNCH_STORAGE_PREFIX + instanceId, raw);
             localStorage.removeItem(CLASSIC_RECENT_LAUNCH_LEGACY_KEY);
           }
         } catch {

@@ -4,6 +4,16 @@
 
 This file summarizes current product versions. Git history remains the detailed development record, and [GitHub Releases](https://github.com/malyarq/burrow/releases) is the canonical source for downloadable artifacts.
 
+## Unreleased
+
+### Русский
+
+- История последнего запуска Classic сохраняется при отказе хранилища во время переноса; повреждённые старые записи не публикуются как действительные.
+
+### English
+
+- Classic last-launch history survives a storage failure during migration; malformed legacy entries are not published as valid launches.
+
 ## [1.0.0-next.7] - 2026-10-04
 
 ### Русский
