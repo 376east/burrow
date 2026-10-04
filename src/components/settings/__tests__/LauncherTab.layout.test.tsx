@@ -33,10 +33,18 @@ vi.mock('../tabs/game/MinecraftPathSection', () => ({
 
 describe('LauncherTab layout', () => {
   it('keeps the runtime selector on the opaque Java runtime boundary', async () => {
-    const source = await readFile(`${process.cwd()}/src/components/settings/tabs/game/RuntimeSection.tsx`, 'utf8');
-
-    expect(source).toMatch(/javaRuntimeIPC/);
-    expect(source).not.toMatch(/setJavaPath|javaPath|path:/);
+    const [component, selection] = await Promise.all([
+      readFile(`${process.cwd()}/src/components/settings/tabs/game/RuntimeSection.tsx`, 'utf8'),
+      readFile(`${process.cwd()}/src/components/settings/tabs/game/useJavaRuntimeSelection.ts`, 'utf8'),
+    ]);
+    expect(component).toMatch(/useJavaRuntimeSelection\(/);
+    expect(selection).toMatch(/javaRuntimeIPC\.scan\(/);
+    expect(selection).toMatch(/javaRuntimeIPC\.get\(/);
+    expect(selection).toMatch(/javaRuntimeIPC\.select\(/);
+    for (const source of [component, selection]) {
+      expect(source).not.toMatch(/setJavaPath|javaPath|path:/);
+      expect(source).not.toMatch(/window\.api/);
+    }
   });
 
   it('keeps launcher controls inside the shared control family when embedded in SettingsPage', () => {
