@@ -100,6 +100,61 @@ describe('java runtime IPC handlers', () => {
     await expect(scan?.({}, {})).resolves.toHaveLength(64);
   });
 
+  it('shares overlapping scans so an unmounted caller cannot invalidate the current IDs', async () => {
+    const deps = createDependencies();
+    let complete!: (value: Awaited<ReturnType<typeof deps.scanJava>>) => void;
+    deps.scanJava.mockImplementationOnce(() => new Promise((resolve) => { complete = resolve; }));
+    registerJavaRuntimeHandlers(deps as never);
+    const scan = mocked.handlers.get(JAVA_RUNTIME_CHANNELS.scan)!;
+    const first = scan({}, {});
+    await vi.waitFor(() => expect(deps.scanJava).toHaveBeenCalledTimes(1));
+    const second = scan({}, {});
+    await Promise.resolve();
+    expect(deps.scanJava).toHaveBeenCalledTimes(1);
+    complete([{ path: '/private/java/bin/java', version: '21.0.6', majorVersion: 21, valid: true, arch: 'x64' }]);
+    const [oldCaller, currentCaller] = await Promise.all([first, second]);
+    expect(oldCaller).toEqual(currentCaller);
+    await expect(mocked.handlers.get(JAVA_RUNTIME_CHANNELS.select)?.({}, {
+      instanceId: 'alpha', installationId: 'installation-1',
+    })).resolves.toEqual({ status: 'selected' });
+  });
+
+  it('allows a new scan after a shared failure', async () => {
+    const deps = createDependencies();
+    let fail!: (error: Error) => void;
+    deps.scanJava.mockImplementationOnce(() => new Promise((_resolve, reject) => { fail = reject; }));
+    registerJavaRuntimeHandlers(deps as never);
+    const scan = mocked.handlers.get(JAVA_RUNTIME_CHANNELS.scan)!;
+    const first = scan({}, {});
+    await vi.waitFor(() => expect(deps.scanJava).toHaveBeenCalledTimes(1));
+    const second = scan({}, {});
+    await Promise.resolve();
+    const failures = Promise.all([
+      expect(first).rejects.toThrow('Java runtime scan is unavailable.'),
+      expect(second).rejects.toThrow('Java runtime scan is unavailable.'),
+    ]);
+    fail(new Error('scanner failed'));
+    await failures;
+    await expect(scan({}, {})).resolves.toHaveLength(1);
+    expect(deps.scanJava).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not share pending scans between roots', async () => {
+    const deps = createDependencies();
+    let complete!: (value: Awaited<ReturnType<typeof deps.scanJava>>) => void;
+    deps.scanJava.mockImplementationOnce(() => new Promise((resolve) => { complete = resolve; }));
+    deps.createInstallationId.mockReturnValueOnce('root-b').mockReturnValueOnce('root-a');
+    registerJavaRuntimeHandlers(deps as never);
+    const scan = mocked.handlers.get(JAVA_RUNTIME_CHANNELS.scan)!;
+    const first = scan({}, {});
+    await vi.waitFor(() => expect(deps.scanJava).toHaveBeenCalledTimes(1));
+    deps.getDefaultInstanceRoot.mockResolvedValueOnce(rootB);
+    await expect(scan({}, {})).resolves.toEqual([expect.objectContaining({ id: 'root-b' })]);
+    complete([{ path: '/private/java/bin/java', version: '21.0.6', majorVersion: 21, valid: true, arch: 'x64' }]);
+    await expect(first).resolves.toEqual([expect.objectContaining({ id: 'root-a' })]);
+    expect(deps.scanJava).toHaveBeenCalledTimes(2);
+  });
+
   it('rejects forged payloads, stale scan IDs, and IDs issued for another root before config mutation', async () => {
     const deps = createDependencies();
     deps.createInstallationId

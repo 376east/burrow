@@ -15,6 +15,7 @@ This file summarizes current product versions. Git history remains the detailed 
 - Настройки Java показывают сбой поиска или выбора и позволяют повторить попытку; ошибка чтения сохранённого выбора не маскируется доступным режимом «Авто».
 - Принудительный перезапуск доступен в общей строке статуса при игре из Библиотеки и на вспомогательных экранах; менять режим запуска ради восстановления не нужно.
 - Burrow Link использует полный числовой порт, показанный в поле (например, `1e3` означает 1000); неверный порт отклоняется до изменения конфигурации сборки или запуска сети.
+- Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
 
@@ -25,6 +26,7 @@ This file summarizes current product versions. Git history remains the detailed 
 - Java settings show scan/selection failures and allow retry; failure to read the saved choice no longer presents Auto as an available confirmed setting.
 - Force restart is available in the shared status strip for Library sessions and supporting screens without switching launch modes.
 - Burrow Link uses the full numeric input port (`1e3` means 1000); invalid ports are rejected before changing instance configuration or starting networking.
+- Overlapping Java scans across navigation share their result so a late response cannot invalidate the available selection.
 
 ## [1.0.0-next.7] - 2026-10-04
 
