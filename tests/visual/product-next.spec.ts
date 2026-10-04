@@ -3,6 +3,26 @@ import { expect, test, type Page } from '@playwright/test';
 const productNext = '/manual-verification.html?view=product-next&lang=en';
 const runtimeErrors = new WeakMap<Page, string[]>();
 
+for (const lang of ['en', 'ru']) {
+  test(`Product Next associates invalid port feedback with its field in ${lang}`, async ({ page }) => {
+    await page.goto(`/manual-verification.html?view=product-next&lang=${lang}`);
+    await page.getByTestId('next-nav-friends').click();
+    const field = page.getByRole('spinbutton');
+    await field.fill('0');
+    await field.blur();
+    await expect(field).toHaveAttribute('aria-invalid', 'true');
+    const errorId = await field.getAttribute('aria-describedby');
+    expect(errorId).toBeTruthy();
+    const description = await page.evaluate((id) => document.getElementById(id!)?.textContent, errorId);
+    expect(description).toBeTruthy();
+    await expect(field).toHaveAccessibleDescription(description!);
+    await field.fill('25565');
+    await field.blur();
+    await expect(field).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(field).not.toHaveAttribute('aria-describedby');
+  });
+}
+
 test.beforeEach(async ({ page }) => {
   const errors: string[] = [];
   runtimeErrors.set(page, errors);

@@ -13,10 +13,13 @@ export const Input: React.FC<InputProps> = ({
     containerClassName,
     label,
     error,
+    'aria-describedby': describedBy,
     ...props
 }) => {
     const generatedId = useId();
     const inputId = props.id ?? generatedId;
+    const errorId = `${generatedId}-error`;
+    const descriptionIds = [describedBy, error ? errorId : undefined].filter(Boolean).join(' ') || undefined;
 
     return (
         <div className={cn("flex flex-col gap-1.5 w-full", containerClassName)}>
@@ -33,10 +36,11 @@ export const Input: React.FC<InputProps> = ({
                     className
                 )}
                 aria-invalid={error ? true : undefined}
+                aria-describedby={descriptionIds}
                 {...props}
             />
             {error && (
-                <span className="text-xs text-red-500 font-medium">{error}</span>
+                <span id={errorId} className="text-xs text-red-500 font-medium">{error}</span>
             )}
         </div>
     );

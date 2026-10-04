@@ -11,12 +11,14 @@ This file summarizes current product versions. Git history remains the detailed 
 - История последнего запуска Classic сохраняется при отказе хранилища во время переноса; повреждённые старые записи не публикуются как действительные.
 - Принудительный перезапуск показывает ожидание и ошибку, допускает повторную попытку и не отправляет повторную остановку процесса при переходе между экранами.
 - Гайды больше не называют исправленный XMCL audit текущим блокером; пример проверки пакета соответствует Next.7.
+- Ошибки полей ввода и подсказки выбора связаны с полем для экранного диктора; внешние описания поля сохраняются.
 
 ### English
 
 - Classic last-launch history survives a storage failure during migration; malformed legacy entries are not published as valid launches.
 - Force restart shows pending and failure states, allows retry and shares a pending process-stop request across navigation.
 - Guides no longer list the resolved XMCL audit as a current blocker; the package smoke example now matches Next.7.
+- Input errors and select hints are associated with their controls for screen readers, preserving caller-provided descriptions.
 
 ## [1.0.0-next.7] - 2026-10-04
 

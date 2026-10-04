@@ -15,10 +15,14 @@ export const Select: React.FC<SelectProps> = ({
     error,
     className,
     children,
+    'aria-describedby': describedBy,
     ...props
 }) => {
     const generatedId = useId();
     const selectId = props.id ?? generatedId;
+    const descriptionId = `${generatedId}-description`;
+    const errorId = `${generatedId}-error`;
+    const descriptionIds = [describedBy, description ? descriptionId : undefined, error ? errorId : undefined].filter(Boolean).join(' ') || undefined;
 
     return (
         <div className={cn("flex flex-col gap-1.5", className?.match(/\bw-/) ? undefined : "w-full", className)}>
@@ -37,6 +41,7 @@ export const Select: React.FC<SelectProps> = ({
                         error && 'border-red-500 focus:border-red-500 focus-visible:ring-red-500/30'
                     )}
                     aria-invalid={error ? true : undefined}
+                    aria-describedby={descriptionIds}
                     {...props}
                 >
                     {children}
@@ -46,10 +51,10 @@ export const Select: React.FC<SelectProps> = ({
                 </div>
             </div>
             {description && (
-                <p className="text-xs text-muted">{description}</p>
+                <p id={descriptionId} className="text-xs text-muted">{description}</p>
             )}
             {error && (
-                <p className="text-xs text-red-500 font-medium">{error}</p>
+                <p id={errorId} className="text-xs text-red-500 font-medium">{error}</p>
             )}
         </div>
     );
