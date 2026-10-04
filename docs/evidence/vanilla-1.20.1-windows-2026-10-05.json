@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "b697efcaf63741e2eb2e1c569214378775515560",
+  "startedAt": "2026-10-04T23:10:12.968Z",
+  "platform": "Windows",
+  "node": "24.20.0",
+  "electron": "43.3.0",
+  "command": "node scripts/test-full.js --stage=vanilla --only=1.20.1 --provider=mojang --launch-smoke --evidence-dir=work/vanilla-2026-10-05",
+  "provider": "mojang",
+  "installation": {
+    "total": 1,
+    "okCount": 1,
+    "failCount": 0,
+    "results": [
+      {
+        "mcVersion": "1.20.1",
+        "ok": true,
+        "ms": 21019
+      }
+    ]
+  },
+  "launch": {
+    "requested": true,
+    "version": "1.20.1",
+    "ok": true,
+    "ms": 24148,
+    "signals": [
+      "render-backend",
+      "resources-ready"
+    ]
+  },
+  "readiness": "LWJGL/render backend and resource-ready log signals; 5-second hold without early exit",
+  "authentication": "Synthetic offline nickname and local authlib-injector compatibility endpoint; no user account",
+  "instanceState": "Synthetic canonical record through production LauncherManager",
+  "termination": {
+    "method": "intentional process stop after readiness hold",
+    "observedGameExitCode": 1,
+    "harnessExitCode": 0
+  },
+  "cleanup": {
+    "temporaryProfileRemoved": true,
+    "matchingJavaProcessesRemaining": 0
+  },
+  "notVerified": [
+    "visual main menu",
+    "world creation or gameplay",
+    "Microsoft or third-party account login",
+    "modloader installation or launch",
+    "two-device network",
+    "packaged NSIS startup",
+    "macOS or Linux",
+    "signing or release"
+  ]
+}
