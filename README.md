@@ -2,7 +2,7 @@
 
 Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
 
-<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-1.0.0--next.7-blue?style=flat" alt="version: 1.0.0-next.7"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=rebuild%2Fburrow-next" alt="CI: live workflow status"></a></p>
+<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-1.0.0--next.7-blue?style=flat" alt="version: 1.0.0-next.7"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
 
 **[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Запуск](#запуск) · [Архитектура](#архитектура) · [План](PLAN.md) · [Для агента](AGENTS.md)**
 
@@ -47,7 +47,7 @@ npm run dev
 
 [GitHub Releases](https://github.com/malyarq/burrow/releases/latest) содержит пакеты прежней линии. Они не являются актуальной Next-preview; старые релизы оставлены как архив. Локальная сборка без публикации: `npm run build -- --publish never`.
 
-Основная ветка GitHub - `rebuild/burrow-next`; `main` оставлена как legacy. [Архив и точная команда отката](docs/REPOSITORY.md).
+Основная ветка GitHub - `main`; прежняя версия сохранена в архивной ветке. [Архив и точная команда отката](docs/REPOSITORY.md).
 
 ## Архитектура
 
