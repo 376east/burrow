@@ -1,4 +1,6 @@
-import { AbortableTask, CancelledError, TaskState, type Task } from '@xmcl/task';
+import taskPackage, { type Task } from '@xmcl/task';
+
+const { AbortableTask, CancelledError, TaskState } = taskPackage;
 import type { MinecraftLocation, ResolvedVersion } from '@xmcl/core';
 import type {
   CompleteOptions, CompleteTrackerEvents, ForgeTrackerEvents, InstallForgeOptions,

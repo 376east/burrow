@@ -1,3 +1,7 @@
+import { execFile } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { promisify } from 'node:util';
+import ts from 'typescript';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CancelledError, TaskState } from '@xmcl/task';
 import type { ResolvedVersion } from '@xmcl/core';
@@ -127,5 +131,58 @@ describe('promise installer Task adapters', () => {
     await expect(installTask({ id: '1.21', url: 'https://manifest/version.json' }, '/minecraft').startAndWait()).rejects.toThrow('Invalid manifest');
     expect(api.completeInstallation).not.toHaveBeenCalled();
     expect(vi.getTimerCount()).toBe(0);
+  });
+});
+
+
+describe('native Node ESM installer adapter', () => {
+  it('completes verified work and cancels a real transfer using CommonJS Task exports', async () => {
+    const adapter = ts.transpileModule(readFileSync(new URL('../installerTasks.ts', import.meta.url), 'utf8'), {
+      compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
+    }).outputText;
+    const fixture = `
+      import assert from 'node:assert/strict';
+      import { createServer } from 'node:http';
+      import { createHash } from 'node:crypto';
+      import { mkdtemp, readFile, rm } from 'node:fs/promises';
+      import { tmpdir } from 'node:os';
+      import { resolve, join, sep } from 'node:path';
+      const root = await mkdtemp(join(tmpdir(), 'burrow-native-adapter-'));
+      assert.ok(resolve(root).startsWith(resolve(tmpdir()) + sep + 'burrow-native-adapter-'));
+      const bytes = Buffer.from('verified Java fixture');
+      let received;
+      const requested = new Promise(resolve => { received = resolve; });
+      const server = createServer((request, response) => {
+        response.writeHead(200, { 'content-length': bytes.length });
+        if (request.url === '/slow') { response.write(bytes.subarray(0, 1)); received(); }
+        else response.end(bytes);
+      });
+      try {
+        await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+        const base = 'http://127.0.0.1:' + server.address().port;
+        const manifest = route => ({ files: { 'bin/java': { type: 'file', executable: true, downloads: {
+          raw: { url: base + route, sha1: createHash('sha1').update(bytes).digest('hex'), size: bytes.length },
+        } } } });
+        const successful = installJavaRuntimeTask({ destination: join(root, 'verified'), manifest: manifest('/good') });
+        await successful.startAndWait();
+        assert.equal(successful.state, TaskState.Succeed);
+        assert.deepEqual(await readFile(join(root, 'verified/bin/java')), bytes);
+        const cancelled = installJavaRuntimeTask({ destination: join(root, 'cancelled'), manifest: manifest('/slow') });
+        const finished = cancelled.startAndWait().catch(error => error);
+        await requested;
+        await cancelled.cancel();
+        assert.ok(await finished instanceof CancelledError);
+        assert.equal(cancelled.state, TaskState.Cancelled);
+        console.log('NATIVE_ADAPTER_PASS');
+      } finally {
+        server.closeAllConnections();
+        await new Promise(resolve => server.close(resolve));
+        await rm(root, { recursive: true, force: true });
+      }
+    `;
+    const { stdout } = await promisify(execFile)(process.execPath, ['--input-type=module', '--eval', adapter + fixture], {
+      cwd: process.cwd(), timeout: 4_000,
+    });
+    expect(stdout).toContain('NATIVE_ADAPTER_PASS');
   });
 });

@@ -8,6 +8,7 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Исправлен запуск установленного приложения: адаптер загрузок использует совместимый с Electron ESM импорт CommonJS-пакета задач. Добавлена проверка выполнения и отмены через настоящий Node ESM.
 - Выделены функции сервисов и компоненты интерфейса, чтобы соблюдать закреплённые лимиты сложности без изменения лимитов.
 - Обновлена цепочка XMCL и проверка целостности загрузок: конечный файл заменяется после проверки хеша; неудачная загрузка сохраняет существующий файл.
 - Исправлены готовность английского/русского каталога, размеры и служебная навигация стенда визуальных проверок.
@@ -15,6 +16,7 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### English
 
+- Fixed packaged startup with an Electron-compatible ESM import of the CommonJS task package; native Node ESM checks cover completion and cancellation.
 - Split service functions and UI components to meet existing complexity limits without raising budgets.
 - Updated the XMCL dependency chain and download integrity checks; files are published after hash validation and failed candidates preserve existing files.
 - Fixed English/Russian catalog readiness, viewport dimensions and fixture navigation.
