@@ -1,8 +1,8 @@
 # Основная версия и откат
 
-Обычный URL [malyarq/burrow](https://github.com/malyarq/burrow) открывает `main`: текущие код, README, PLAN, документацию и демо. Репозиторий PRIVATE: просмотр требует авторизованный доступ GitHub. Версия Next.7 - preview, не подтверждённый стабильный релиз. CI запускается и на этой ветке: [workflow](../.github/workflows/ci.yml).
+Обычный URL [malyarq/burrow](https://github.com/malyarq/burrow) открывает `main`: текущие код, README, PLAN, документацию и демо. Репозиторий PRIVATE: просмотр требует авторизованный доступ GitHub. Версия 0.14.0 - preview, не подтверждённый стабильный релиз. CI запускается и на этой ветке: [workflow](../.github/workflows/ci.yml).
 
-Прежняя версия `main`, опубликованный HEAD - `241578e09a2540f7a4685927a929ef972dbf0777`. Перед переключением он сохранён в [archive/main-before-next-2026-10-04](https://github.com/malyarq/burrow/tree/archive/main-before-next-2026-10-04). История сохранена через merge; текущая `main` содержит Next.7.
+Прежняя версия `main`, опубликованный HEAD - `241578e09a2540f7a4685927a929ef972dbf0777`. Перед переключением он сохранён в [archive/main-before-next-2026-10-04](https://github.com/malyarq/burrow/tree/archive/main-before-next-2026-10-04). История сохранена через merge; текущая `main` содержит 0.14.0.
 
 Откат основной ветки на точную сохранённую версию:
 

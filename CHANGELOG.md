@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Версия текущей ветки - `0.14.0`, продолжение `0.13.0`; номер больше не содержит внутренний суффикс `next.N`, статус preview указан отдельно.
+
 - История последнего запуска Classic сохраняется при отказе хранилища во время переноса; повреждённые старые записи не публикуются как действительные.
 - Принудительный перезапуск показывает ожидание и ошибку, допускает повторную попытку и не отправляет повторную остановку процесса при переходе между экранами.
 - Гайды больше не называют исправленный XMCL audit текущим блокером; пример проверки пакета соответствует Next.7.
@@ -18,6 +20,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- The current branch version is `0.14.0`, following `0.13.0`; version numbers no longer contain the internal `next.N` suffix, with preview status shown separately.
 
 - Classic last-launch history survives a storage failure during migration; malformed legacy entries are not published as valid launches.
 - Force restart shows pending and failure states, allows retry and shares a pending process-stop request across navigation.

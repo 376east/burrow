@@ -1,6 +1,6 @@
 # Дизайн-система
 
-Здесь описан поддерживаемый UI-контракт Burrow Next (`1.0.0-next.1`). Каноническая реализация находится в `src/index.css`, `src/product/`, `src/contexts/settings/` и `src/components/ui/`.
+Здесь описан поддерживаемый UI-контракт Burrow Next (`0.14.0`). Каноническая реализация находится в `src/index.css`, `src/product/`, `src/contexts/settings/` и `src/components/ui/`.
 
 Не копируйте из документа длинные наборы Tailwind-классов. Используйте semantic tokens и общие primitives, чтобы темы и accessibility оставались согласованными.
 

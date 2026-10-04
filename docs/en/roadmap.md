@@ -1,6 +1,6 @@
 # Burrow Next
 
-Burrow Next (`1.0.0-next.1`) is a working product build on Electron, React, and TypeScript. It retains launcher capabilities while replacing the former shell with four clear areas: Play, Library, Together, and Settings. Completed work is recorded in the [changelog](../../CHANGELOG.md); technical contracts live in the adjacent documentation.
+Burrow Next (`0.14.0`) is a working product build on Electron, React, and TypeScript. It retains launcher capabilities while replacing the former shell with four clear areas: Play, Library, Together, and Settings. Completed work is recorded in the [changelog](../../CHANGELOG.md); technical contracts live in the adjacent documentation.
 
 ## Pilot evidence
 

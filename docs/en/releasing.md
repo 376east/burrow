@@ -4,6 +4,8 @@ Burrow releases use a tag-last, dispatch-only GitHub workflow. A protected publi
 
 ## Prepare an exact candidate
 
+Current numbering uses plain `MAJOR.MINOR.PATCH`, without `next.N`: [package.json version](../../package.json). New features increment MINOR and fixes increment PATCH; development versions use `0.x.y`. Preview status is shown separately. `0.14.0` follows the published [0.13.0](https://github.com/malyarq/burrow/releases/tag/v0.13.0). Local installers from the former `1.0.0-next.*` branch have a higher SemVer number and require a manual transition; automatic downgrades are not enabled.
+
 Start on a clean branch. The candidate version is committed before any release report is generated; the release helper never runs `npm version` for you.
 
 ```bash

@@ -1,6 +1,6 @@
 # Design system
 
-This document describes the maintained Burrow Next (`1.0.0-next.1`) UI contract. The canonical implementation is `src/index.css`, `src/product/`, `src/contexts/settings/`, and `src/components/ui/`.
+This document describes the maintained Burrow Next (`0.14.0`) UI contract. The canonical implementation is `src/index.css`, `src/product/`, `src/contexts/settings/`, and `src/components/ui/`.
 
 Do not copy long Tailwind class lists from this page into new components. Reuse semantic tokens and shared primitives so themes and accessibility behavior stay consistent.
 

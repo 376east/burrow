@@ -54,7 +54,7 @@ Node/npm закреплены в [package.json](../package.json) и [.nvmrc](../
 | `npx playwright install chromium` | Браузер для UI-проверок. |
 | `npx playwright test tests/visual/product-next.spec.ts --project=chromium --workers=1` | Next UI. Остальная матрица - в [testing](ru/testing.md). |
 | `npm run build -- --publish never` | Production renderer/main и локальный установщик. Не публикация. |
-| `node scripts/package-smoke.js --release-dir release/1.0.0-next.7 --version 1.0.0-next.7 --output work/package-smoke.json` | Запуск пакета в отдельном профиле и штатное закрытие на текущей ОС. Версию брать из package.json. |
+| `node scripts/package-smoke.js --release-dir release/0.14.0 --version 0.14.0 --output work/package-smoke.json` | Запуск пакета в отдельном профиле и штатное закрытие на текущей ОС. Версию брать из package.json. |
 
 Реальная установка - [test-full.js](../scripts/test-full.js) и [testing](ru/testing.md). Она скачивает файлы; не нужна просто ради правки текста. [CI](../.github/workflows/ci.yml) исполняет quality contract и macOS Chromium visual job. Локальные результаты Windows не заменяют CI.
 
