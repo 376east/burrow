@@ -9,10 +9,12 @@ This file summarizes current product versions. Git history remains the detailed 
 ### Русский
 
 - История последнего запуска Classic сохраняется при отказе хранилища во время переноса; повреждённые старые записи не публикуются как действительные.
+- Принудительный перезапуск показывает ожидание и ошибку, допускает повторную попытку и не отправляет повторную остановку процесса при переходе между экранами.
 
 ### English
 
 - Classic last-launch history survives a storage failure during migration; malformed legacy entries are not published as valid launches.
+- Force restart shows pending and failure states, allows retry and shares a pending process-stop request across navigation.
 
 ## [1.0.0-next.7] - 2026-10-04
 

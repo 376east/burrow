@@ -703,6 +703,8 @@
     "status.running_detail": "Minecraft уже запущен. Живые игровые логи появятся здесь.",
     "status.exit_code": "Minecraft завершился с кодом {{code}}",
     "status.force_restart": "Перезапустить принудительно",
+    "status.force_restart_pending": "Перезапуск…",
+    "status.force_restart_failed": "Не удалось остановить игру и перезапустить Burrow. Попробуйте ещё раз.",
     "status.progress.java": "Среда Java",
     "status.progress.assets": "Игровые ассеты",
     "status.progress.natives": "Нативные библиотеки",

@@ -4,6 +4,7 @@ import { Play, RotateCcw } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { launcherIPC } from '../../services/ipc/launcherIPC';
 import { cn } from '../../utils/cn';
+import { useForceRestart } from '../../features/launcher/hooks/useForceRestart';
 import {
   getLaunchActionLabel,
   type LaunchStage,
@@ -57,6 +58,7 @@ export const LaunchControls = React.memo(function LaunchControls(props: {
     canForceRestart && !isCollapsed && launcherIPC.has('killAndRestart'),
   );
   const isPrimary = priority === 'primary';
+  const restart = useForceRestart(t);
 
   return (
     <div className={cn(
@@ -144,16 +146,18 @@ export const LaunchControls = React.memo(function LaunchControls(props: {
           <Button
             variant="danger"
             onClick={() => {
-              void launcherIPC.killAndRestart();
+              void restart.restart();
             }}
+            isLoading={restart.pending}
             className="px-3"
             title={translateWithFallback(t, 'status.force_restart', 'Force restart')}
           >
             <RotateCcw className="h-4 w-4" />
-            <span className="sr-only">{translateWithFallback(t, 'status.force_restart', 'Force restart')}</span>
+            <span className="sr-only">{t(restart.pending ? 'status.force_restart_pending' : 'status.force_restart')}</span>
           </Button>
         )}
       </div>
+      {restart.error && <p className="text-sm text-red-500" role="alert">{restart.error}</p>}
     </div>
   );
 });

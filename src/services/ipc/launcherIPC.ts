@@ -1,6 +1,7 @@
 import { toIpcError } from './ipcError';
 
 type LauncherApi = Window['api']['launcher'];
+let restartRequest: Promise<void> | null = null;
 
 function getLauncherApi(): LauncherApi | undefined {
   if (typeof window === 'undefined') return undefined;
@@ -63,7 +64,10 @@ export const launcherIPC = {
 
   // launcher
   killAndRestart(): Promise<void> {
-    return call('killAndRestart', () => requireLauncher('killAndRestart').killAndRestart());
+    // Navigation can remount the button while the main process is still stopping.
+    restartRequest ??= call('killAndRestart', () => requireLauncher('killAndRestart').killAndRestart())
+      .finally(() => { restartRequest = null; });
+    return restartRequest;
   },
   launch(options: Parameters<LauncherApi['launch']>[0]): Promise<void> {
     return call('launch', () => requireLauncher('launch').launch(options));
