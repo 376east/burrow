@@ -17,6 +17,7 @@ import {
   normalizeBurrowLinkInvite,
 } from '../services/burrowLinkInvite';
 import { useBurrowLinkAnalytics, type NetworkMode } from './useBurrowLinkAnalytics';
+import { getHostPortError } from '../services/hostPortValidation';
 
 const TUNNEL_IDLE: BurrowLinkSnapshot = { revision: 0, state: 'idle', role: null, peerCount: 0 };
 const LAN_IDLE: LanDiscoverySnapshot = { revision: 0, state: 'idle', family: null, discoveredCount: 0 };
@@ -90,7 +91,12 @@ export function useMultiplayer() {
   };
 
   const host = async () => await run(async () => {
-    const hostPort = Number.parseInt(port, 10) || 25_565;
+    const portError = getHostPortError(port);
+    if (portError) {
+      linkAnalytics.validationFailed('host');
+      throw new Error(t(portError));
+    }
+    const hostPort = Number(port);
     await persistServer('localhost', hostPort);
     if (networkMode === 'hyperswarm') {
       await linkAnalytics.beginAttempt('host');

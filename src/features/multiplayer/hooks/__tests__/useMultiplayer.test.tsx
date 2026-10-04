@@ -5,7 +5,7 @@ import type { BurrowLinkSnapshot } from '../../../../../shared/contracts/network
 import { useMultiplayer } from '../useMultiplayer';
 
 const mocks = vi.hoisted(() => ({
-  getState: vi.fn(), onState: vi.fn(), join: vi.fn(), patchConfig: vi.fn(), unsubscribe: vi.fn(),
+  getState: vi.fn(), onState: vi.fn(), join: vi.fn(), host: vi.fn(), patchConfig: vi.fn(), unsubscribe: vi.fn(),
   beginAttempt: vi.fn(), discoveryReady: vi.fn(), failed: vi.fn(), validationFailed: vi.fn(),
   t: (key: string) => key,
 }));
@@ -17,7 +17,7 @@ vi.mock('../../../instances/hooks/useInstanceConfigCommands', () => ({
 vi.mock('../useBurrowLinkAnalytics', () => ({ useBurrowLinkAnalytics: () => mocks }));
 vi.mock('../../../../services/ipc/networkIPC', () => ({ networkIPC: {
   isAvailable: () => true,
-  tunnel: { getState: mocks.getState, onState: mocks.onState, join: mocks.join },
+  tunnel: { getState: mocks.getState, onState: mocks.onState, join: mocks.join, host: mocks.host },
   lan: { getState: async () => ({ revision: 0, state: 'idle' }), onState: () => () => undefined, onDiscover: () => () => undefined },
   upnp: { getState: async () => ({ revision: 0, state: 'idle' }), onState: () => () => undefined },
 } }));
@@ -32,6 +32,26 @@ describe('useMultiplayer', () => {
     mocks.patchConfig.mockResolvedValue(undefined);
   });
   afterEach(cleanup);
+
+  it('passes the complete numeric port to configuration and transport', async () => {
+    mocks.host.mockResolvedValue({ ...idle, revision: 1, state: 'active', role: 'host', roomCode: 'ab'.repeat(32) });
+    const { result } = renderHook(() => useMultiplayer());
+    act(() => result.current.setPort('1e3'));
+    await act(async () => result.current.host());
+    expect(mocks.patchConfig).toHaveBeenCalledWith({ server: { host: 'localhost', port: 1000 } });
+    expect(mocks.host).toHaveBeenCalledWith({ port: 1000 });
+  });
+
+  it.each(['', '0', '65536', '1.5', '123abc', 'Infinity', '-1'])('rejects an invalid host port before changing server configuration: %s', async (port) => {
+    const { result } = renderHook(() => useMultiplayer());
+    act(() => result.current.setPort(port));
+    await act(async () => result.current.host());
+    expect(mocks.patchConfig).not.toHaveBeenCalled();
+    expect(mocks.host).not.toHaveBeenCalled();
+    expect(mocks.beginAttempt).not.toHaveBeenCalled();
+    expect(mocks.validationFailed).toHaveBeenCalledWith('host');
+    expect(result.current.status).toMatch(/^validation.port_/);
+  });
 
   it('does not overwrite events with a delayed initial snapshot or older event', async () => {
     let resolve!: (value: BurrowLinkSnapshot) => void;

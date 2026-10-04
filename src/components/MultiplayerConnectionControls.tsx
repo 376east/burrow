@@ -5,22 +5,19 @@ import { cn } from '../utils/cn';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { formatBurrowLinkCode, normalizeBurrowLinkInvite } from '../features/multiplayer/services/burrowLinkInvite';
+import { getHostPortError } from '../features/multiplayer/services/hostPortValidation';
 
 export function MultiplayerConnectionControls({ multiplayer }: { multiplayer: ReturnType<typeof useMultiplayer> }) {
   const { t, getAccentStyles } = useSettings();
-  const [portError, setPortError] = useState<string | null>(null);
+  const [portTouched, setPortTouched] = useState(false);
   const [joinCodeError, setJoinCodeError] = useState<string | null>(null);
   const isUpnp = multiplayer.networkMode === 'xmcl_upnp_host';
   const isLan = multiplayer.networkMode === 'xmcl_lan';
   const isTunnel = multiplayer.networkMode === 'hyperswarm';
   const modePanelId = 'multiplayer-mode-panel';
   const active = isTunnel ? multiplayer.tunnel.state === 'active' : isLan ? multiplayer.lan.state === 'active' : multiplayer.upnp.state === 'active';
-  const validatePort = (value: string) => {
-    const parsed = Number(value);
-    if (!value.trim()) return t('validation.port_required');
-    if (!Number.isInteger(parsed)) return t('validation.port_invalid');
-    return parsed < 1 || parsed > 65_535 ? t('validation.port_range') : null;
-  };
+  const portErrorKey = getHostPortError(multiplayer.port);
+  const portError = portTouched && portErrorKey ? t(portErrorKey) : undefined;
   const validateCode = (value: string) => normalizeBurrowLinkInvite(value) ? null : t('multiplayer.room_code_invalid');
   const tunnelStatusKey = (multiplayer.tunnel.metrics?.activeGameConnectionCount ?? 0) > 0
     ? 'multiplayer.game_stream_open'
@@ -30,8 +27,8 @@ export function MultiplayerConnectionControls({ multiplayer }: { multiplayer: Re
 
   const renderHost = () => <div className="space-y-5">
     {!active && <>
-      <Input label={t('multiplayer.lan_port')} value={multiplayer.port} onChange={(event) => { multiplayer.setPort(event.target.value); setPortError(validatePort(event.target.value)); }} onBlur={(event) => setPortError(validatePort(event.target.value))} type="number" min="1" max="65535" className="text-center font-mono" error={portError || undefined} />
-      <Button className="w-full" onClick={multiplayer.host} isLoading={multiplayer.isLoading} disabled={Boolean(portError) || !multiplayer.port.trim()}>{t(isTunnel ? 'multiplayer.create_room' : isLan ? 'multiplayer.start_lan_broadcast' : 'multiplayer.map_port')}</Button>
+      <Input label={t('multiplayer.lan_port')} value={multiplayer.port} onChange={(event) => { multiplayer.setPort(event.target.value); setPortTouched(true); }} onBlur={() => setPortTouched(true)} type="number" min="1" max="65535" className="text-center font-mono" error={portError} />
+      <Button className="w-full" onClick={multiplayer.host} isLoading={multiplayer.isLoading} disabled={Boolean(portErrorKey)}>{t(isTunnel ? 'multiplayer.create_room' : isLan ? 'multiplayer.start_lan_broadcast' : 'multiplayer.map_port')}</Button>
     </>}
     {active && isTunnel && multiplayer.roomCode && <div className={cn('multiplayer-room-code space-y-4 rounded-2xl border p-4 sm:p-5', getAccentStyles('soft-bg').className, getAccentStyles('soft-border').className)}>
       <div>
