@@ -24,7 +24,7 @@
 
 ## Ограничения проверок и сопровождения
 
-- На 04.10.2026 production audit сообщает high advisory в цепочке `http-cache-semantics → @xmcl/file-transfer → @xmcl/installer`: [GHSA-ch52-4w7c-c8xp](https://github.com/advisories/GHSA-ch52-4w7c-c8xp). Полный `npm run verify` пока не проходит. Миграция должна сохранить хеш-проверки и recovery; [план и исходники](../../PLAN.md#ближайшие-задачи).
+- Цепочка XMCL обновлена: на 05.10.2026 `npm run audit:prod` сообщает 0 уязвимостей production-зависимостей; [исправления и provenance installer](../../vendor/README.md), [прошедший CI Next.7](https://github.com/malyarq/burrow/actions/runs/37166880329). Это не аудит dev-зависимостей и не подтверждение настоящей установки Minecraft/Java или всех модлоадеров. Игровые проверки остаются отдельной задачей в [плане](../../PLAN.md#ближайшие-задачи).
 
 - Совместимость XMCL bytebuffer обеспечивается проверяемым postinstall-скриптом. В будущем его нужно заменить upstream-исправлением или управляемым package patch.
 - Визуальные эталоны определены для macOS Chromium. Поведенческие браузерные проверки также запускаются на Windows, но не подтверждают нативные диалоги, оконный менеджер и графический драйвер на других платформах.

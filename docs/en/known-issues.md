@@ -24,7 +24,7 @@ Checksums detect corruption or asset replacement only when users compare them wi
 
 ## Verification and maintenance limits
 
-- On 2026-10-04 production audit reports a high advisory through `http-cache-semantics`, `@xmcl/file-transfer` and `@xmcl/installer`: [GHSA-ch52-4w7c-c8xp](https://github.com/advisories/GHSA-ch52-4w7c-c8xp). Full `npm run verify` is not green. Migration must preserve checksum validation and recovery; see the [plan and source pointers](../../PLAN.md).
+- The XMCL dependency chain has been updated: on 2026-10-05 `npm run audit:prod` reports 0 vulnerabilities in production dependencies; see [installer fixes and provenance](../../vendor/README.md) and [passing Next.7 CI](https://github.com/malyarq/burrow/actions/runs/37166880329). This does not audit development dependencies or establish real Minecraft/Java installation or coverage of every loader. Real game checks remain a separate [planned task](../../PLAN.md).
 
 - The XMCL bytebuffer compatibility correction is applied by a validated postinstall script. It should be replaced by an upstream fix or a managed package patch.
 - Visual regression baselines are defined for macOS Chromium. Behavioral browser checks also run on Windows, but do not establish native-dialog, window-manager, or graphics-driver behavior on other platforms.

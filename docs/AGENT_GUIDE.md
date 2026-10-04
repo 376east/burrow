@@ -49,12 +49,12 @@ Node/npm закреплены в [package.json](../package.json) и [.nvmrc](../
 | `npm run docs:check` | Ссылки и структура документации. |
 | `npm run contracts:check && npm run ipc:check` | Карты и allowlist каналов. |
 | `npm run architecture:check` | Проверяемые границы владения. |
-| `npm run audit:prod` | High/critical advisory; на 04.10.2026 падает по цепочке XMCL ([PLAN](../PLAN.md)). |
+| `npm run audit:prod` | Проверка production-зависимостей. На 05.10.2026 - 0 уязвимостей; это не аудит dev-зависимостей или игровых установок. Цепочка XMCL обновлена ([provenance](../vendor/README.md), [CI Next.7](https://github.com/malyarq/burrow/actions/runs/37166880329)). |
 | `npm run verify` | Последовательность из [package.json](../package.json), включая audit. Не считать предыдущие успешные этапы зелёным verify. |
 | `npx playwright install chromium` | Браузер для UI-проверок. |
 | `npx playwright test tests/visual/product-next.spec.ts --project=chromium --workers=1` | Next UI. Остальная матрица - в [testing](ru/testing.md). |
 | `npm run build -- --publish never` | Production renderer/main и локальный установщик. Не публикация. |
-| `node scripts/package-smoke.js --release-dir release/1.0.0-next.6 --version 1.0.0-next.6 --output work/package-smoke.json` | Запуск пакета в отдельном профиле и штатное закрытие на текущей ОС. Версию брать из package.json. |
+| `node scripts/package-smoke.js --release-dir release/1.0.0-next.7 --version 1.0.0-next.7 --output work/package-smoke.json` | Запуск пакета в отдельном профиле и штатное закрытие на текущей ОС. Версию брать из package.json. |
 
 Реальная установка - [test-full.js](../scripts/test-full.js) и [testing](ru/testing.md). Она скачивает файлы; не нужна просто ради правки текста. [CI](../.github/workflows/ci.yml) исполняет quality contract и macOS Chromium visual job. Локальные результаты Windows не заменяют CI.
 
