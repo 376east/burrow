@@ -249,19 +249,20 @@ describe('package smoke artifact contract', () => {
     expect(fs.existsSync(path.join(releaseRoot, version, `Burrow Next-Mac-${version}-Installer.dmg`))).toBe(true);
   });
 
-  it('launches the previous package, upgrades in place, and preserves user data before passing', async () => {
+  it.each(['Burrow', 'Burrow Next'])('upgrades the previous %s package and preserves user data', async (previousProductName) => {
     const version = '0.9.2';
     const previousVersion = '0.9.1';
     const releaseRoot = createRelease(version);
     roots.push(releaseRoot);
     writeArtifact(releaseRoot, version, `Burrow Next-Mac-${version}-Installer.dmg`);
-    const previousArtifact = path.join(releaseRoot, `Burrow-Mac-${previousVersion}-Installer.dmg`);
+    const previousArtifact = path.join(releaseRoot, `${previousProductName}-Mac-${previousVersion}-Installer.dmg`);
     fs.writeFileSync(previousArtifact, 'previous fixture');
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-package-smoke-upgrade-'));
     roots.push(workspace);
     const verifiedVersions: Array<[string, unknown]> = [];
     const spawnedEnvironments: NodeJS.ProcessEnv[] = [];
     const spawnedArguments: string[][] = [];
+    const initialControlPlanes: unknown[] = [];
     const waitForProfileRelease = vi.fn().mockResolvedValue(undefined);
     const removeWorkspace = vi.fn((target: string) => fs.rmSync(target, { recursive: true, force: true }));
     let port = 44000;
@@ -279,6 +280,7 @@ describe('package smoke artifact contract', () => {
         writeFile: fs.writeFileSync,
         readFile: fs.readFileSync,
         spawn: (_command: string, args: string[], options: { env: NodeJS.ProcessEnv }) => {
+          initialControlPlanes.push(JSON.parse(fs.readFileSync(path.join(workspace, 'user-data', 'minecraft_data', 'instance-control-plane.json'), 'utf8')));
           spawnedArguments.push(args);
           spawnedEnvironments.push(options.env);
           return createChild();
@@ -313,6 +315,10 @@ describe('package smoke artifact contract', () => {
       [previousVersion, undefined],
       [version, undefined],
     ]);
+    expect(initialControlPlanes[0]).toMatchObject({ snapshot: {
+      selectedId: 'upgrade-fixture',
+      records: [expect.objectContaining({ id: 'upgrade-fixture' }), expect.objectContaining({ id: 'classic' })],
+    } });
     expect(spawnedEnvironments[0]).toMatchObject({
       BURROW_TEST_USER_DATA: path.join(workspace, 'user-data'),
       BURROW_PACKAGE_SMOKE_CONFIG: path.join(workspace, 'package-smoke-config.json'),
@@ -325,7 +331,7 @@ describe('package smoke artifact contract', () => {
       `--user-data-dir=${path.join(workspace, 'user-data')}`,
     ]));
     expect(waitForProfileRelease).toHaveBeenCalledTimes(2);
-    expect(smoke.productNameForArtifact(previousArtifact, previousVersion, 'darwin')).toBe('Burrow');
+    expect(smoke.productNameForArtifact(previousArtifact, previousVersion, 'darwin')).toBe(previousProductName);
     expect(waitForProfileRelease).toHaveBeenNthCalledWith(1, path.join(workspace, 'user-data'), 5_000);
     expect(waitForProfileRelease).toHaveBeenNthCalledWith(2, path.join(workspace, 'user-data'), 5_000);
     expect(removeWorkspace).toHaveBeenCalledWith(workspace, {

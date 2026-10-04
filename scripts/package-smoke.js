@@ -40,6 +40,22 @@ const UPGRADE_CONTROL_PLANE = Object.freeze({
       },
       config: { runtime: { minecraftVersion: '1.21.1' } },
       summary: { minecraftVersion: '1.21.1' },
+    }, {
+      // Startup ensures Classic exists. Seed a complete existing profile so
+      // that normal first-run initialization is not mistaken for data loss.
+      id: 'classic',
+      name: 'Classic',
+      source: {
+        source: 'local',
+        createdAt: '2026-09-01T00:00:00.000Z',
+        updatedAt: '2026-09-01T00:00:00.000Z',
+      },
+      config: {
+        runtime: { minecraftVersion: '1.12.2', modLoader: { type: 'vanilla' } },
+        memory: { maxMb: 4096 },
+        vmOptions: [],
+      },
+      summary: { minecraftVersion: '1.12.2', modLoader: { type: 'vanilla' } },
     }],
   },
   _burrowSchemaVersion: 1,
@@ -63,7 +79,9 @@ function artifactNameForProduct(productName, version, platform) {
 
 export function productNameForArtifact(artifactPath, version, platform) {
   const artifactName = basename(artifactPath);
-  if (artifactName === artifactNameForProduct(STABLE_PRODUCT_NAME, version, platform)) return STABLE_PRODUCT_NAME;
+  for (const productName of [CURRENT_PRODUCT_NAME, STABLE_PRODUCT_NAME]) {
+    if (artifactName === artifactNameForProduct(productName, version, platform)) return productName;
+  }
   throw new Error(`unexpected previous release artifact: ${artifactName}`);
 }
 
