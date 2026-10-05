@@ -86,7 +86,10 @@ Direct options:
 node scripts/test-full.js --stage=forge --limit=5
 node scripts/test-full.js --only=1.20.1,1.19.2
 node scripts/test-full.js --provider=bmclapi
+node scripts/test-full.js --stage=fabric --only=1.20.1 --provider=mojang --launch-smoke --evidence-dir=work/fabric-launch
 ```
+
+For `--stage=fabric --launch-smoke`, the [harness](../../electron/app/tests/installedGameSmoke.ts) selects a successfully installed Fabric version and also requires Fabric Loader evidence. A failed Fabric install never falls back to launching Vanilla. The Windows check for 1.20.1 / Loader 0.19.5 reached loader, graphics and resource signals and survived a five-second hold; this does not verify the menu, gameplay, a real account or a package. [Evidence](../evidence/fabric-1.20.1-windows-2026-10-05.json).
 
 Supported options:
 
@@ -94,6 +97,8 @@ Supported options:
 - `--provider=auto|mojang|bmclapi`
 - `--limit=<count>`
 - `--only=<comma-separated versions>`
+- `--launch-smoke` - one Vanilla or Fabric launch for the selected stage
+- `--evidence-dir=<project-relative directory>` - preserve logs and JSON before removing the temporary profile
 
 This harness requires Node 24, Java/runtime downloads, network access, disk space, and substantially more time than the unit suite. It is not a substitute for protecting user data: the isolation boundary must remain intact.
 

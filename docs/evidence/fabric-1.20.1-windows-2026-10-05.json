@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-05",
+  "sourceCommit": "b2c9edbd8adb43a06334cd9f6b099441f44d0329",
+  "platform": "Windows",
+  "provider": "mojang",
+  "launch": {
+    "requested": true,
+    "modLoader": "fabric",
+    "version": "1.20.1",
+    "ok": true,
+    "ms": 18196,
+    "signals": [
+      "fabric-loader",
+      "render-backend",
+      "resources-ready"
+    ]
+  },
+  "vanilla": {
+    "total": 1,
+    "okCount": 1,
+    "failCount": 0,
+    "results": [
+      {
+        "mcVersion": "1.20.1",
+        "ok": true,
+        "ms": 25321
+      }
+    ]
+  },
+  "fabric": {
+    "total": 48,
+    "okCount": 1,
+    "failCount": 0,
+    "results": [
+      {
+        "mcVersion": "1.20.1",
+        "modLoader": "fabric",
+        "modLoaderVersion": "0.19.5",
+        "launchVersionId": "1.20.1-fabric0.19.5",
+        "ok": true,
+        "ms": 12771,
+        "steps": {
+          "modLoaderInstall": {
+            "ok": true,
+            "ms": 12769
+          },
+          "dependenciesInstall": {
+            "ok": true,
+            "ms": 0
+          },
+          "versionValidation": {
+            "ok": true,
+            "ms": 0
+          },
+          "launchReadiness": {
+            "ok": true,
+            "ms": 0
+          }
+        }
+      }
+    ]
+  },
+  "harnessExitCode": 0,
+  "gameExitCodeAfterIntentionalStop": 1,
+  "settleMs": 5000,
+  "tempProfileDeleted": true,
+  "checks": [
+    "9 unit tests passed",
+    "TypeScript passed",
+    "targeted lint passed",
+    "docs passed",
+    "architecture/dependency-graph/complexity passed"
+  ],
+  "limitations": [
+    "offline account with local auth mock",
+    "no gameplay or visual menu verification",
+    "no packaged build",
+    "47 other discovered Fabric versions skipped",
+    "Forge and NeoForge not tested"
+  ]
+}

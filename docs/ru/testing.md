@@ -86,7 +86,10 @@ npm run smoke:game
 node scripts/test-full.js --stage=forge --limit=5
 node scripts/test-full.js --only=1.20.1,1.19.2
 node scripts/test-full.js --provider=bmclapi
+node scripts/test-full.js --stage=fabric --only=1.20.1 --provider=mojang --launch-smoke --evidence-dir=work/fabric-launch
 ```
+
+Для `--stage=fabric --launch-smoke` [harness](../../electron/app/tests/installedGameSmoke.ts) выбирает успешно установленный Fabric и дополнительно требует сигнал Fabric Loader. Отказ установки Fabric не подменяется запуском Vanilla. Проверенные на Windows 1.20.1 / Loader 0.19.5 достигли сигналов загрузчика, графики и ресурсов и выдержали 5 секунд; это не подтверждение меню, gameplay, реального аккаунта или пакета. [Доказательство](../evidence/fabric-1.20.1-windows-2026-10-05.json).
 
 Поддерживаются:
 
@@ -94,6 +97,8 @@ node scripts/test-full.js --provider=bmclapi
 - `--provider=auto|mojang|bmclapi`
 - `--limit=<count>`
 - `--only=<comma-separated versions>`
+- `--launch-smoke` - один запуск Vanilla либо Fabric выбранного этапа
+- `--evidence-dir=<project-relative directory>` - сохранение журналов и JSON до удаления временного профиля
 
 Для harness нужны Node 24, загрузки Java/runtime, сеть, место на диске и заметно больше времени, чем для unit suite. Изоляция временной папки обязательна: тест не должен затрагивать пользовательские данные.
 
