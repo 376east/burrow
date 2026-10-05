@@ -24,6 +24,7 @@ const FATAL_DIAGNOSTICS = [
 export async function runGameLaunchSmoke(params: {
   launcher: GameLaunchPort;
   version: string;
+  modLoader?: 'vanilla' | 'fabric';
   providerId?: DownloadProviderId;
   onLog(line: string): void;
   timeoutMs?: number;
@@ -34,6 +35,9 @@ export async function runGameLaunchSmoke(params: {
   const timeoutMs = params.timeoutMs ?? 180_000;
   const settleMs = params.settleMs ?? 5_000;
   const signals = new Set<string>();
+  const requiredSignals = params.modLoader === 'fabric'
+    ? [...READY_SIGNALS, { id: 'fabric-loader', pattern: /Loading Minecraft .+ with Fabric Loader /i }]
+    : READY_SIGNALS;
   let closed = false;
   let closeCode: number | undefined;
   let resolveReady: (() => void) | undefined;
@@ -46,7 +50,7 @@ export async function runGameLaunchSmoke(params: {
     rejectReady = reject;
   });
   const finishReady = () => {
-    if (settled || signals.size !== READY_SIGNALS.length) return;
+    if (settled || signals.size !== requiredSignals.length) return;
     settled = true;
     resolveReady?.();
   };
@@ -63,7 +67,7 @@ export async function runGameLaunchSmoke(params: {
       failReady(new Error(`Minecraft reported a fatal launch diagnostic: ${fatal.id}`));
       return;
     }
-    for (const signal of READY_SIGNALS) {
+    for (const signal of requiredSignals) {
       if (signal.pattern.test(line)) signals.add(signal.id);
     }
     finishReady();

@@ -55,7 +55,7 @@ Options:
   --provider=<id>     Download provider: auto, mojang, bmclapi (default: auto)
   --limit=<N>         Limit number of versions to test (default: unlimited)
   --only=<versions>   Comma-separated list of specific versions to test
-  --launch-smoke      Launch one installed vanilla version until main-menu readiness
+  --launch-smoke      Launch one installed Vanilla or Fabric version to the graphics/resources readiness boundary
   --evidence-dir=<p>  Preserve logs under a project-relative directory
   --help, -h          Show this help message
 

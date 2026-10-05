@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Source smoke для выбранного этапа Fabric запускает Fabric и требует отдельного сигнала загрузчика вместе с графикой и ресурсами; успешная Vanilla-установка больше не подменяет неудачный Fabric-запуск.
+
 - При коллизии файла во время импорта архива сохраняются существующие данные и исходная ошибка открытия; сбой чтения удаляет только созданный этой записью файл.
 
 - При смене сборки незавершённый ввод памяти сбрасывается к её сохранённому значению, даже если обе сборки используют одинаковый объём RAM.
@@ -24,6 +26,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Source smoke for the Fabric stage launches Fabric and requires loader evidence alongside graphics and resources; a successful Vanilla install no longer substitutes for a failed Fabric launch.
 
 - Archive import collisions preserve existing data and the original file-open error; a read failure removes only the file created by that write.
 

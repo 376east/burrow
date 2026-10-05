@@ -16,7 +16,7 @@ import { installVanillaVersion } from './tests/vanillaInstaller';
 import { installModLoaderVersion } from './tests/modLoaderInstaller';
 import { discoverVersions } from './tests/versionDiscovery';
 import { saveSummary, logFinalSummary } from './tests/testReporter';
-import { getLaunchFailureCount, runOptionalInstalledGameSmoke } from './tests/installedGameSmoke';
+import { getLaunchFailureCount, runOptionalInstalledGameSmoke, selectInstalledSmokeTarget } from './tests/installedGameSmoke';
 
 async function runVanillaStage(params: {
   vanillaVersions: string[];
@@ -362,11 +362,11 @@ export async function runFullInstallationTest(
     });
   }
 
-  const version = summary.stages.vanilla.results.find((result) => result.ok)?.mcVersion ?? null;
+  const target = selectInstalledSmokeTarget(summary, config?.stage);
   summary.launch = await runOptionalInstalledGameSmoke({
     requested: config?.launchSmoke === true,
     rootPath,
-    version,
+    ...target,
     javaManager,
     downloads,
     versionLists,

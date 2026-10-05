@@ -48,6 +48,22 @@ describe('game launch smoke', () => {
     expect(launcher.killGameProcess).toHaveBeenCalledOnce();
   });
 
+  it('requires Fabric Loader evidence for a Fabric smoke', async () => {
+    const launcher = fakeLauncher(({ log }) => {
+      log('[Render thread/INFO]: Backend library: LWJGL version 3.3.3');
+      log('[Render thread/INFO]: OpenAL initialized on device');
+    });
+    const params = { launcher, version: '1.20.1', modLoader: 'fabric' as const, onLog: vi.fn(), timeoutMs: 50, settleMs: 0 };
+    await expect(runGameLaunchSmoke(params)).resolves.toMatchObject({ ok: false });
+    launcher.launchGame.mockImplementationOnce(async (_options, onLog) => {
+      onLog('Loading Minecraft 1.20.1 with Fabric Loader 0.19.5');
+      onLog('[Render thread/INFO]: Backend library: LWJGL version 3.3.3');
+      onLog('[Render thread/INFO]: OpenAL initialized on device');
+    });
+    await expect(runGameLaunchSmoke(params)).resolves.toMatchObject({ ok: true, signals: ['fabric-loader', 'render-backend', 'resources-ready'] });
+    expect(launcher.killGameProcess).toHaveBeenCalledTimes(2);
+  });
+
   it('fails when authlib-injector cannot transform the active Java class format', async () => {
     const launcher = fakeLauncher(({ log }) => {
       log('[authlib-injector] [WARNING] Failed to transform net.minecraft.client.main.Main');

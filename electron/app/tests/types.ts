@@ -33,6 +33,7 @@ export type TestSummary = {
   launch?: {
     requested: true;
     version: string | null;
+    modLoader?: 'vanilla' | 'fabric';
     ok: boolean;
     ms: number;
     signals: readonly string[];

@@ -102,8 +102,8 @@ export async function installModLoaderVersion(params: {
       } else if (launchVersion.includes('-neoforge-')) {
         const match = launchVersion.match(/-neoforge-(.+)$/);
         result.modLoaderVersion = match ? match[1] : null;
-      } else if (launchVersion.includes('-fabric-')) {
-        const match = launchVersion.match(/-fabric-(.+)$/);
+      } else if (launchVersion.includes('-fabric')) {
+        const match = launchVersion.match(/-fabric-?(.+)$/);
         result.modLoaderVersion = match ? match[1] : null;
       }
     } catch (e: unknown) {

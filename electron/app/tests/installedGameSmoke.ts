@@ -14,6 +14,7 @@ type LaunchResult = NonNullable<TestSummary['launch']>;
 
 type InstalledGameSmokeParams = {
   version: string | null;
+  modLoader?: 'vanilla' | 'fabric';
   rootPath: string;
   javaManager: JavaManager;
   downloads: RuntimeDownloadService;
@@ -28,6 +29,7 @@ type InstalledGameSmokeParams = {
 function createLauncher(params: {
   rootPath: string;
   version: string;
+  modLoader?: 'vanilla' | 'fabric';
   javaManager: JavaManager;
   downloads: RuntimeDownloadService;
   versionLists: VersionListService;
@@ -43,11 +45,11 @@ function createLauncher(params: {
     name: 'Game smoke',
     source: { source: 'local', createdAt: now, updatedAt: now },
     config: {
-      runtime: { minecraftVersion: version, modLoader: { type: 'vanilla' } },
+      runtime: { minecraftVersion: version, modLoader: { type: params.modLoader ?? 'vanilla' } },
       memory: { minMb: 1024, maxMb: 2048 },
       game: { resolution: { width: 854, height: 480 } },
     },
-    summary: { minecraftVersion: version, modLoader: { type: 'vanilla' } },
+    summary: { minecraftVersion: version, modLoader: { type: params.modLoader ?? 'vanilla' } },
   };
   return new LauncherManager({
     javaManager,
@@ -69,20 +71,26 @@ function createLauncher(params: {
 }
 
 export async function runInstalledGameSmoke(params: InstalledGameSmokeParams): Promise<LaunchResult> {
-  const { version, onLog } = params;
-  if (!version) return { requested: true, version: null, ok: false, ms: 0, signals: [], error: 'No installed vanilla version is available for the launch smoke' };
+  const { version, onLog, modLoader = 'vanilla' } = params;
+  if (!version) return { requested: true, version: null, modLoader, ok: false, ms: 0, signals: [], error: `No installed ${modLoader} version is available for the launch smoke` };
 
   onLog('═══════════════════════════════════════════════════════════');
-  onLog(`[GameSmoke] Launching Minecraft ${version} through the production launcher path...`);
+  onLog(`[GameSmoke] Launching Minecraft ${version} (${modLoader}) through the production launcher path...`);
   const result = await runGameLaunchSmoke({
     launcher: createLauncher({ ...params, version }),
     version,
+    modLoader,
     providerId: params.providerId,
     onLog,
   });
   onLog(`[GameSmoke] ${result.ok ? 'PASS' : 'FAIL'} (${result.ms}ms; signals=${result.signals.join(',') || 'none'})`);
   if (result.error) onLog(`[GameSmoke] Error: ${result.error}`);
-  return { requested: true, ...result };
+  return { requested: true, modLoader, ...result };
+}
+
+export function selectInstalledSmokeTarget(summary: Pick<TestSummary, 'stages'>, stage?: string | null): Pick<InstalledGameSmokeParams, 'version' | 'modLoader'> {
+  const modLoader = stage?.trim().toLowerCase() === 'fabric' ? 'fabric' : 'vanilla';
+  return { modLoader, version: summary.stages[modLoader].results.find((result) => result.ok)?.mcVersion ?? null };
 }
 
 export async function runOptionalInstalledGameSmoke(
