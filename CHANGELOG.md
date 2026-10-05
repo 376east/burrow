@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- При смене сборки незавершённый ввод памяти сбрасывается к её сохранённому значению, даже если обе сборки используют одинаковый объём RAM.
+
 - Версия текущей ветки - `0.14.0`, продолжение `0.13.0`; номер больше не содержит внутренний суффикс `next.N`, статус preview указан отдельно.
 
 - История последнего запуска Classic сохраняется при отказе хранилища во время переноса; повреждённые старые записи не публикуются как действительные.
@@ -20,6 +22,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Switching instances resets the memory input draft to the new instance's saved value, even when both instances allocate the same RAM.
 
 - The current branch version is `0.14.0`, following `0.13.0`; version numbers no longer contain the internal `next.N` suffix, with preview status shown separately.
 

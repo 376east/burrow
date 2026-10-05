@@ -111,6 +111,7 @@ export const GameTab: React.FC<GameTabProps> = ({
 
         <fieldset disabled={isReadOnly} aria-describedby={isReadOnly ? 'game-tab-readonly-hint' : undefined} className="space-y-4">
           <RuntimeSection
+            key={modpackConfig?.id ?? 'no-instance'}
             modpackConfig={modpackConfig}
             setMemoryGb={setMemoryGb}
             setMinMemoryGb={setMinMemoryGb}
