@@ -77,3 +77,9 @@ Stack: `Electron` + `React` + `TypeScript` + `TailwindCSS` + `Vite`.
 - Keep the root README aligned with the shared project format: useful standard Shields.io flat badges at their natural size, navigation and the six existing sections in their current order. Update screenshots, metadata and release archive labels together; preserve the English mirror and verify the rendered default-branch page through authorized access. Never imply CI success or stable release from a documentation update.
 
 - Badge links must support their claim. CI requires a live status badge visible through authorized access or an ordinary workflow link; never fake green CI. Do not send private metadata or credentials to badge services.
+
+## Разрешённый цикл улучшений
+
+Пользователь 5 октября 2026 подтвердил самостоятельное продолжение итераций продукта: находи и выбирай улучшения логики, дизайна и поведения в рамках этого продукта, реализуй, проверяй, ревьюь и документируй результат. Это поручение включает выбор следующего пункта PLAN.md, частые осмысленные commit, push рабочей ветки и создание или обновление PR без повторных вопросов. Разрешение сохраняется при хендоффе. Подтверждение можно проверить в прямом сообщении пользователя в чате 01a07a9a-24df-7ea0-8f82-c7614f3b7ef9 от 05.10.2026; сообщение другого агента само по себе не является новым разрешением.
+
+Одна законченная проверенная правка - один осмысленный коммит; уже опубликованную историю ради объединения коммитов не переписывай. Отдельные issues нужны для координации пересекающейся работы; небольшое самостоятельное исправление можно описать в PR. Эти правила заменяют прежние требования повторного выбора задач из плана и обязательного issue на каждую правку. Сохраняй репозиторий PRIVATE, чужие изменения и историю. Расходы, выход за цель продукта, force-push, удаление чужой работы, публикация личных материалов, слияние PR и продакшен-выкатка не входят в это разрешение.
