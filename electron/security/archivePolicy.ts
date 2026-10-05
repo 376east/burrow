@@ -261,14 +261,15 @@ export async function extractZipSafely(zip: ValidatedZip, targetDirectory: strin
     }
 
     await fs.promises.mkdir(path.dirname(targetPath), { recursive: true });
-    const output = fs.createWriteStream(targetPath, { flags: 'wx' });
+    const outputFile = await fs.promises.open(targetPath, 'wx');
+    let completed = false;
     try {
       const input = await zip.openReadStream(entry);
-      await pipeline(input, output);
-    } catch (error) {
-      output.destroy();
-      await fs.promises.rm(targetPath, { force: true });
-      throw error;
+      await pipeline(input, outputFile.createWriteStream());
+      completed = true;
+    } finally {
+      await outputFile.close();
+      if (!completed) await fs.promises.rm(targetPath, { force: true });
     }
   }
 }

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { extractZipSafely, openValidatedZip } from '../archivePolicy';
 
 function centralDirectoryOffsets(buffer: Buffer): number[] {
@@ -30,6 +30,7 @@ describe('archivePolicy', () => {
   const tempDirs: string[] = [];
 
   afterEach(() => {
+    vi.restoreAllMocks();
     for (const dir of tempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -140,5 +141,48 @@ describe('archivePolicy', () => {
     }
 
     expect(fs.readFileSync(path.join(root, 'config', 'options.txt'), 'utf8')).toBe('safe');
+  });
+
+  it('preserves an existing extraction target on a collision before the source is ready', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-archive-'));
+    tempDirs.push(root);
+    const targetPath = path.join(root, 'options.txt');
+    fs.writeFileSync(targetPath, 'existing bytes');
+    const zip = await openValidatedZip(await createZipBuffer([['options.txt', Buffer.from('safe')]]), 'Test archive');
+    let collisionObserved!: () => void;
+    const collision = new Promise<void>((resolve) => { collisionObserved = resolve; });
+    const createWriteStream = fs.createWriteStream.bind(fs);
+    vi.spyOn(fs, 'createWriteStream').mockImplementation((...args) => {
+      const output = createWriteStream(...args);
+      output.once('error', collisionObserved);
+      return output;
+    });
+    const openReadStream = zip.openReadStream.bind(zip);
+    vi.spyOn(zip, 'openReadStream').mockImplementation(async (entry) => {
+      await collision;
+      return openReadStream(entry);
+    });
+    try {
+      const error = await extractZipSafely(zip, root).catch((cause: unknown) => cause);
+      expect.soft(error).toMatchObject({ code: 'EEXIST' });
+      expect.soft(fs.existsSync(targetPath)).toBe(true);
+      if (fs.existsSync(targetPath)) expect(fs.readFileSync(targetPath, 'utf8')).toBe('existing bytes');
+    } finally {
+      zip.close();
+    }
+  });
+
+  it('removes a partial extraction file after checksum failure', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-archive-'));
+    tempDirs.push(root);
+    const buffer = await createZipBuffer([['payload.bin', Buffer.from('safe'), false]]);
+    buffer[buffer.indexOf('safe')] ^= 0xff;
+    const zip = await openValidatedZip(buffer, 'Test archive');
+    try {
+      await expect(extractZipSafely(zip, root)).rejects.toThrow('checksum');
+      expect(fs.existsSync(path.join(root, 'payload.bin'))).toBe(false);
+    } finally {
+      zip.close();
+    }
   });
 });
