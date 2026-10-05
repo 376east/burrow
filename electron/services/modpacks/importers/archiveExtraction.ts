@@ -44,14 +44,15 @@ export function buildZipEntryLookup(zip: ValidatedZip): Map<string, ValidatedZip
 export async function writeArchiveTasks(zip: ValidatedZip, tasks: ArchiveWriteTask[]): Promise<void> {
   for (const task of tasks) {
     await fs.promises.mkdir(path.dirname(task.targetPath), { recursive: true });
-    const output = fs.createWriteStream(task.targetPath, { flags: task.overwrite ? 'w' : 'wx' });
+    const outputFile = await fs.promises.open(task.targetPath, task.overwrite ? 'w' : 'wx');
+    let completed = false;
     try {
       const input = await zip.openReadStream(task.entry);
-      await pipeline(input, output);
-    } catch (error) {
-      output.destroy();
-      if (!task.overwrite && (error as NodeJS.ErrnoException).code !== 'EEXIST') await fs.promises.rm(task.targetPath, { force: true });
-      throw error;
+      await pipeline(input, outputFile.createWriteStream());
+      completed = true;
+    } finally {
+      await outputFile.close();
+      if (!completed && !task.overwrite) await fs.promises.rm(task.targetPath, { force: true });
     }
   }
 }

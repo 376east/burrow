@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- При коллизии файла во время импорта архива сохраняются существующие данные и исходная ошибка открытия; сбой чтения удаляет только созданный этой записью файл.
+
 - При смене сборки незавершённый ввод памяти сбрасывается к её сохранённому значению, даже если обе сборки используют одинаковый объём RAM.
 
 - Версия текущей ветки - `0.14.0`, продолжение `0.13.0`; номер больше не содержит внутренний суффикс `next.N`, статус preview указан отдельно.
@@ -22,6 +24,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Archive import collisions preserve existing data and the original file-open error; a read failure removes only the file created by that write.
 
 - Switching instances resets the memory input draft to the new instance's saved value, even when both instances allocate the same RAM.
 
