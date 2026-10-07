@@ -21,10 +21,12 @@ export async function discoverVersions(params: {
   // Get all release versions from Minecraft version manifest
   // Always needed for vanilla stage or to determine which versions to install
   let allReleaseVersions: string[] = [];
+  let manifestVersions: VersionEntry[] = [];
   try {
     onLog(`[FullTest] Fetching all Minecraft release versions...`);
     const versionList = await versionLists.getVersionList(providerId);
-    allReleaseVersions = (versionList.versions as Array<{ id: string; type: string }>)
+    manifestVersions = versionList.versions as VersionEntry[];
+    allReleaseVersions = manifestVersions
       .filter((v) => v.type === 'release')
       // Mojang publishes this manifest newest-first. Preserve that authority so
       // --limit=1 tests the current release instead of lexicographically picking 1.0.
@@ -82,10 +84,7 @@ export async function discoverVersions(params: {
     try {
       onLog(`[FullTest] Discovering Fabric-supported versions...`);
       fabricVersions = await getFabricSupportedVersions({
-        getVersionList: async () => {
-          const list = await versionLists.getVersionList();
-          return { versions: list.versions as VersionEntry[] };
-        },
+        getVersionList: async () => ({ versions: manifestVersions }),
       });
       onLog(`[FullTest] Found ${fabricVersions.length} Fabric-supported versions`);
     } catch (e: unknown) {
