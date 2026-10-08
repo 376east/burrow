@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- TOML-парсер метаданных модов обновлён до исправленной ветки 1.9: устранён известный квадратичный разбор плоских ключей ([GHSA-r4xh-jqrq-34v2](https://github.com/advisories/GHSA-r4xh-jqrq-34v2)).
+
 - Поиск Fabric в installation harness использует уже полученный Minecraft manifest выбранного провайдера, без повторного запроса через провайдера по умолчанию.
 
 - Source smoke для выбранного этапа Fabric запускает Fabric и требует отдельного сигнала загрузчика вместе с графикой и ресурсами; успешная Vanilla-установка больше не подменяет неудачный Fabric-запуск.
@@ -28,6 +30,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Mod metadata uses the patched TOML parser 1.9, removing the known quadratic parsing of flat keys ([GHSA-r4xh-jqrq-34v2](https://github.com/advisories/GHSA-r4xh-jqrq-34v2)).
 
 - Fabric discovery in the installation harness reuses the Minecraft manifest from the selected provider instead of requesting it again through the default provider.
 
