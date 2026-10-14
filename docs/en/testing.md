@@ -104,9 +104,9 @@ This harness requires Node 24, Java/runtime downloads, network access, disk spac
 
 ## CI and release gates
 
-`.github/workflows/ci.yml` runs on `main` pushes and pull requests. It executes the default verification, a packaging build, and the separate macOS Chromium visual job.
+[CI](../../.github/workflows/ci.yml) runs on pushes to `main`, pull requests targeting `main`, and manual `workflow_dispatch`. Topic branch pushes do not start a separate run. The `Shared quality contract` and `Visual regression (macOS Chromium)` jobs keep their verification commands; each has a 30-minute timeout, the token has only `contents: read`, and a new run cancels the previous run for the same branch or PR. Results remain in job logs; diagnostic artifacts upload only on failure and expire after 7 days.
 
-`.github/workflows/release.yml` validates the version, runs tests/lint/type/contracts/IPC/audit and a Linux build smoke, then builds Windows, Linux, and macOS artifacts independently. It publishes one GitHub Release only if every platform succeeds.
+[Release](../../.github/workflows/release.yml) runs only by manual dispatch with a version and the exact `main` SHA; pushes to `main` do not publish anything. It checks source, builds Windows, Linux, and macOS packages, and verifies packages and evidence before publication through the `release-publication` environment. YAML does not configure required reviewers: manual approval depends on external environment settings. [Minecraft game smoke](../../.github/workflows/game-smoke.yml) also runs separately by manual dispatch.
 
 The release workflow does not run the full-install harness or the visual job itself. Before tagging a UI-heavy stable release, require a green `main` CI run and perform the bounded manual platform checks in the [release runbook](releasing.md).
 
