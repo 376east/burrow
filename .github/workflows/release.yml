@@ -75,6 +75,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: release-source-quality-evidence
           path: quality/evidence/
           if-no-files-found: ignore
@@ -170,6 +171,7 @@ jobs:
       - name: Upload platform artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: release-package-${{ runner.os }}
           path: |
             release/${{ needs.verify.outputs.version }}/*.dmg
@@ -184,6 +186,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: release-evidence-${{ matrix.os }}
           path: ${{ runner.temp }}/release-evidence/
           if-no-files-found: error
@@ -276,12 +279,14 @@ jobs:
       - name: Upload verified release evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: verified-release-evidence
           path: ${{ runner.temp }}/verified-release-evidence/
 
       - name: Upload only verified release assets
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: verified-release-assets
           path: ${{ runner.temp }}/release-assets/${{ needs.verify.outputs.version }}/
           if-no-files-found: error

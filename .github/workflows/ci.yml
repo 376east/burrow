@@ -38,6 +38,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: quality-contract-evidence
           path: quality/evidence/
           if-no-files-found: ignore
@@ -70,6 +71,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
+          retention-days: 7
           name: visual-regression-results
           path: test-results/
           if-no-files-found: ignore
