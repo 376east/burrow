@@ -77,7 +77,7 @@ export function ProductShell(props: AppLayoutProps) {
         <div className="next-safe-area" data-testid="app-layout-safe-area" data-shell-safe-area="shell-chrome" data-shell-platform={shellContract}>
           <header className="next-navigation">
             <button type="button" className="next-wordmark" onClick={() => navigate('play')} aria-label={t('next.brand.home')}>
-              <BurrowEasterEgg className="h-10 w-10" disableAnimations={disableAnimations} /><span>burrow<span className="next-channel">next</span></span>
+              <BurrowEasterEgg className="h-10 w-10" disableAnimations={disableAnimations} /><span>Burrow</span>
             </button>
             <nav aria-label={t('next.nav.label')}>
               {pages.map(({ id, icon: Icon, tour }) => (

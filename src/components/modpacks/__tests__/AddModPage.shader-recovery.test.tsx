@@ -103,7 +103,7 @@ describe('AddModPage shader recovery', () => {
     const guidance = screen.getByTestId('guided-content-shader-capability');
     expect(guidance.getAttribute('data-status')).toBe('supported');
     expect(guidance.textContent).toContain('Supported');
-    expect(guidance.textContent).toContain('not compatibility guarantees');
+    expect(guidance.textContent).toContain('do not guarantee shader compatibility');
   });
 
   it('keeps a partial provider commit visible and retries only the retained shader', async () => {

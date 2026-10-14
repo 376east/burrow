@@ -272,11 +272,11 @@ export function AppearancePresets({
           </div>}
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-wrap gap-2">
           <Button
             variant="secondary"
             onClick={() => fileInputRef.current?.click()}
-            className="gap-2 sm:flex-1"
+            className="flex-1 gap-2 min-w-fit"
           >
             <Upload aria-hidden="true" className="h-4 w-4" />
             {translateWithFallback(t, 'settings.import_theme', 'Import')}
@@ -288,7 +288,7 @@ export function AppearancePresets({
             className="hidden"
             onChange={handleImportTheme}
           />
-          <Button variant="secondary" onClick={handleExportTheme} className="gap-2 sm:flex-1">
+          <Button variant="secondary" onClick={handleExportTheme} className="flex-1 gap-2 min-w-fit">
             <Download aria-hidden="true" className="h-4 w-4" />
             {translateWithFallback(t, 'settings.export_theme', 'Export')}
           </Button>
@@ -298,7 +298,7 @@ export function AppearancePresets({
               onClick={resetAppearanceCustomizations}
               size="sm"
               aria-label={resetPresetA11yLabel}
-              className="sm:w-auto"
+              className="w-full"
             >
               {resetPresetLabel}
             </Button>

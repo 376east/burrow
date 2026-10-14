@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Игровая оболочка получила угловатые кнопки, компактный экран запуска и спокойные поверхности; убраны декоративные надписи и увеличение иллюстрации при наведении. Подсказки игры, сборок и тем переписаны на русском и английском. Кнопки импорта и экспорта темы переносятся без обрезания.
+
 - TOML-парсер метаданных модов обновлён до исправленной ветки 1.9: устранён известный квадратичный разбор плоских ключей ([GHSA-r4xh-jqrq-34v2](https://github.com/advisories/GHSA-r4xh-jqrq-34v2)).
 
 - Поиск Fabric в installation harness использует уже полученный Minecraft manifest выбранного провайдера, без повторного запроса через провайдера по умолчанию.
@@ -30,6 +32,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- The game shell uses angular controls, a compact launch screen, and quieter surfaces, with decorative labels and artwork hover zoom removed. Play, pack, and theme guidance is clearer in Russian and English. Theme import and export actions wrap without clipping.
 
 - Mod metadata uses the patched TOML parser 1.9, removing the known quadratic parsing of flat keys ([GHSA-r4xh-jqrq-34v2](https://github.com/advisories/GHSA-r4xh-jqrq-34v2)).
 

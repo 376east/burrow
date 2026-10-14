@@ -183,7 +183,7 @@ describe('ModpackCatalogControls shared contract', () => {
     expect(screen.getByTestId('remote-modpack-filters').getAttribute('data-catalog-controls')).toBe('shared');
     expect(within(searchRegion).getByTestId('remote-modpack-catalog-header')).toBeTruthy();
     expect(within(searchRegion).getByTestId('remote-modpack-primary-actions')).toBeTruthy();
-    expect(within(searchRegion).getByText('CurseForge browse unavailable')).toBeTruthy();
+    expect(within(searchRegion).getByText('CurseForge catalog is unavailable')).toBeTruthy();
     expect(controls.getAttribute('data-catalog-controls-layout')).toBe('library-toolbar');
     expect(controls.getAttribute('data-catalog-controls-breakpoint')).toBe('xl');
     expect(screen.queryByTestId('remote-modpack-summary')).toBeNull();

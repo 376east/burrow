@@ -39,7 +39,7 @@ const translations: Record<string, string> = {
   'modpacks.tab_resourcepacks': 'Resource Packs',
   'modpacks.tab_shaders': 'Shaders',
   'modpacks.tab_worlds': 'Worlds',
-  'modpacks.secondary_content_description': 'Manage mods, packs, shaders, and worlds from one consistent content workspace.',
+  'modpacks.secondary_content_description': 'Mods, resource packs, shaders, and worlds in this pack.',
 };
 
 function translate(key: string) {

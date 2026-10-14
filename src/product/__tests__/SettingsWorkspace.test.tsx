@@ -9,7 +9,7 @@ vi.mock('../../contexts/SettingsContext', () => ({
     t: (key: string) => ({
       'settings.title': 'Settings',
       'settings.workspace_title': 'Settings',
-      'settings.workspace_description': 'Personalize the launcher and manage its local data.',
+      'settings.workspace_description': 'Appearance, language, and launcher files.',
       'settings.tab_appearance': 'Appearance',
       'settings.tab_downloads': 'Downloads',
       'settings.tab_launcher': 'Launcher',

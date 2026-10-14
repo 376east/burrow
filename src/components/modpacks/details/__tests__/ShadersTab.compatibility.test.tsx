@@ -80,7 +80,7 @@ describe('ShadersTab compatibility guidance', () => {
     const guidance = screen.getByTestId('shader-capability-summary');
     expect(guidance.getAttribute('data-status')).toBe('supported');
     expect(guidance.textContent).toContain('Supported');
-    expect(guidance.textContent).toContain('Individual shader packs can still be incompatible');
+    expect(guidance.textContent).toContain('Check individual shader packs in the game for compatibility');
     expect(guidance.textContent?.toLowerCase()).not.toContain('guaranteed');
   });
 
@@ -97,7 +97,7 @@ describe('ShadersTab compatibility guidance', () => {
     const guidance = screen.getByTestId('shader-capability-summary');
     expect(guidance.getAttribute('data-status')).toBe('needs-setup');
     expect(guidance.textContent).toContain('Needs setup');
-    expect(guidance.textContent).toContain('does not see shader support configured');
+    expect(guidance.textContent).toContain('shader support is not configured');
     expect(guidance.textContent).not.toContain('Supported');
   });
 
@@ -151,7 +151,7 @@ describe('ShadersTab compatibility guidance', () => {
     const guidance = screen.getByTestId('shader-capability-summary');
     expect(guidance.getAttribute('data-status')).toBe('unverified');
     expect(guidance.textContent).toContain('Unverified');
-    expect(guidance.textContent).toContain('metadata');
+    expect(guidance.textContent).toContain('pack details');
     expect(guidance.textContent).not.toContain('Supported');
   });
 });

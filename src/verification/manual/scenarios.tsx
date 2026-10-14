@@ -1477,7 +1477,7 @@ function GuidedResourcePacksRecoveryScenario({ onReady }: ManualVerificationScen
 function GuidedShadersScenario({ onReady }: ManualVerificationScenarioProps) {
   useReadyByText(
     onReady,
-    ['Burrow', 'Shader runtime', 'Needs setup', 'Photon Bloom Lite', 'Have a local shader pack .zip already?'],
+    ['Burrow', 'Shader support', 'Needs setup', 'Photon Bloom Lite', 'Have a local shader pack .zip already?'],
     'Phase 35 guided shader browser proof rendered with needs-setup runtime guidance, shader-specific fixtures, and honest live-route capability copy.',
   );
 

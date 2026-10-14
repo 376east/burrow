@@ -370,14 +370,14 @@ test('settings tab orientation follows its responsive layout and keyboard direct
   await expect(page.locator('#settings-tab-launcher')).toBeFocused();
 });
 
-test('hero hover feedback keeps launch controls fixed and respects reduced motion', async ({ page }) => {
+test('play artwork loads and stays still while launch controls remain fixed', async ({ page }) => {
   await openProduct(page);
   const artwork = page.locator('.next-play-landscape');
   await expect(artwork).toHaveJSProperty('complete', true);
   expect(await artwork.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   const launchBefore = await page.getByTestId('play-workspace-launch').boundingBox();
   await page.locator('.next-play-heading').hover();
-  await expect.poll(() => artwork.evaluate((el) => getComputedStyle(el).transform)).not.toBe('none');
+  await expect.poll(() => artwork.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
   expect(await page.getByTestId('play-workspace-launch').boundingBox()).toEqual(launchBefore);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });

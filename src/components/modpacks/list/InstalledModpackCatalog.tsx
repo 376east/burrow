@@ -329,8 +329,7 @@ export function InstalledModpackCatalog({
         header={(
           <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div className="min-w-0 max-w-2xl">
-              <p className="kicker-label">{translateWithFallback(t, 'library.kicker', 'Your Minecraft')}</p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{translateWithFallback(t, 'library.title', 'Library')}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{translateWithFallback(t, 'library.title', 'Library')}</h1>
               <p className="mt-3 text-base leading-6 text-secondary">{translateWithFallback(t, 'library.description', 'Choose a pack to play, create a new world, or discover something different.')}</p>
             </div>
             <InstalledModpackActions onImportCode={onImportCode} onCreate={onCreate} onBrowse={onBrowse} />

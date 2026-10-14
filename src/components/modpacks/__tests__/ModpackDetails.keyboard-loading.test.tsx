@@ -142,7 +142,7 @@ describe('ModpackDetails keyboard, loading and ownership contract', () => {
 
     const error = await screen.findByTestId('modpack-details-load-error');
     expect(error.getAttribute('role')).toBe('alert');
-    const retry = screen.getByRole('button', { name: 'Retry details' });
+    const retry = screen.getByRole('button', { name: 'Retry loading' });
     retry.focus();
     expect(document.activeElement).toBe(retry);
     fireEvent.click(retry);

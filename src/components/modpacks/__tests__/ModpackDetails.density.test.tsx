@@ -167,7 +167,7 @@ describe('Modpack details density', () => {
     expect(tablist.className).toContain('flex');
     expect(tablist.className).toContain('flex-wrap');
     expect(tablist.className).not.toContain('grid');
-    expect(screen.queryByText('Manage mods, packs, shaders, and worlds from one consistent content workspace.')).toBeNull();
+    expect(screen.queryByText('Mods, resource packs, shaders, and worlds in this pack.')).toBeNull();
     expect(screen.getByRole('tab', { name: 'Resource packs' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: 'Screenshots' })).toBeTruthy();
     expect(tablist.closest('[data-testid="modpack-details-hero"]')).toBe(hero);

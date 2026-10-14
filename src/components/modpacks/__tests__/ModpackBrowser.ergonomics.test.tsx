@@ -118,7 +118,7 @@ describe('ModpackBrowser ergonomics', () => {
 
     await screen.findByText('Alpha Pack');
 
-    expect(screen.getByText('CurseForge browse unavailable')).toBeTruthy();
+    expect(screen.getByText('CurseForge catalog is unavailable')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Open recent modpack CurseForge Pack' })).toBeTruthy();
 
     await waitFor(() => {
@@ -187,7 +187,7 @@ describe('ModpackBrowser ergonomics', () => {
     expect(searchRegion.getAttribute('data-catalog-controls')).toBe('shared');
     expect(within(searchRegion).getByTestId('remote-modpack-catalog-header')).toBeTruthy();
     expect(within(searchRegion).getByTestId('remote-modpack-primary-actions').className).toContain('flex-wrap');
-    expect(within(searchRegion).getByText('CurseForge browse unavailable')).toBeTruthy();
+    expect(within(searchRegion).getByText('CurseForge catalog is unavailable')).toBeTruthy();
     expect(controlsGrid.getAttribute('data-catalog-controls-layout')).toBe('library-toolbar');
     expect(controlsGrid.className).toContain('xl:grid-cols-');
     expect(within(searchRegion).getByText('Search modpacks')).toBeTruthy();

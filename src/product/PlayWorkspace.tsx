@@ -29,6 +29,7 @@ import { CLASSIC_MODPACK_ID } from '../../shared/constants';
 import { toDisplayErrorMessage } from '../utils/displayError';
 
 export type PlayWorkspaceProps = Pick<AppLayoutProps, 'launch' | 'runtime' | 'actions'>;
+const playArtwork = new URL('../../public/burrow-campfire.webp', import.meta.url).href;
 
 function text(t: (key: string) => string, key: string, fallback: string) {
   const translated = t(key);
@@ -117,13 +118,14 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
     <main className="h-full overflow-y-auto" aria-label={text(t, 'play_workspace.title', 'Играть')}>
       <div className="next-play-body mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
         <header className="next-play-heading">
-          <img src="./burrow-campfire.webp" alt="" className="next-play-landscape" fetchPriority="high" />
           <div className="next-play-hero-copy">
-            <p className="next-hero-kicker">{text(t, 'play_workspace.kicker', 'Minecraft launcher')}</p>
-            <h1>{text(t, 'play_workspace.title', 'Играть')}</h1>
+            <div className="next-play-title-row">
+              <h1>{text(t, 'play_workspace.title', 'Играть')}</h1>
+              <span className="next-game-edition">{text(t, 'play_workspace.kicker', 'Minecraft Java Edition')}</span>
+            </div>
             <p className="next-hero-intro">{text(t, 'play_workspace.intro', 'Выберите версию и профиль, затем запустите игру.')}</p>
-            <span className="next-edition-badge">Java Edition</span>
           </div>
+          <img src={playArtwork} alt="" className="next-play-landscape" fetchPriority="high" />
         </header>
 
         <section className="next-launch-panel surface-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
@@ -197,10 +199,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
           </button>
           <div id={advancedId} className="next-disclosure" data-open={advancedOpen} data-motion={!disableAnimations} inert={!advancedOpen}>
           <div className="min-h-0 overflow-hidden"><div className="pt-5">
-          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-            <div>
-              <p className="kicker-label">{text(t, 'play_workspace.configuration_kicker', 'Configuration')}</p>
-            </div>
+          <div className="mb-4 flex justify-end">
             <Button variant="ghost" size="sm" onClick={actions.onShowSettings} disabled={busy}>{text(t, 'general.settings', 'Настройки')}</Button>
           </div>
           <GameTab
@@ -232,8 +231,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
         {runtimeSummary ? (
           <section className="next-content-section" aria-labelledby="play-workspace-content">
             <div className="mb-4">
-              <p className="kicker-label">{text(t, 'play_workspace.content_kicker', 'Library')}</p>
-              <h2 id="play-workspace-content" className="mt-1 text-xl font-semibold text-foreground">{text(t, 'dashboard.content', 'Контент')}</h2>
+              <h2 id="play-workspace-content" className="text-xl font-semibold text-foreground">{text(t, 'dashboard.content', 'Контент')}</h2>
             </div>
             <ClassicContentTabs
               presentation="inline"

@@ -58,7 +58,7 @@ describe('buildModpackRuntimeSummary', () => {
       warnings: [],
     });
     expect(getModpackShaderCapabilityLabel(summary.shaderCapability.status, t)).toBe('Supported');
-    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('Individual shader packs can still be incompatible');
+    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('Check individual shader packs in the game for compatibility');
     expect(getModpackRuntimeLoaderLabel(summary, t)).toBe('Forge 47.2.0');
   });
 
@@ -87,7 +87,7 @@ describe('buildModpackRuntimeSummary', () => {
       warnings: [],
     });
     expect(getModpackShaderCapabilityLabel(summary.shaderCapability.status, t)).toBe('Unverified');
-    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('metadata');
+    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('pack details');
     expect(getModpackRuntimeLoaderLabel(summary, t)).toBe('Fabric');
   });
 
@@ -157,6 +157,6 @@ describe('buildModpackRuntimeSummary', () => {
       warnings: [],
     });
     expect(getModpackShaderCapabilityLabel(summary.shaderCapability.status, t)).toBe('Needs setup');
-    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('does not see shader support configured');
+    expect(getModpackShaderCapabilityDescription(summary, t)).toContain('shader support is not configured');
   });
 });

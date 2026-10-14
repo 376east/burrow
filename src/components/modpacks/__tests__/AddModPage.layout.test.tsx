@@ -195,8 +195,8 @@ describe('AddModPage flow layout', () => {
     const guidance = screen.getByTestId('guided-content-shader-capability');
     expect(guidance.getAttribute('data-status')).toBe('needs-setup');
     expect(guidance.textContent).toContain('Needs setup');
-    expect(guidance.textContent).toContain('does not see shader support configured');
-    expect(guidance.textContent).toContain('not compatibility guarantees');
+    expect(guidance.textContent).toContain('shader support is not configured');
+    expect(guidance.textContent).toContain('do not guarantee shader compatibility');
   });
 
   it('does not render the local zip fallback card for the regular mod route', async () => {

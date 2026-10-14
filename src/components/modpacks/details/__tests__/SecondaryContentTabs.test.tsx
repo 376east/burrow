@@ -377,7 +377,7 @@ describe('secondary content tabs', () => {
   it('keeps the details mods tab filterable without breaking the refreshed surface copy', async () => {
     render(<ModsHarness />);
 
-    expect(screen.getByText('Review installed mods, toggle them quickly, or jump to their project pages for updates.')).toBeTruthy();
+    expect(screen.getByText('Enable or disable mods. Find updates on their project pages.')).toBeTruthy();
     expect(screen.getByText('Alpha Utilities')).toBeTruthy();
     expect(screen.getByText('Beta Tweaks')).toBeTruthy();
     expect(screen.getByText('Gamma Runtime')).toBeTruthy();
@@ -499,7 +499,7 @@ describe('secondary content tabs', () => {
     expect(await screen.findByText('Alpha World')).toBeTruthy();
     expect(screen.getByText('Saved Worlds')).toBeTruthy();
     expect(screen.getByTestId('worlds-summary').textContent).toContain(
-      'World actions stay local to this instance, so you can safely manage saves before launching.',
+      'These are the worlds in this pack. Make a backup before making changes.',
     );
     expect(screen.getByRole('button', { name: 'Update' })).toBeTruthy();
   });

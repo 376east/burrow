@@ -8,9 +8,13 @@ import { _electron } from 'playwright';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const output = path.resolve(process.argv[2] ?? 'work/demo');
-const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-demo-'));
 const version = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const dirty = Boolean(execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim());
+if (fs.existsSync(path.join(output, 'demo-recording.json'))) {
+  throw new Error('Choose a fresh output directory: this recording already exists');
+}
+const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'burrow-demo-'));
 fs.mkdirSync(path.join(output, 'raw-video'), { recursive: true });
 const packs = ['Мир с друзьями', 'Своя сборка', 'Vanilla +'];
 const records = packs.map((name, index) => {
@@ -40,9 +44,11 @@ async function click(locator) {
   await locator.click();
   await pause(700);
 }
-async function chapter(name) {
-  chapters.push({ name, seconds: (Date.now() - demoStart) / 1000 });
-  console.log(name);
+async function chapter(id, title, narration) {
+  const seconds = (Date.now() - demoStart) / 1000;
+  if (chapters.length) chapters.at(-1).end = seconds;
+  chapters.push({ id, title, narration, seconds });
+  console.log(title);
 }
 
 try {
@@ -70,56 +76,59 @@ try {
   await page.getByTestId('play-workspace-launch').waitFor();
   await pause(3000);
   await page.getByTestId('title-bar-brand-icon').evaluate(img => { if (!img.complete || img.naturalWidth === 0) throw new Error('Window icon failed to load'); });
+  await page.locator('.next-play-landscape').evaluate(img => { if (!img.complete || img.naturalWidth === 0) throw new Error('Play artwork failed to load'); });
   demoStart = Date.now();
-  await chapter('Играть');
+  await chapter('play', 'Версия и ник', 'Перед игрой выбираем версию Minecraft и ник. Сейчас покажем подготовку, без запуска игры.');
   await page.mouse.move(1200, 780);
-  await pause(3500);
-  await page.locator('.next-play-heading').hover();
-  await pause(1800);
+  await pause(1500);
+  await page.getByTestId('play-workspace-version').selectOption('1.21.1');
+  await pause(1000);
+  await page.getByTestId('play-workspace-nickname').fill('Steve');
+  await pause(5500);
   await page.screenshot({ path: path.join(output, 'final-play.png') });
 
-  await chapter('Библиотека');
+  await chapter('library', 'Сборки', 'В библиотеке выбираем свою сборку. В деталях можно проверить версию и загрузчик.');
   await click(page.getByTestId('next-nav-library'));
-  await page.getByRole('button', { name: 'Открыть детали: Мир с друзьями', exact: true }).waitFor();
-  await pause(3000);
+  const instance = page.getByRole('button', { name: 'Своя сборка', exact: true });
+  await click(instance);
+  if (await instance.getAttribute('aria-pressed') !== 'true') throw new Error('Demo instance was not selected');
+  await pause(2500);
   await page.screenshot({ path: path.join(output, 'final-library.png') });
-  await click(page.getByRole('button', { name: 'Открыть детали: Мир с друзьями', exact: true }));
+  await click(page.getByTestId('installed-modpack-actions-demo-1').getByRole('button').first());
   await page.getByTestId('modpack-details-tablist').waitFor();
-  await pause(2500);
+  await pause(4500);
   await page.screenshot({ path: path.join(output, 'final-details.png') });
-  await click(page.getByRole('tab', { name: 'Настройки', exact: true }));
-  await pause(2500);
 
-  await chapter('Вместе');
+  await chapter('settings', 'Настройки', 'Настройки сборки открываются здесь. Общие настройки лаунчера находятся в отдельном разделе.');
+  await click(page.locator('#modpack-details-tab-settings'));
+  await pause(4500);
+  await page.screenshot({ path: path.join(output, 'final-instance-settings.png') });
+  await click(page.getByTestId('next-nav-settings'));
+  await page.getByTestId('settings-workspace').waitFor();
+  await pause(5000);
+  await page.screenshot({ path: path.join(output, 'final-settings.png') });
+
+  await chapter('friends', 'Игра с друзьями', 'Для игры с друзьями откройте «Вместе». В инструкции есть шаги для хозяина мира и гостя. Подключение здесь не проверяем.');
   await click(page.getByTestId('next-nav-friends'));
+  await page.getByTestId('friends-workspace').waitFor();
   await pause(2500);
   await click(page.locator('.next-friends-guide summary'));
-  await pause(3000);
+  await pause(9000);
   await page.screenshot({ path: path.join(output, 'final-friends.png') });
 
-  await chapter('Свой Burrow');
-  await click(page.getByTestId('next-nav-settings'));
-  await pause(2800);
-  await page.screenshot({ path: path.join(output, 'final-settings.png') });
-  await click(page.getByRole('button', { name: 'Светлая', exact: true }));
-  await page.getByRole('combobox', { name: 'Готовые темы', exact: true }).selectOption('forest');
-  await pause(2500);
+  await chapter('return', 'Вернуться к игре', 'Возвращаемся к игре. Это демонстрационные сборки: игровые файлы не установлены.');
   await click(page.getByTestId('next-nav-play'));
-  await pause(2500);
-  await page.screenshot({ path: path.join(output, 'final-light.png') });
-  await click(page.getByTestId('next-nav-settings'));
-  await click(page.getByRole('button', { name: /Т[её]мная/, exact: true }));
-  await page.getByRole('combobox', { name: 'Готовые темы', exact: true }).selectOption('midnight');
-  await pause(900);
-  await click(page.getByTestId('next-nav-play'));
-  await pause(3500);
+  await page.getByTestId('play-workspace-launch').waitFor();
+  await pause(6500);
   const demoSeconds = (Date.now() - demoStart) / 1000;
+  chapters.at(-1).end = demoSeconds;
   const video = page.video();
   await app.close();
   app = null;
   const videoPath = await video.path();
   fs.writeFileSync(path.join(output, 'demo-recording.json'), JSON.stringify({
-    version, commit,
+    schemaVersion: 2, version, commit, dirty,
+    recordedAt: new Date().toISOString(), viewport: { width: 1280, height: 900 },
     type: 'production Electron renderer with real backend and isolated synthetic local instances',
     videoPath, demoSeconds, chapters, errors,
   }, null, 2));

@@ -15,7 +15,6 @@ export function FriendsWorkspace() {
   return (
     <div className="next-page" data-testid="friends-workspace">
       <header className="next-page-heading">
-        <p className="next-eyebrow">Burrow Link</p>
         <h1>{t('next.nav.friends')}</h1>
         <p>{t('next.friends.description')}</p>
       </header>
