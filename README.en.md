@@ -1,14 +1,14 @@
 # Burrow
 
-A desktop Minecraft launcher for solo play, your packs and playing with friends.
+A desktop Minecraft launcher for your own modpacks and playing with friends.
 
 <p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-52%20seconds-blue?style=flat" alt="demo: 52 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
 
-**[Demo](docs/assets/demo/burrow-next-demo.mp4) · [Run](#run) · [Architecture](#architecture) · [Plan](PLAN.md) · [For agents](AGENTS.md)**
+**[Demo](docs/assets/demo/burrow-next-demo.mp4) · [Features](#implemented-features) · [Run](#run) · [Documentation](docs/README.md#english) · [Limitations](#status-and-limitations)**
 
 ## Screenshots
 
-0.14.0, synthetic local packs; no real accounts or Minecraft launch. Demo frames were reviewed; human listening is still pending. See [demo checks](docs/assets/demo/provenance.json).
+The 0.14.0 interface: play, pack library, and light theme. The [52-second demo](docs/assets/demo/burrow-next-demo.mp4) shows screen navigation and settings. Screenshots and video use fictional local packs; they do not show real accounts or a Minecraft launch. [Demo contents and checks](docs/assets/demo/provenance.json).
 
 **Play: version, nickname and modloader in one place.**
 
@@ -26,15 +26,15 @@ A desktop Minecraft launcher for solo play, your packs and playing with friends.
 
 ## Implemented features
 
-- Game/modloader, memory and launch: [play UI](src/product/PlayWorkspace.tsx), [launcher](electron/services/launcher).
-- Local packs, import/export, catalog and contents: [pack UI](src/components/modpacks), [provider service](electron/services/mods/platform/modPlatformService.ts).
-- Mods, resource packs, shaders, worlds and screenshots: [services](electron/services).
-- Burrow Link connects an open LAN world; [Together](src/product/FriendsWorkspace.tsx) includes a guide. [Network service](electron/services/network/burrowLinkService.ts).
-- Themes, accents, saved themes and RU/EN: [settings](src/product/SettingsWorkspace.tsx), [context](src/contexts/SettingsContext.tsx).
+- Choose Minecraft and a modloader, enter a nickname, configure memory and Java, and launch the game: [Play screen](src/product/PlayWorkspace.tsx), [launcher service](electron/services/launcher).
+- Create a separate pack, install a Modrinth modpack or import a local archive, and export a pack: [library](src/components/modpacks), [catalog and installation](electron/services/mods/platform/modPlatformService.ts).
+- Manage mods, resource packs, shaders, worlds, and screenshots within a pack: [content services](electron/services).
+- Invite a friend to an open LAN world or join using a Burrow Link code: [Together screen](src/product/FriendsWorkspace.tsx), [connection service](electron/services/network/burrowLinkService.ts).
+- Choose light or dark mode, save your colors, and switch between Russian and English: [settings](src/product/SettingsWorkspace.tsx), [settings storage](src/contexts/SettingsContext.tsx).
 
 ## Run
 
-Node.js 24.x, npm 11.x and Git ([package.json](package.json)).
+Node.js 24.x, npm 11.x and Git: [versions](package.json), [.nvmrc](.nvmrc).
 
 ```bash
 git clone https://github.com/malyarq/burrow.git
@@ -43,9 +43,9 @@ npm ci
 npm run dev
 ```
 
-No keys required for ordinary use. [`.env.example`](.env.example) documents optional variables; Electron main does not load it automatically. See the [agent guide](docs/AGENT_GUIDE.md).
+This runs the current preview from source: `npm run dev` opens Electron through Vite ([configuration](vite.config.ts)). No API keys are required for ordinary use. Optional variables are listed in [`.env.example`](.env.example); commands and environment setup are in the [development guide](docs/en/development.md).
 
-[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) contains legacy-line packages, which differ from Next. They are not the current preview. `npm run build -- --publish never` builds locally without publishing.
+[Older installers in GitHub Releases](https://github.com/malyarq/burrow/releases/latest) belong to the previous product line and remain as an archive. Use the source instructions above for the current preview. `npm run build -- --publish never` builds locally without publishing.
 
 The default branch is `main`; the previous version is preserved in the archive branch. [Archive and rollback](docs/REPOSITORY.md).
 
@@ -67,15 +67,15 @@ Actions cross [IPC wrappers](src/services/ipc) and [contracts](shared/contracts)
 
 Version **0.14.0**, **preview, in development**: [package.json](package.json), [PLAN](PLAN.md).
 
-These are code paths, not guarantees for every game version, mod or router. The demo uses synthetic packs and does not launch Minecraft. The latest local Next installer smoke was on Windows; this version still needs macOS/Linux checks. Microsoft authentication and Quilt are unavailable. [Known issues](docs/en/known-issues.md).
+Microsoft authentication and Quilt are unavailable. The CurseForge catalog is disabled in official builds; archive imports that download mods need an available provider. Burrow Link depends on the network and needs verification on two devices. [Detailed limitations](docs/en/known-issues.md).
 
-The updated XMCL chain reports 0 vulnerabilities in the local production audit on 2026-10-04. Integrity and cancellation are checked with local HTTP fixtures; this does not establish installation compatibility with every game version. [Package provenance and repairs](vendor/README.md), [download fixtures](electron/services/runtime/__tests__/installerIntegrity.fixture.test.ts), [live CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml).
-
-No AI/LLM features run in the application. Guides, filters and validation use ordinary code; generated artwork and narration are production materials only: [PLAN](PLAN.md).
+[CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml) checks code and the macOS Chromium UI. This does not establish compatibility with every game version, modloader, or network; real game installations and Windows/macOS/Linux packages need separate checks. [Check coverage](docs/en/testing.md), [verified behavior and remaining work](PLAN.md).
 
 ## Development
 
-Read [AGENTS.md](AGENTS.md) and [PLAN.md](PLAN.md) before collaborating. Assign ownership/file boundaries; commit and push small, complete, checked changes to a task branch. [Demo reproduction](docs/DEMO.md), [documentation](docs/README.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [changelog](CHANGELOG.md).
+Commands, environment setup, and project structure are in the [development guide](docs/en/development.md) and [architecture](docs/en/architecture.md). Read [contributing](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) before making changes. [Demo reproduction](docs/DEMO.md).
+
+[Documentation](docs/README.md#english) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
 
 The existing [MIT license](LICENSE) applies to code. Minecraft and third-party components retain their own terms: [notices](THIRD_PARTY_NOTICES.md). Burrow is not affiliated with Mojang or Microsoft.
 

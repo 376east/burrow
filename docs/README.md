@@ -2,24 +2,24 @@
 
 Русский — основной язык документации проекта. Английские версии полностью описывают то же поведение; окончательным источником истины остаются код, тесты и файлы автоматизации.
 
+Текущий preview запускается из исходников по [README](../README.md#запуск). Установщики в GitHub Releases относятся к прежней линии; инструкции для скачанных пакетов ниже не заменяют запуск текущего preview. [Версии и архив](REPOSITORY.md).
+
 [Русский](#русский) · [English](#english)
 
 ## Русский
-
-- [Вход для нового агента](AGENT_GUIDE.md) - код, данные, API и проверки Next
-- [План для ревью](../PLAN.md) - реализованное, компромиссы, ближайшие задачи
-- [Демо и процесс записи](DEMO.md)
-- [Основная версия, архив и откат](REPOSITORY.md)
 
 ### Пользователям
 
 - [Руководство](ru/user-guide.md) — установка, первый запуск, обновления и сохранность данных
 - [Решение проблем](ru/troubleshooting.md) — запуск, Java, контент, сеть и обновления
-- [Известные проблемы](ru/known-issues.md) — подтверждённые ограничения стабильной версии
+- [Известные проблемы](ru/known-issues.md) — ограничения игры, аккаунтов, сборок и сети
 - [Приватность и аналитика](ru/privacy.md) — согласие, точный состав событий, хранение и обратная связь
 
 ### Разработчикам
 
+- [Обзор кода и проверок](AGENT_GUIDE.md)
+- [Реализованное и оставшиеся задачи](../PLAN.md)
+- [Демо и процесс записи](DEMO.md)
 - [Разработка](ru/development.md) — окружение, команды и рабочий процесс
 - [Тестирование](ru/testing.md) — unit, visual, installation, CI и release-проверки
 - [Архитектура](ru/architecture.md) — границы процессов и ответственность каталогов
@@ -30,6 +30,7 @@
 
 ### Мейнтейнерам
 
+- [Основная версия, архив и откат](REPOSITORY.md)
 - [Выпуск релиза](ru/releasing.md)
 - [Модель безопасности](ru/security.md) и [политика сообщения об уязвимостях](../SECURITY.md)
 - [Продуктовый ограничитель](ru/roadmap.md)
@@ -38,19 +39,20 @@
 
 ## English
 
-Next collaboration materials are in Russian: [agent guide](AGENT_GUIDE.md), [review plan](../PLAN.md), [demo reproduction](DEMO.md). Existing guides below retain their EN/RU mirrors.
-
 English documentation mirrors the Russian source and describes the same product behavior.
+
+Run the current preview from source using the [README](../README.en.md#run). GitHub Releases installers belong to the previous product line; the downloaded-package instructions below do not replace the current preview setup. [Versions and archive](REPOSITORY.md).
 
 ### Players
 
 - [User guide](en/user-guide.md) — installation, first launch, updates, and data safety
 - [Troubleshooting](en/troubleshooting.md) — common launch, Java, content, network, and update failures
-- [Known issues](en/known-issues.md) — confirmed limitations in the current stable release
+- [Known issues](en/known-issues.md) — game, account, pack, and network limitations
 - [Privacy and analytics](en/privacy.md) — opt-in telemetry, exact event fields, retention, and feedback behavior
 
 ### Contributors
 
+- [Code and verification overview](AGENT_GUIDE.md), [implemented behavior and remaining work](../PLAN.md), and [demo reproduction](DEMO.md) are maintained in Russian.
 - [Development](en/development.md) — environment, commands, and day-to-day workflow
 - [Testing](en/testing.md) — unit, visual, installation, CI, and release checks
 - [Architecture](en/architecture.md) — process boundaries and directory ownership
@@ -61,6 +63,7 @@ English documentation mirrors the Russian source and describes the same product 
 
 ### Maintainers
 
+- [Default branch, archive, and rollback](REPOSITORY.md)
 - [Release runbook](en/releasing.md)
 - [Security model](en/security.md) and [reporting policy](../SECURITY.md)
 - [Product gate](en/roadmap.md)

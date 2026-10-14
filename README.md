@@ -1,14 +1,14 @@
 # Burrow
 
-Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
+Настольный лаунчер Minecraft для своих сборок и игры с друзьями.
 
 <p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-52%20seconds-blue?style=flat" alt="demo: 52 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
 
-**[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Запуск](#запуск) · [Архитектура](#архитектура) · [План](PLAN.md) · [Для агента](AGENTS.md)**
+**[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Что работает](#что-работает) · [Запуск](#запуск) · [Документация](docs/README.md) · [Ограничения](#статус-и-ограничения)**
 
 ## Как выглядит
 
-0.14.0, синтетические локальные сборки. Без настоящих аккаунтов и запуска Minecraft. Кадры демо проверены; озвучка ещё не прослушана человеком. См. [проверки демо](docs/assets/demo/provenance.json).
+Интерфейс 0.14.0: игра, библиотека сборок и светлая тема. [Демо, 52 секунды](docs/assets/demo/burrow-next-demo.mp4) показывает переходы между экранами и настройки. На снимках и в ролике используются вымышленные локальные сборки; настоящие аккаунты и запуск Minecraft не показаны. [Состав и проверки демо](docs/assets/demo/provenance.json).
 
 **Играть: версия, никнейм и модлоадер рядом.**
 
@@ -26,11 +26,11 @@
 
 ## Что работает
 
-- Выбор Minecraft/модлоадера, память и запуск: [экран игры](src/product/PlayWorkspace.tsx), [launcher](electron/services/launcher).
-- Локальные сборки, импорт/экспорт, каталог и состав модпаков: [библиотека](src/components/modpacks), [провайдерный сервис](electron/services/mods/platform/modPlatformService.ts).
-- Моды, ресурспаки, шейдеры, миры и скриншоты: [сервисы контента](electron/services).
-- Burrow Link для подключения к открытому LAN-миру, с инструкцией рядом: [«Вместе»](src/product/FriendsWorkspace.tsx), [сеть](electron/services/network/burrowLinkService.ts).
-- Темы, акценты, сохранённые темы, русский и английский: [настройки](src/product/SettingsWorkspace.tsx), [контекст](src/contexts/SettingsContext.tsx).
+- Выбрать Minecraft и модлоадер, указать никнейм, настроить память и Java, запустить игру: [экран «Играть»](src/product/PlayWorkspace.tsx), [сервис запуска](electron/services/launcher).
+- Создать отдельную сборку, установить модпак из Modrinth или импортировать локальный архив; экспортировать сборку: [библиотека](src/components/modpacks), [каталог и установка](electron/services/mods/platform/modPlatformService.ts).
+- Управлять модами, ресурспаками, шейдерами, мирами и скриншотами внутри сборки: [сервисы контента](electron/services).
+- Пригласить друга в открытый LAN-мир или подключиться по коду Burrow Link: [экран «Вместе»](src/product/FriendsWorkspace.tsx), [сервис соединения](electron/services/network/burrowLinkService.ts).
+- Выбрать светлую или тёмную тему, сохранить свои цвета и переключить русский/английский: [настройки](src/product/SettingsWorkspace.tsx), [хранение настроек](src/contexts/SettingsContext.tsx).
 
 ## Запуск
 
@@ -43,9 +43,9 @@ npm ci
 npm run dev
 ```
 
-Для обычного запуска API-ключи не нужны. [`.env.example`](.env.example) описывает необязательные переменные; main не читает этот файл автоматически. Команды и окружение - во [входе для агента](docs/AGENT_GUIDE.md).
+Это запуск текущего preview из исходников: `npm run dev` открывает приложение Electron через Vite ([конфигурация](vite.config.ts)). Для обычного запуска API-ключи не нужны. Необязательные переменные описаны в [`.env.example`](.env.example), команды и окружение - в [руководстве по разработке](docs/ru/development.md).
 
-[GitHub Releases](https://github.com/malyarq/burrow/releases/latest) содержит пакеты прежней линии. Они не являются актуальной Next-preview; старые релизы оставлены как архив. Локальная сборка без публикации: `npm run build -- --publish never`.
+[Старые установщики в GitHub Releases](https://github.com/malyarq/burrow/releases/latest) относятся к прежней линии и оставлены как архив. Для текущего preview используйте исходники выше. Локальная сборка без публикации: `npm run build -- --publish never`.
 
 Основная ветка GitHub - `main`; прежняя версия сохранена в архивной ветке. [Архив и точная команда отката](docs/REPOSITORY.md).
 
@@ -67,15 +67,13 @@ flowchart LR
 
 Текущая версия **0.14.0**, стадия **preview, в разработке**: [package.json](package.json), [PLAN](PLAN.md).
 
-Это реализованные пути в коде, не обещание совместимости со всеми играми, модами и роутерами. Демо использует синтетические сборки без запуска Minecraft. Последний локальный smoke установщика Next выполнен на Windows; macOS/Linux требуют проверки этой версии. Microsoft-вход отсутствует, Quilt не поддерживается. [Остальные ограничения](docs/ru/known-issues.md).
+Microsoft-вход отсутствует, Quilt не поддерживается. Каталог CurseForge отключён в официальной сборке; импорт архивов с загрузкой модов требует доступного провайдера. Burrow Link зависит от сети и требует проверки на двух устройствах. [Подробные ограничения](docs/ru/known-issues.md).
 
-Цепочка XMCL обновлена: локальный production audit на 04.10.2026 сообщает 0 уязвимостей. Проверки целостности и отмены выполняются на локальном HTTP-стенде; это не подтверждает установку всех игровых версий. [Исходник и поправки пакета](vendor/README.md), [проверки загрузок](electron/services/runtime/__tests__/installerIntegrity.fixture.test.ts), [живой CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml).
-
-AI/LLM-функций в приложении нет. Инструкции, фильтры и проверки выполняются обычной логикой; генерация иллюстрации и озвучки используется только при подготовке материалов: [PLAN](PLAN.md).
+Автоматические проверки кода и macOS Chromium UI выполняет [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml). Совместимость всех игровых версий, модлоадеров и сетей этим не подтверждается; настоящие игровые установки и пакеты на Windows/macOS/Linux проверяются отдельно. [Состав проверок](docs/ru/testing.md), [проверенное и оставшиеся задачи](PLAN.md).
 
 ## Разработка
 
-Прочитай [AGENTS.md](AGENTS.md), затем [PLAN.md](PLAN.md). У задачи должен быть владелец и границы файлов. Небольшие законченные изменения коммитим и пушим в рабочую ветку; чужую работу не перезаписываем. [Как переснять демо](docs/DEMO.md).
+Команды, окружение и устройство проекта описаны в [руководстве по разработке](docs/ru/development.md) и [архитектуре](docs/ru/architecture.md). Перед изменениями прочитайте [правила участия](CONTRIBUTING.md) и [AGENTS.md](AGENTS.md). [Как переснять демо](docs/DEMO.md).
 
 [Документация](docs/README.md) · [Участие](CONTRIBUTING.md) · [Безопасность](SECURITY.md) · [Изменения](CHANGELOG.md)
 
