@@ -2,25 +2,25 @@
 
 Настольный лаунчер Minecraft для игры соло, своих сборок и игры с друзьями.
 
-<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
+<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-52%20seconds-blue?style=flat" alt="demo: 52 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
 
 **[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Запуск](#запуск) · [Архитектура](#архитектура) · [План](PLAN.md) · [Для агента](AGENTS.md)**
 
 ## Как выглядит
 
-Next.6, синтетические локальные сборки. Без настоящих аккаунтов и запуска Minecraft.
+0.14.0, синтетические локальные сборки. Без настоящих аккаунтов и запуска Minecraft. Кадры демо проверены; озвучка ещё не прослушана человеком. См. [проверки демо](docs/assets/demo/provenance.json).
 
 **Играть: версия, никнейм и модлоадер рядом.**
 
-<img src="docs/assets/screenshots/next/play.png" width="760" alt="Главный экран Burrow Next.6: панорама Minecraft и настройки запуска">
+<img src="docs/assets/screenshots/next/play.png" width="760" alt="Главный экран Burrow 0.14.0: панорама Minecraft и настройки запуска">
 
 **Библиотека: компактные карточки и фильтры сборок.**
 
-<img src="docs/assets/screenshots/next/library.png" width="760" alt="Библиотека Burrow Next.6 с синтетическими сборками">
+<img src="docs/assets/screenshots/next/library.png" width="760" alt="Библиотека Burrow 0.14.0 с синтетическими сборками">
 
 **Светлая тема: те же элементы и расположение.**
 
-<img src="docs/assets/screenshots/next/light.png" width="760" alt="Burrow Next.6 в тёплой светлой теме">
+<img src="docs/assets/screenshots/next/light.png" width="760" alt="Burrow 0.14.0 в светлой теме">
 
 [Источник снимков](docs/assets/screenshots/next/provenance.json). [Как переснять демо](docs/DEMO.md).
 

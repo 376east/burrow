@@ -1,16 +1,27 @@
 {
-  "version": "1.0.0-next.6",
-  "sourceCommit": "f74c19b783a8c78440824260ed752c5d16bb354e",
+  "version": "0.14.0",
+  "sourceCommit": "a9f519c155549e5e9c9078ea537b2068dfb2345e",
+  "recordingDirty": false,
+  "recordedAt": "2026-10-14T06:52:28.321Z",
   "file": "burrow-next-demo.mp4",
-  "sha256": "0235f8733ad0ed47b87c0806200e1b1e5941567926621604db1231f33d2c76a0",
-  "durationSeconds": 44.64,
-  "data": "synthetic local pack names and empty game directories; no real accounts",
-  "voice": "ru-RU-SvetlanaNeural",
-  "rate": "+5%",
+  "sha256": "1ec6d1b65aef30ff80bb0c309e6058197abf7b28a5a8c9a214b72fd395b27411",
+  "durationSeconds": 52.24,
+  "dimensions": [
+    1280,
+    1010
+  ],
+  "data": "synthetic local packs and empty game directories; no real accounts",
+  "voiceEngine": "windows",
+  "voice": "Microsoft Irina Desktop",
+  "rate": 1,
   "checks": [
     "audio present",
     "full decode",
     "voice intervals before scene changes",
-    "demuxed video bit-identical to silent demo"
-  ]
+    "native production artwork loaded",
+    "representative frames and chapter boundaries visually reviewed"
+  ],
+  "humanListening": false,
+  "fullPlaybackReviewed": false,
+  "visualFrameReview": true
 }

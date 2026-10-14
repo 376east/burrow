@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Демо и снимки пересняты из Burrow 0.14.0: подписи вынесены под окно, русская озвучка доступна через локальный Windows engine. В provenance отдельно отмечены проверки кадров и незавершённое человеческое прослушивание. Эталонные снимки macOS обновлены после просмотра новых текстов и кнопок темы.
+
 - Игровая оболочка получила угловатые кнопки, компактный экран запуска и спокойные поверхности; убраны декоративные надписи и увеличение иллюстрации при наведении. Подсказки игры, сборок и тем переписаны на русском и английском. Кнопки импорта и экспорта темы переносятся без обрезания.
 
 - TOML-парсер метаданных модов обновлён до исправленной ветки 1.9: устранён известный квадратичный разбор плоских ключей ([GHSA-r4xh-jqrq-34v2](https://github.com/advisories/GHSA-r4xh-jqrq-34v2)).
@@ -32,6 +34,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- The demo and screenshots use Burrow 0.14.0, with captions below the window and a local Windows option for Russian speech. Provenance separates frame checks from pending human listening. Reviewed macOS baselines reflect the new copy and wrapping theme actions.
 
 - The game shell uses angular controls, a compact launch screen, and quieter surfaces, with decorative labels and artwork hover zoom removed. Play, pack, and theme guidance is clearer in Russian and English. Theme import and export actions wrap without clipping.
 

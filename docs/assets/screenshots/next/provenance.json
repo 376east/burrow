@@ -1,19 +1,20 @@
 {
-  "version": "1.0.0-next.6",
-  "sourceCommit": "f74c19b783a8c78440824260ed752c5d16bb354e",
-  "data": "synthetic local instances; Player nickname; no installed game or accounts",
+  "version": "0.14.0",
+  "sourceCommit": "a9f519c155549e5e9c9078ea537b2068dfb2345e",
+  "recordingDirty": false,
+  "data": "synthetic local instances; Steve nickname; no installed game or accounts",
   "files": [
     {
       "file": "play.png",
-      "sha256": "991e5d1031f3998f0736d432b56a83487e68195eb299b4677f139d667e5a6d8d"
+      "sha256": "9c0f53c204d5022359679f1ec9fd66a32eea4403daddf640a4bcae513b5b23e9"
     },
     {
       "file": "library.png",
-      "sha256": "1d102dca2e9ded9130cabbc917cb1514fa3af89d287f570d0416f78a0cca1621"
+      "sha256": "8e77f8e6ca664eb2f7952ef35ea21b3f69e209ed8c0ab10faa0e952536dd1fd7"
     },
     {
       "file": "light.png",
-      "sha256": "a7bd78e5e85deb6e31504a6955cbf145708d75bfb50eb9733d33656b6bdd0aa4"
+      "sha256": "e776ddc92e05baf75155908c3c1855ba22a3790c2f185d7820c558e8a3fadb64"
     }
   ]
 }

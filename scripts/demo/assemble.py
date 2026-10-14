@@ -78,7 +78,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         start, end = stamp(scene['seconds']), stamp(scene['end'])
         lines.append(f'Dialogue: 1,{start},{end},Title,,0,0,0,,{{\\pos(32,907)}}{ass_text(scene["title"])}')
         # Full narration stays legible on two lines, independent of voice availability.
-        caption = '\n'.join(textwrap.wrap(scene['narration'], width=86))
+        caption_lines = textwrap.wrap(scene['narration'], width=86)
+        if len(caption_lines) == 2 and len(caption_lines[-1].split()) < 3:
+            caption_lines = textwrap.wrap(scene['narration'], width=math.ceil(len(scene['narration']) / 2) + 5)
+        caption = '\n'.join(caption_lines)
         if len(caption.splitlines()) > 2:
             raise ValueError(f'Shorten captions for {scene["id"]}')
         lines.append(f'Dialogue: 1,{start},{end},Caption,,0,0,0,,{{\\pos(32,946)}}{ass_text(caption)}')
@@ -128,17 +131,41 @@ async def assemble(args):
          '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(source)])
     duration = float(probe(source)['format']['duration'])
     timeline = []
+    engine, voice_name, rate = args.voice_engine, VOICE, RATE
+    windows_script = Path(__file__).with_name('windows-tts.ps1').resolve()
+
+    def windows_voice(text='', output=None):
+        if os.name != 'nt':
+            raise RuntimeError('Windows voice engine requires Windows and System.Speech')
+        request = work / 'windows-request.json'
+        request.write_text(json.dumps(dict(voice=voice_name, rate=args.windows_rate, text=text), ensure_ascii=False), encoding='utf8')
+        command = ['powershell.exe', '-NoProfile', '-NonInteractive', '-File', str(windows_script), '-RequestPath', str(request)]
+        command += ['-OutputPath', str(output)] if output else ['-InfoOnly']
+        return json.loads(subprocess.check_output(command, text=True, encoding='utf8'))
+
     if not args.silent:
-        import edge_tts
+        if engine == 'windows':
+            voice_name = 'Microsoft Pavel'
+            resolved = windows_voice()
+            voice_name, rate = resolved['voice'], resolved['rate']
+            print(f'Windows voice: {voice_name}, rate {rate}', flush=True)
+        else:
+            import edge_tts
         inputs, audio_filters, labels = ['-i', str(source)], [], []
         for index, scene in enumerate(record['chapters'], 1):
             start, end, text = scene['seconds'] + .25, scene['end'] - .2, scene['narration']
-            digest = hashlib.sha256(f'{VOICE}|{RATE}|{text}'.encode()).hexdigest()[:16]
-            voice = work / f'{digest}.mp3'
+            digest = hashlib.sha256(f'{engine}|{voice_name}|{rate}|{text}'.encode()).hexdigest()[:16]
+            suffix = '.wav' if engine == 'windows' else '.mp3'
+            voice = work / f'{digest}{suffix}'
             if not voice.exists():
-                temporary = voice.with_suffix('.partial.mp3')
+                temporary = voice.with_suffix(f'.partial{suffix}')
                 try:
-                    await edge_tts.Communicate(text, VOICE, rate=RATE).save(str(temporary))
+                    if engine == 'windows':
+                        actual = windows_voice(text, temporary)
+                        if actual != resolved:
+                            raise RuntimeError('Windows voice changed after cache-key resolution')
+                    else:
+                        await edge_tts.Communicate(text, voice_name, rate=rate).save(str(temporary))
                     probe(temporary)
                     temporary.replace(voice)
                 finally:
@@ -154,7 +181,8 @@ async def assemble(args):
             label = f'voice{index}'
             audio_filters.append(f'[{index}:a]atempo={speed:.6f},adelay={round(start*1000)}:all=1[{label}]')
             labels.append(f'[{label}]')
-            timeline.append(dict(scene=scene['id'], start=start, end=end, voice_end=start+seconds/speed, speed=speed, text=text))
+            timeline.append(dict(scene=scene['id'], start=start, end=end, voice_end=start+seconds/speed, voice_seconds=seconds, speed=speed, engine=engine, voice=voice_name, rate=rate, text=text))
+            print(f'{scene["id"]}: {seconds:.2f}s voice, {available:.2f}s available, speed {speed:.3f}', flush=True)
         audio_filters.append(''.join(labels)+f'amix=inputs={len(labels)}:normalize=0,loudnorm=I=-16:TP=-2:LRA=8,aresample=48000,apad[a]')
         run([*inputs, '-filter_complex', ';'.join(audio_filters), '-map', '0:v:0', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', str(duration), '-movflags', '+faststart', str(output)])
         result = probe(output)
@@ -165,7 +193,7 @@ async def assemble(args):
     run(['-i', str(output), '-f', 'null', '-'])
     (work / 'timeline.json').write_text(json.dumps(dict(
         recordingCommit=record['commit'], recordingDirty=record['dirty'],
-        voice=None if args.silent else VOICE, rate=None if args.silent else RATE,
+        voiceEngine=None if args.silent else engine, voice=None if args.silent else voice_name, rate=None if args.silent else rate,
         duration=duration, trimStart=trim_start, captionBand=BAND, decode='passed',
         humanListening=False, visualReview=False, scenes=timeline,
         output=str(output), sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
@@ -178,5 +206,7 @@ if __name__ == '__main__':
     parser.add_argument('directory', type=Path, nargs='?', default=Path('work/demo'))
     parser.add_argument('--silent', action='store_true', help='Keep chapter captions without sending narration to Edge TTS')
     parser.add_argument('--check', action='store_true', help='Validate metadata and local tools without rendering or voice generation')
+    parser.add_argument('--voice-engine', choices=['edge', 'windows'], default='edge', help='Explicit local Windows speech engine or default Edge TTS')
+    parser.add_argument('--windows-rate', type=int, choices=range(-10, 11), default=1, help='System.Speech rate; default 1')
     parser.add_argument('--font', default='Segoe UI' if os.name == 'nt' else 'DejaVu Sans', help='Installed font with Cyrillic support')
     asyncio.run(assemble(parser.parse_args()))

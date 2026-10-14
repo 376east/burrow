@@ -16,7 +16,9 @@
 | Светлый дверной проём | `#f4f1e9` |
 | Тёплая деталь проёма | `#d5a66b` |
 
-Канонический знак — пещера из блоков с факелом из `docs/assets/brand/burrow-app-icon.png`. Его вариант для интерфейса — `public/launcher-mark.png`, для приложения — `public/icon.png`, `public/icon.ico` и `public/icon-macos.png`. `src/product/BurrowSymbol.tsx` показывает изображение с постоянными цветами, независимо от темы и акцента. `public/burrow-next-landscape.png` остаётся иллюстрацией оболочки Next. Знак и название не требуют отдельной декоративной карточки.
+Канонический знак - пещера из блоков с факелом из `docs/assets/brand/burrow-app-icon.png`. Его вариант для интерфейса - `public/launcher-mark.png`, для приложения - `public/icon.png`, `public/icon.ico` и `public/icon-macos.png`. `src/product/BurrowSymbol.tsx` показывает изображение с постоянными цветами, независимо от темы и акцента. Экран игры использует `public/burrow-campfire.webp` рядом с заголовком. Знак и название не требуют отдельной декоративной карточки.
+
+Игровая оболочка использует углы 4 px, компактный заголовок и неподвижную иллюстрацию Minecraft. Не добавляйте рекламные надписи, карточку вокруг навигации и декоративное увеличение при наведении. Темы и акценты пользователя остаются настраиваемыми. См. [product.css](../../src/product/product.css) и [PlayWorkspace.tsx](../../src/product/PlayWorkspace.tsx).
 
 ### Семантические цвета
 

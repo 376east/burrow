@@ -16,7 +16,9 @@ The public product name is **Burrow** and the multiplayer feature is **Burrow Li
 | Light doorway | `#f4f1e9` |
 | Warm doorway detail | `#d5a66b` |
 
-The canonical mark is the voxel cave and torch in `docs/assets/brand/burrow-app-icon.png`. Its UI asset is `public/launcher-mark.png`; application icons are `public/icon.png`, `public/icon.ico`, and `public/icon-macos.png`. `src/product/BurrowSymbol.tsx` displays the image with fixed colors, independent of theme and accent. `public/burrow-next-landscape.png` remains the Next shell illustration. The mark and wordmark do not need an extra decorative card.
+The canonical mark is the voxel cave and torch in `docs/assets/brand/burrow-app-icon.png`. Its UI asset is `public/launcher-mark.png`; application icons are `public/icon.png`, `public/icon.ico`, and `public/icon-macos.png`. `src/product/BurrowSymbol.tsx` displays the image with fixed colors, independent of theme and accent. Play uses `public/burrow-campfire.webp` beside its heading. The mark and wordmark do not need an extra decorative card.
+
+The game shell uses 4 px corners, a compact heading, and a still Minecraft illustration. Avoid promotional kickers, card-shaped navigation wrappers, and decorative hover zoom. Existing themes and user accents remain configurable. See [product.css](../../src/product/product.css) and [PlayWorkspace.tsx](../../src/product/PlayWorkspace.tsx).
 
 ### Semantic colors
 

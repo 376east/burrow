@@ -2,25 +2,25 @@
 
 A desktop Minecraft launcher for solo play, your packs and playing with friends.
 
-<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-45%20seconds-blue?style=flat" alt="demo: 45 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
+<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-52%20seconds-blue?style=flat" alt="demo: 52 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
 
 **[Demo](docs/assets/demo/burrow-next-demo.mp4) · [Run](#run) · [Architecture](#architecture) · [Plan](PLAN.md) · [For agents](AGENTS.md)**
 
 ## Screenshots
 
-Next.6, synthetic local packs; no real accounts or Minecraft launch.
+0.14.0, synthetic local packs; no real accounts or Minecraft launch. Demo frames were reviewed; human listening is still pending. See [demo checks](docs/assets/demo/provenance.json).
 
 **Play: version, nickname and modloader in one place.**
 
-<img src="docs/assets/screenshots/next/play.png" width="760" alt="Burrow Next.6 play screen with a Minecraft panorama and launch controls">
+<img src="docs/assets/screenshots/next/play.png" width="760" alt="Burrow 0.14.0 play screen with a Minecraft panorama and launch controls">
 
 **Library: compact pack cards and filters.**
 
-<img src="docs/assets/screenshots/next/library.png" width="760" alt="Burrow Next.6 library with synthetic local packs">
+<img src="docs/assets/screenshots/next/library.png" width="760" alt="Burrow 0.14.0 library with synthetic local packs">
 
 **Light theme: the same controls and layout.**
 
-<img src="docs/assets/screenshots/next/light.png" width="760" alt="Burrow Next.6 play screen in a warm light theme">
+<img src="docs/assets/screenshots/next/light.png" width="760" alt="Burrow 0.14.0 play screen in the light theme">
 
 [Capture provenance](docs/assets/screenshots/next/provenance.json). [Demo reproduction](docs/DEMO.md).
 
