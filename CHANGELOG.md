@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- По кнопке на экране игры открывается авторская 3D-иллюстрация со сменой дня, биома и ракурса. Она не отображает настоящий мир или состав сборки, загружается отдельно и отключается при reduced motion или ошибке GPU.
+
 - Главный экран получил компоновку «Мастерской»: иллюстрация и запуск находятся в одном блоке, реальный контент - рядом. Быстрый слайдер памяти сохраняет штатную конфигурацию и блокирует запуск до окончания записи. Поиск установленных модов работает по названию и имени файла; повторные переключения и изменения во время запуска заблокированы.
 
 - Минимальная версия общего HTTP-клиента undici поднята до 7.30.1, исправляющей опубликованные после предыдущей сборки уязвимости, включая [аварийное завершение при некорректном Content-Encoding](https://github.com/advisories/GHSA-xjj6-f33q-929c). Это устраняет блокер обязательного production audit.
@@ -40,6 +42,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Play offers an optional authored 3D illustration with day, biome, and camera controls. It does not represent a real world or modpack contents, loads separately, and falls back to static artwork for reduced motion or GPU failure.
 
 - The Play workspace now combines its illustration and launch form with actual content alongside. A quick memory slider persists the canonical configuration and blocks launch until saving finishes. Installed-mod search matches names and filenames; repeated toggles and mutations during launch are blocked.
 

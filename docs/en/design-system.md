@@ -22,6 +22,8 @@ The game shell uses 4 px corners, a compact heading, and a still Minecraft illus
 
 Wide windows combine the illustration and form in one launch area with real game content alongside. Below 1100 px, content follows launch and advanced settings; below 600 px, the contained illustration sits above the form. Advanced settings precede content in DOM order. The quick memory slider persists through the canonical configuration command; launch stays disabled while saving, and failure is visible. See [PlayMemoryControl](../../src/product/PlayMemoryControl.tsx). Installed-mod search filters actual names and filenames without changing files on disk. Mod mutations are disabled during launch. See [ModsTab](../../src/components/modpacks/details/ModsTab.tsx). GSAP moves the selected loader frame over 180 ms without delaying its action. Initial positioning, reduced motion, and disabled animations are immediate; other transitions and scrolling keep their existing behavior. See [LoaderSelection.tsx](../../src/product/LoaderSelection.tsx).
 
+A button inside the artwork lazily opens an authored Three.js/R3F/drei scene. Its caption explicitly distinguishes it from a game world or modpack contents. Buttons change lighting, biome, and camera angle; OrbitControls supports manual rotation and zoom. There is no automatic rotation: visible Canvas uses `demand`, hidden Canvas uses `never`. Closing, reduced motion, or disabled animations restore the standard artwork and unmount Canvas; GPU failure shows the same artwork with a message. [PlayArtwork](../../src/product/PlayArtwork.tsx), [PlayWorldIllustration](../../src/product/PlayWorldIllustration.tsx).
+
 ### Semantic colors
 
 Tailwind names map to runtime CSS variables:

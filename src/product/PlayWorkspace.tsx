@@ -1,6 +1,7 @@
 import { PlayLaunchStatus } from './PlayLaunchStatus';
 import { LoaderSelection } from './LoaderSelection';
 import { PlayMemoryControl } from './PlayMemoryControl';
+import { PlayArtwork } from './PlayArtwork';
 import { resolvePlayLoaderVersions } from './playLoaderVersions';
 import { useCallback, useId, useMemo, useState } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
@@ -29,13 +30,20 @@ import { usePersistentModpackNavigation } from '../features/modpacks/navigation/
 import { OptifineToggle } from '../components/sidebar/OptifineToggle';
 import { CLASSIC_MODPACK_ID } from '../../shared/constants';
 import { toDisplayErrorMessage } from '../utils/displayError';
+import { getInstanceRamGb } from '../contexts/instances/utils/memory';
 
 export type PlayWorkspaceProps = Pick<AppLayoutProps, 'launch' | 'runtime' | 'actions'>;
-const playArtwork = new URL('../../public/burrow-campfire.webp', import.meta.url).href;
 
 function text(t: (key: string) => string, key: string, fallback: string) {
   const translated = t(key);
   return translated === key ? fallback : translated;
+}
+
+function CurrentGame({ name, version, loader, t }: { name?: string; version: string; loader: string; t: (key: string) => string }) {
+  return <div className="next-current-game">
+    <h2>{name ?? text(t, 'play_workspace.launch_title', 'Запуск игры')}</h2>
+    <span>Minecraft {version} · {loader === 'vanilla' ? 'Vanilla' : loader}</span>
+  </div>;
 }
 
 export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) {
@@ -132,13 +140,10 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
 
         <div className="next-play-workbench">
         <div className="next-play-overview">
-          <div className="next-play-artwork"><img src={playArtwork} alt="" className="next-play-landscape" fetchPriority="high" /></div>
+          <PlayArtwork disableAnimations={disableAnimations} t={t} />
 
         <section className="next-launch-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
-          <div className="next-current-game">
-            <h2>{config?.name ?? text(t, 'play_workspace.launch_title', 'Запуск игры')}</h2>
-            <span>Minecraft {launch.version} · {launch.loaderType === 'vanilla' ? 'Vanilla' : launch.loaderType}</span>
-          </div>
+          <CurrentGame name={config?.name} version={launch.version} loader={launch.loaderType} t={t} />
           <div className="next-launch-fields">
             <Select
               label={text(t, 'modpacks.minecraft_version', 'Версия Minecraft')}
@@ -179,7 +184,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               })}
             </div>
           </fieldset>
-          <PlayMemoryControl value={(config?.memory?.maxMb ?? 4096) / 1024} disabled={busy}
+          <PlayMemoryControl value={getInstanceRamGb(config)} disabled={busy}
             onChange={configCommands.setMemoryGb} onSavingChange={setMemorySaving} t={t} />
           <div className="min-w-0">
             <Button

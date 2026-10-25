@@ -1235,5 +1235,19 @@
     "play_workspace.memory_error": "Could not save memory. Try again; the previous value is unchanged.",
     "play_workspace.library_hint": "A different kind of adventure? Open your installed modpacks.",
     "modpacks.search_installed": "Search installed mods",
-    "modpacks.search_installed_empty": "No matches. Change your query or clear the search."
+    "modpacks.search_installed_empty": "No matches. Change your query or clear the search.",
+    "play_workspace.world_title": "Modpack illustration",
+    "play_workspace.world_open": "Open 3D illustration",
+    "play_workspace.world_close": "Close 3D illustration",
+    "play_workspace.world_disclaimer": "An authored illustration. This is not your game world or modpack contents.",
+    "play_workspace.world_unavailable": "3D is unavailable. The standard illustration is shown; game launch is unchanged.",
+    "play_workspace.world_loading": "Loading 3D illustration…",
+    "play_workspace.world_static": "Motion is disabled in settings. The standard illustration is shown.",
+    "play_workspace.world_scene_label": "A voxel illustration with a house, trees and a campfire. This is not a game world.",
+    "play_workspace.world_day": "Switch to day",
+    "play_workspace.world_night": "Switch to night",
+    "play_workspace.world_green": "Green valley",
+    "play_workspace.world_snow": "Snowy peaks",
+    "play_workspace.world_rotate": "Rotate view",
+    "play_workspace.world_controls_hint": "Rotate using the button or drag. Scroll to zoom; there is no automatic rotation."
 }

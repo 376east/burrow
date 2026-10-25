@@ -1,0 +1,106 @@
+{
+  "scope": "Licenses for package code rendered into the optional 3D illustration chunk and its newly introduced shared Scheduler runtime. Not a license declaration for Burrow or unused build-time packages.",
+  "buildEvidence": "Rollup generateBundle chunk.modules with renderedLength>0; source inventory work/workshop-transfer/world-rendered-packages.json.",
+  "shipping": "Vite copies public/licenses/3d-illustration into dist/licenses/3d-illustration; electron-builder.json5 includes dist in app.asar. Three/Fiber/Drei are build-only dependencies; unused MediaPipe/WASM/Draco packages are not production dependencies.",
+  "components": [
+    {
+      "name": "@babel/runtime",
+      "version": "7.29.2",
+      "license": "MIT",
+      "file": "babel-runtime-7.29.2.LICENSE.txt",
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+      "source": "node_modules/@babel/runtime/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "@react-three/drei",
+      "version": "10.7.9",
+      "license": "MIT",
+      "file": "react-three-drei-10.7.9.LICENSE.txt",
+      "sha256": "2e36b208b403882158daf95cae207087bbb830db4d434a79ebafffca177244c8",
+      "source": "node_modules/@react-three/drei/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "@react-three/fiber",
+      "version": "9.8.2",
+      "license": "MIT",
+      "file": "react-three-fiber-9.8.2.LICENSE.txt",
+      "sha256": "9c35b5de7b7493a707fffe4eb23bd2f7f449153c1911f7c6eefb4e591fd5349a",
+      "source": "https://github.com/pmndrs/react-three-fiber/blob/d74622ea8ed717f7212d7e19d65ff3e325508389/LICENSE",
+      "note": "The pinned npm package omits LICENSE. Exact upstream v9.8.2 release commit license retained."
+    },
+    {
+      "name": "its-fine",
+      "version": "2.1.1",
+      "license": "MIT",
+      "file": "its-fine-2.1.1.LICENSE.txt",
+      "sha256": "643123eeb38f154d93cb8323e1289a648d3f343b411a9340453c010e325d0c82",
+      "source": "node_modules/its-fine/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "react-use-measure",
+      "version": "2.1.7",
+      "license": "MIT",
+      "file": "react-use-measure-2.1.7.LICENSE.txt",
+      "sha256": "1f9038eff8dbd6505a26f9d6830cc6da2b87ab1a9305d1100884986e9c11a31a",
+      "source": "node_modules/react-use-measure/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "scheduler",
+      "version": "0.28.0",
+      "license": "MIT",
+      "file": "scheduler-0.28.0.LICENSE.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+      "source": "node_modules/@react-three/fiber/node_modules/scheduler/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "license": "MIT",
+      "file": "three-0.186.1.LICENSE.txt",
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+      "source": "node_modules/three/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "three-stdlib",
+      "version": "2.36.1",
+      "license": "MIT",
+      "file": "three-stdlib-2.36.1.LICENSE.txt",
+      "sha256": "28eb7edf059a39094aa3d169db1fec46ac4a6279c921a90f965828d92ec86e79",
+      "source": "node_modules/three-stdlib/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "use-sync-external-store",
+      "version": "1.7.0",
+      "license": "MIT",
+      "file": "use-sync-external-store-1.7.0.LICENSE.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+      "source": "node_modules/use-sync-external-store/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "zustand",
+      "version": "5.0.16",
+      "license": "MIT",
+      "file": "zustand-5.0.16.LICENSE.txt",
+      "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417",
+      "source": "node_modules/zustand/LICENSE",
+      "note": "Exact bytes from pinned node_modules package license."
+    },
+    {
+      "name": "React reconciler embedded in @react-three/fiber",
+      "version": "fiber9.8.2",
+      "license": "MIT",
+      "file": "react-reconciler-embedded-in-fiber-9.8.2.LICENSE.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+      "source": "node_modules/react/LICENSE",
+      "note": "The pinned Fiber dist and react-reconciler/index.js carry the Meta Platforms React MIT header; this is the exact corresponding Meta MIT text supplied with pinned React19.2.3."
+    }
+  ]
+}

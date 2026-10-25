@@ -1235,5 +1235,19 @@
     "play_workspace.memory_error": "Не удалось сохранить память. Повтори выбор; прежнее значение сохранено.",
     "play_workspace.library_hint": "Другой ритм игры? Открой свои установленные сборки.",
     "modpacks.search_installed": "Найти установленный мод",
-    "modpacks.search_installed_empty": "Совпадений нет. Измени запрос или очисти поиск."
+    "modpacks.search_installed_empty": "Совпадений нет. Измени запрос или очисти поиск.",
+    "play_workspace.world_title": "Иллюстрация сборки",
+    "play_workspace.world_open": "Открыть 3D-иллюстрацию",
+    "play_workspace.world_close": "Свернуть 3D-иллюстрацию",
+    "play_workspace.world_disclaimer": "Авторская иллюстрация. Это не мир игры и не содержимое сборки.",
+    "play_workspace.world_unavailable": "3D недоступно. Показана обычная иллюстрация; запуск игры работает как прежде.",
+    "play_workspace.world_loading": "Загружаем 3D-иллюстрацию…",
+    "play_workspace.world_static": "Движение отключено в настройках. Показана обычная иллюстрация.",
+    "play_workspace.world_scene_label": "Блочная иллюстрация с домом, деревьями и костром. Это не игровой мир.",
+    "play_workspace.world_day": "Включить день",
+    "play_workspace.world_night": "Включить ночь",
+    "play_workspace.world_green": "Зелёная долина",
+    "play_workspace.world_snow": "Снежные вершины",
+    "play_workspace.world_rotate": "Повернуть вид",
+    "play_workspace.world_controls_hint": "Поверни вид кнопкой или перетаскиванием. Колесо меняет масштаб; автоматического вращения нет."
 }

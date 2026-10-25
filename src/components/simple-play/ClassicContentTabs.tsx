@@ -111,6 +111,7 @@ export function ClassicContentTabs({
                   {vanillaModsHint}
                 </p>
               ) : null}
+              {isReadOnly && <p className="helper-text" role="status">{t('settings.runtime_locked')}</p>}
               <ModsTab
                 compact={presentation === 'inline'}
                 instanceId={instanceId}

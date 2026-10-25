@@ -183,7 +183,6 @@ export function ModsTab({
             </div>
 
             {mods.length > 0 && <Input label={t('modpacks.search_installed')} value={query} onChange={event => setQuery(event.target.value)} type="search" />}
-            {isReadOnly && <p className="helper-text" role="status">{t('settings.runtime_locked')}</p>}
             {loading && !hasLoaded ? (
                 <div className="surface-card flex min-h-40 items-center justify-center gap-3 rounded-xl p-5 text-sm text-secondary" role="status">
                     <LoadingSpinner size="sm" variant="accent" />
