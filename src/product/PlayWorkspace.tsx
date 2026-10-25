@@ -1,4 +1,5 @@
 import { PlayLaunchStatus } from './PlayLaunchStatus';
+import { LoaderSelection } from './LoaderSelection';
 import { resolvePlayLoaderVersions } from './playLoaderVersions';
 import { useCallback, useId, useMemo, useState } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
@@ -117,6 +118,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
   return (
     <main className="h-full overflow-y-auto" aria-label={text(t, 'play_workspace.title', 'Играть')}>
       <div className="next-play-body mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
+        <div className="next-play-overview">
         <header className="next-play-heading">
           <div className="next-play-hero-copy">
             <div className="next-play-title-row">
@@ -169,6 +171,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
           <fieldset className="min-w-0" data-testid="play-workspace-loader">
             <legend className="control-label mb-2">{text(t, 'general.modloader', 'Загрузчик модов')}</legend>
             <div className="next-loader-switch">
+              <LoaderSelection index={['vanilla', 'fabric', 'forge', 'neoforge'].indexOf(launch.loaderType)} disableAnimations={disableAnimations} />
               {(['vanilla', 'fabric', 'forge', 'neoforge'] as const).map((loader) => {
                 const supported = isLoaderSupported({
                   loaderType: loader, mcVersion: launch.version,
@@ -182,6 +185,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
             </div>
           </fieldset>
         </section>
+        </div>
 
         {!loaderSupported ? (
           <p className="border-l-2 border-border px-3 text-sm leading-6 text-secondary" role="status">
@@ -191,7 +195,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
 
         <PlayLaunchStatus runtime={runtime} showProgress={showProgress} t={t} />
 
-        <section className="next-advanced-section order-last border-t border-border/70 pt-6">
+        <section className="next-advanced-section border-y border-border/70 py-1">
           <button type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}
             aria-controls={advancedId} onClick={() => setAdvancedOpen((open) => !open)}>
             <ChevronDown className={advancedOpen ? 'rotate-180' : ''} aria-hidden="true" />

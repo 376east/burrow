@@ -56,11 +56,6 @@ export function ClassicContentTabs({
           role="tablist"
           aria-label={title}
           style={{ scrollbarWidth: 'none' }}
-          onWheel={(event) => {
-            if (event.deltaY === 0) return;
-            event.currentTarget.scrollLeft += event.deltaY;
-            event.preventDefault();
-          }}
         >
           {tabs.map((tab, index) => {
             const isActive = visibleActiveTab === tab.key;
@@ -115,6 +110,7 @@ export function ClassicContentTabs({
                 </p>
               ) : null}
               <ModsTab
+                compact={presentation === 'inline'}
                 instanceId={instanceId}
                 showAddButton
                 addDisabled={!showMods}

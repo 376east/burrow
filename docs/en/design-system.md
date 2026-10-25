@@ -20,6 +20,8 @@ The canonical mark is the voxel cave and torch in `docs/assets/brand/burrow-app-
 
 The game shell uses 4 px corners, a compact heading, and a still Minecraft illustration. Avoid promotional kickers, card-shaped navigation wrappers, and decorative hover zoom. Existing themes and user accents remain configurable. See [product.css](../../src/product/product.css) and [PlayWorkspace.tsx](../../src/product/PlayWorkspace.tsx).
 
+Wide windows combine the illustration and form into one launch area; narrow windows use a full-width form and hide the decorative illustration. Collapsed advanced settings precede pack content in both DOM and visual order. GSAP moves the selected loader frame over 180 ms without delaying its action. Initial positioning, reduced motion, and disabled animations are immediate; other transitions and scrolling keep their existing behavior. See [LoaderSelection.tsx](../../src/product/LoaderSelection.tsx).
+
 ### Semantic colors
 
 Tailwind names map to runtime CSS variables:

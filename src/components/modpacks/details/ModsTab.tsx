@@ -15,6 +15,7 @@ import { DegradedStateView } from '../../layout/DegradedStateView';
 import { toDisplayErrorMessage } from '../../../utils/displayError';
 
 export interface ModsTabProps {
+    compact?: boolean;
     instanceId: string;
     showAddButton?: boolean;
     addDisabled?: boolean;
@@ -34,6 +35,7 @@ function normalizeMods(list: SharedModEntry[]): ModEntry[] {
 }
 
 export function ModsTab({
+    compact = false,
     instanceId,
     showAddButton = false,
     addDisabled = false,
@@ -130,10 +132,11 @@ export function ModsTab({
                     <div className="min-w-0 flex-1 space-y-2">
                         <div className="kicker-label">{t('modpacks.tab_mods')}</div>
                         <div>
-                            <h3 className="text-lg font-semibold text-foreground">
+                            <h3 className={cn('font-semibold text-foreground', compact ? 'text-base' : 'text-lg')}>
                                 {t('modpacks.installed_mods')} {!loading && <span className="text-secondary">({mods.length})</span>}
                             </h3>
-                            <p className="text-sm text-secondary">{t('modpacks.mods_description')}</p>
+                            {!compact && <p className="text-sm text-secondary">{t('modpacks.mods_description')}</p>}
+                            {compact && !loading && mods.length > 0 && <p className="text-xs text-secondary">{enabledCount} {t('modpacks.enabled').toLowerCase()} / {mods.length}</p>}
                         </div>
                     </div>
                     <div className="flex shrink-0 flex-wrap items-center gap-2 self-start" data-testid="mods-toolbar">
@@ -150,7 +153,7 @@ export function ModsTab({
                     </div>
                 </div>
 
-                {!loading && mods.length > 0 && (
+                {!compact && !loading && mods.length > 0 && (
                     <div className="flex flex-wrap items-center gap-3 border-t border-border/70 pt-4 text-sm text-secondary">
                         <span>{t('modpacks.mods_manage_hint')}</span>
                         <span className="text-foreground">
@@ -184,7 +187,7 @@ export function ModsTab({
                     title={t('modpacks.no_mods_installed')}
                     description={t('modpacks.mods_empty_hint')}
                     footer={showAddButton ? (
-                        <Button variant="primary" size="sm" onClick={() => setShowAddModModal(true)}>
+                        <Button variant="primary" size="sm" disabled={addDisabled} onClick={() => setShowAddModModal(true)}>
                             <PackagePlus className="h-4 w-4" />
                             {t('modpacks.add_mod_btn')}
                         </Button>
