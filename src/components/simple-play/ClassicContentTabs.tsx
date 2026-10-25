@@ -16,6 +16,7 @@ export interface ClassicContentTabsProps {
   runtimeSummary: ModpackRuntimeSummary;
   onOpenGuidedContent: (contentType: 'resourcepack' | 'shader') => void;
   presentation?: 'disclosure' | 'inline';
+  isReadOnly?: boolean;
 }
 
 export function ClassicContentTabs({
@@ -24,6 +25,7 @@ export function ClassicContentTabs({
   runtimeSummary,
   onOpenGuidedContent,
   presentation = 'disclosure',
+  isReadOnly = false,
 }: ClassicContentTabsProps) {
   const { t } = useSettings();
   const [activeTab, setActiveTab] = useState<ContentTab>('mods');
@@ -113,7 +115,8 @@ export function ClassicContentTabs({
                 compact={presentation === 'inline'}
                 instanceId={instanceId}
                 showAddButton
-                addDisabled={!showMods}
+                addDisabled={!showMods || isReadOnly}
+                isReadOnly={isReadOnly}
                 defaultMCVersion={runtimeSummary.minecraftVersion}
                 defaultLoader={runtimeSummary.modLoader?.type ?? 'vanilla'}
               />

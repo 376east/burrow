@@ -1,5 +1,6 @@
 import { PlayLaunchStatus } from './PlayLaunchStatus';
 import { LoaderSelection } from './LoaderSelection';
+import { PlayMemoryControl } from './PlayMemoryControl';
 import { resolvePlayLoaderVersions } from './playLoaderVersions';
 import { useCallback, useId, useMemo, useState } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
@@ -40,6 +41,7 @@ function text(t: (key: string) => string, key: string, fallback: string) {
 export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) {
   const { t, getAccentStyles, disableAnimations } = useSettings();
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [memorySaving, setMemorySaving] = useState(false);
   const advancedId = useId();
   const { setMode } = useUIMode();
   const effectiveInstance = useEffectiveInstance();
@@ -48,7 +50,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
   const { invalidateInstance } = useInstanceInvalidation();
   const { forgeVersions, fabricVersions, neoForgeVersions, optiFineVersions } = useModSupportedVersions();
   const modpackNavigation = usePersistentModpackNavigation();
-  const busy = runtime.isLaunching;
+  const busy = runtime.isLaunching || memorySaving;
   const config = effectiveInstance.status === 'ready' ? effectiveInstance.data.snapshot : null;
   const runtimeSummary = useMemo(() => (
     config ? buildModpackRuntimeSummary({ config, optiFineVersions }) : null
@@ -118,7 +120,6 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
   return (
     <main className="h-full overflow-y-auto" aria-label={text(t, 'play_workspace.title', 'Играть')}>
       <div className="next-play-body mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
-        <div className="next-play-overview">
         <header className="next-play-heading">
           <div className="next-play-hero-copy">
             <div className="next-play-title-row">
@@ -127,10 +128,17 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
             </div>
             <p className="next-hero-intro">{text(t, 'play_workspace.intro', 'Выберите версию и профиль, затем запустите игру.')}</p>
           </div>
-          <img src={playArtwork} alt="" className="next-play-landscape" fetchPriority="high" />
         </header>
 
-        <section className="next-launch-panel surface-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
+        <div className="next-play-workbench">
+        <div className="next-play-overview">
+          <div className="next-play-artwork"><img src={playArtwork} alt="" className="next-play-landscape" fetchPriority="high" /></div>
+
+        <section className="next-launch-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
+          <div className="next-current-game">
+            <h2>{config?.name ?? text(t, 'play_workspace.launch_title', 'Запуск игры')}</h2>
+            <span>Minecraft {launch.version} · {launch.loaderType === 'vanilla' ? 'Vanilla' : launch.loaderType}</span>
+          </div>
           <div className="next-launch-fields">
             <Select
               label={text(t, 'modpacks.minecraft_version', 'Версия Minecraft')}
@@ -152,20 +160,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               placeholder="Steve"
               data-testid="play-workspace-nickname"
             />
-          <div className="min-w-0">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={runtime.onLaunch}
-              disabled={!canLaunch}
-              progress={showProgress ? runtime.progress : undefined}
-              className="w-full"
-              data-testid="play-workspace-launch"
-            >
-              <Play className="h-5 w-5" fill="currentColor" />
-              {busy ? actionLabel : text(t, 'general.play', 'Играть')}
-            </Button>
-          </div>
+
           </div>
           {launch.isOffline ? <p className="text-right text-xs text-secondary">{text(t, 'general.offline', 'Офлайн')}</p> : null}
           <fieldset className="min-w-0" data-testid="play-workspace-loader">
@@ -184,8 +179,22 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               })}
             </div>
           </fieldset>
-        </section>
-        </div>
+          <PlayMemoryControl value={(config?.memory?.maxMb ?? 4096) / 1024} disabled={busy}
+            onChange={configCommands.setMemoryGb} onSavingChange={setMemorySaving} t={t} />
+          <div className="min-w-0">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={runtime.onLaunch}
+              disabled={!canLaunch}
+              progress={showProgress ? runtime.progress : undefined}
+              className="w-full"
+              data-testid="play-workspace-launch"
+            >
+              <Play className="h-5 w-5" fill="currentColor" />
+              {busy ? actionLabel : text(t, 'general.play', 'Играть')}
+            </Button>
+          </div>
 
         {!loaderSupported ? (
           <p className="border-l-2 border-border px-3 text-sm leading-6 text-secondary" role="status">
@@ -194,6 +203,8 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
         ) : null}
 
         <PlayLaunchStatus runtime={runtime} showProgress={showProgress} t={t} />
+        </section>
+        </div>
 
         <section className="next-advanced-section border-y border-border/70 py-1">
           <button type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}
@@ -239,6 +250,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
             </div>
             <ClassicContentTabs
               presentation="inline"
+              isReadOnly={busy}
               instanceId={effectiveInstance.data.id}
               showMods={Boolean(runtimeSummary.runtime.modLoader)}
               runtimeSummary={runtimeSummary}
@@ -246,6 +258,11 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
             />
           </section>
         ) : null}
+        </div>
+        <div className="next-play-library-link">
+          <p>{text(t, 'play_workspace.library_hint', 'Нужна другая сборка? Все установленные сборки находятся в библиотеке.')}</p>
+          <Button variant="secondary" size="sm" disabled={busy} onClick={() => setMode('modpacks')}>{text(t, 'next.nav.library', 'Библиотека')}</Button>
+        </div>
       </div>
     </main>
   );

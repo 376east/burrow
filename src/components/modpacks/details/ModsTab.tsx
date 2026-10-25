@@ -10,6 +10,7 @@ import { cn } from '../../../utils/cn';
 import { modNameToSlug } from '../../../utils/modSlug';
 import { AddModModal } from '../AddModModal';
 import { Button } from '../../ui/Button';
+import { Input } from '../../ui/Input';
 import { LoadingSpinner } from '../../ui/LoadingSpinner';
 import { DegradedStateView } from '../../layout/DegradedStateView';
 import { toDisplayErrorMessage } from '../../../utils/displayError';
@@ -19,6 +20,7 @@ export interface ModsTabProps {
     instanceId: string;
     showAddButton?: boolean;
     addDisabled?: boolean;
+    isReadOnly?: boolean;
     defaultMCVersion?: string;
     defaultLoader?: string;
     onUpdate?: () => void;
@@ -39,6 +41,7 @@ export function ModsTab({
     instanceId,
     showAddButton = false,
     addDisabled = false,
+    isReadOnly = false,
     defaultMCVersion,
     defaultLoader,
     onUpdate,
@@ -50,6 +53,11 @@ export function ModsTab({
     const [hasLoaded, setHasLoaded] = useState(false);
     const [loadError, setLoadError] = useState<unknown | null>(null);
     const [showAddModModal, setShowAddModModal] = useState(false);
+    const [query, setQuery] = useState('');
+    const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
+    const pending = useRef(new Set<string>());
+    const liveContext = useRef({ instanceId, isReadOnly });
+    liveContext.current = { instanceId, isReadOnly };
     const confirm = useConfirm();
     const toast = useToast();
     const onUpdateRef = useRef(onUpdate);
@@ -77,6 +85,7 @@ export function ModsTab({
 
     const handleRemoveMod = useCallback(
         async (mod: ModEntry) => {
+            if (isReadOnly || pending.current.has(mod.id)) return;
             const confirmed = await confirm.confirm({
                 title: t('modpacks.remove_mod_title'),
                 message: t('modpacks.remove_mod_confirm', { name: mod.name }),
@@ -85,7 +94,7 @@ export function ModsTab({
                 cancelText: t('general.cancel'),
             });
 
-            if (!confirmed) {
+            if (!confirmed || liveContext.current.instanceId !== instanceId || liveContext.current.isReadOnly) {
                 return;
             }
 
@@ -97,11 +106,14 @@ export function ModsTab({
                 toast.error(t('modpacks.remove_mod_error'));
             }
         },
-        [confirm, instanceId, loadMods, t, toast]
+        [confirm, instanceId, isReadOnly, loadMods, t, toast]
     );
 
     const handleModToggle = useCallback(
         async (mod: ModEntry) => {
+            if (isReadOnly || pending.current.has(mod.id)) return;
+            pending.current.add(mod.id);
+            setPendingIds(new Set(pending.current));
             const enabled = !mod.enabled;
 
             setMods((prev) => prev.map((entry) => (entry.id === mod.id ? { ...entry, enabled } : entry)));
@@ -112,9 +124,12 @@ export function ModsTab({
                 console.error('Error toggling mod:', error);
                 setMods((prev) => prev.map((entry) => (entry.id === mod.id ? { ...entry, enabled: !enabled } : entry)));
                 toast.error(t('modpacks.mod_toggle_error'));
+            } finally {
+                pending.current.delete(mod.id);
+                setPendingIds(new Set(pending.current));
             }
         },
-        [instanceId, t, toast]
+        [instanceId, isReadOnly, t, toast]
     );
 
     const handleOpenExternalLink = useCallback((url: string, context: string) => {
@@ -124,6 +139,10 @@ export function ModsTab({
     }, []);
 
     const enabledCount = useMemo(() => mods.filter((mod) => mod.enabled).length, [mods]);
+    const visibleMods = useMemo(() => {
+        const needle = query.trim().toLocaleLowerCase();
+        return mods.filter(mod => `${mod.name} ${mod.file.name}`.toLocaleLowerCase().includes(needle));
+    }, [mods, query]);
 
     return (
         <div className={cn('space-y-5', className)}>
@@ -141,7 +160,7 @@ export function ModsTab({
                     </div>
                     <div className="flex shrink-0 flex-wrap items-center gap-2 self-start" data-testid="mods-toolbar">
                         {showAddButton && (
-                            <Button variant="primary" size="sm" geometry="catalog-primary" className="whitespace-nowrap" onClick={() => setShowAddModModal(true)} disabled={loading || addDisabled}>
+                            <Button variant="primary" size="sm" geometry="catalog-primary" className="whitespace-nowrap" onClick={() => setShowAddModModal(true)} disabled={loading || addDisabled || isReadOnly}>
                                 <PackagePlus className="h-4 w-4" />
                                 {t('modpacks.add_mod_btn')}
                             </Button>
@@ -163,6 +182,8 @@ export function ModsTab({
                 )}
             </div>
 
+            {mods.length > 0 && <Input label={t('modpacks.search_installed')} value={query} onChange={event => setQuery(event.target.value)} type="search" />}
+            {isReadOnly && <p className="helper-text" role="status">{t('settings.runtime_locked')}</p>}
             {loading && !hasLoaded ? (
                 <div className="surface-card flex min-h-40 items-center justify-center gap-3 rounded-xl p-5 text-sm text-secondary" role="status">
                     <LoadingSpinner size="sm" variant="accent" />
@@ -187,15 +208,17 @@ export function ModsTab({
                     title={t('modpacks.no_mods_installed')}
                     description={t('modpacks.mods_empty_hint')}
                     footer={showAddButton ? (
-                        <Button variant="primary" size="sm" disabled={addDisabled} onClick={() => setShowAddModModal(true)}>
+                        <Button variant="primary" size="sm" disabled={addDisabled || isReadOnly} onClick={() => setShowAddModModal(true)}>
                             <PackagePlus className="h-4 w-4" />
                             {t('modpacks.add_mod_btn')}
                         </Button>
                     ) : undefined}
                 />
+            ) : visibleMods.length === 0 ? (
+                <p className="helper-text py-4" role="status">{t('modpacks.search_installed_empty')}</p>
             ) : (
                 <div className="space-y-3" role="list" aria-label={t('modpacks.installed_mods')}>
-                    {mods.map((mod) => (
+                    {visibleMods.map((mod) => (
                         <div
                             key={mod.id}
                             role="listitem"
@@ -255,6 +278,8 @@ export function ModsTab({
                                 <Button
                                     variant={mod.enabled ? 'primary' : 'secondary'}
                                     size="sm"
+                                    disabled={isReadOnly || pendingIds.has(mod.id)}
+                                    isLoading={pendingIds.has(mod.id)}
                                     onClick={() => void handleModToggle(mod)}
                                 >
                                     {mod.enabled ? t('general.disable') : t('general.enable')}
@@ -262,6 +287,7 @@ export function ModsTab({
                                 <Button
                                     variant="ghost"
                                     size="sm"
+                                    disabled={isReadOnly || pendingIds.has(mod.id)}
                                     className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                                     onClick={() => void handleRemoveMod(mod)}
                                     aria-label={t('modpacks.remove_mod_confirm', { name: mod.name })}
@@ -277,7 +303,7 @@ export function ModsTab({
             {showAddButton && (
                 <AddModModal
                     modpackId={instanceId}
-                    isOpen={showAddModModal}
+                    isOpen={showAddModModal && !isReadOnly && !addDisabled}
                     onClose={() => setShowAddModModal(false)}
                     onAdded={loadMods}
                     defaultMCVersion={defaultMCVersion}

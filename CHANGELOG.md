@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Главный экран получил компоновку «Мастерской»: иллюстрация и запуск находятся в одном блоке, реальный контент - рядом. Быстрый слайдер памяти сохраняет штатную конфигурацию и блокирует запуск до окончания записи. Поиск установленных модов работает по названию и имени файла; повторные переключения и изменения во время запуска заблокированы.
+
 - Минимальная версия общего HTTP-клиента undici поднята до 7.30.1, исправляющей опубликованные после предыдущей сборки уязвимости, включая [аварийное завершение при некорректном Content-Encoding](https://github.com/advisories/GHSA-xjj6-f33q-929c). Это устраняет блокер обязательного production audit.
 
 - Экран игры объединяет иллюстрацию и запуск в компактный блок. Расширенные настройки находятся над содержимым сборки; панель модов стала плотнее. Рамка выбранного загрузчика движется как слот инвентаря и учитывает reduced motion. Прокрутка над вкладками больше не перехватывается, а пустая Vanilla-сборка не предлагает доступную кнопку добавления мода.
@@ -38,6 +40,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- The Play workspace now combines its illustration and launch form with actual content alongside. A quick memory slider persists the canonical configuration and blocks launch until saving finishes. Installed-mod search matches names and filenames; repeated toggles and mutations during launch are blocked.
 
 - The shared undici HTTP client now requires 7.30.1, addressing advisories published after the previous build, including [a process crash on malformed Content-Encoding](https://github.com/advisories/GHSA-xjj6-f33q-929c). This clears the required production audit gate.
 

@@ -1166,9 +1166,9 @@
     "settings.save_theme": "Сохранить",
     "settings.rename_theme": "Переименовать",
     "settings.delete_theme": "Удалить",
-    "play_workspace.title": "Играть",
+    "play_workspace.title": "Твой мир ждёт.",
     "play_workspace.kicker": "Minecraft Java Edition",
-    "play_workspace.intro": "Выберите версию, укажите никнейм и запустите Minecraft.",
+    "play_workspace.intro": "Выбери версию, настрой игру и отправляйся в свой мир.",
     "play_workspace.launch_title": "Запуск игры",
     "play_workspace.vanilla": "Vanilla",
     "play_workspace.loader_unsupported": "Выбранный загрузчик не поддерживает эту версию Minecraft. Выберите другой загрузчик или версию.",
@@ -1229,5 +1229,11 @@
     "modpacks.contents_shader": "Шейдеры",
     "modpacks.contents_other": "Другие файлы",
     "modpacks.contents_empty": "В манифесте этой версии нет списка файлов.",
-    "modpacks.contents_truncated": "Показаны только первые 500 файлов."
+    "modpacks.contents_truncated": "Показаны только первые 500 файлов.",
+    "play_workspace.memory_hint": "Больше параметров памяти и Java - в расширенных настройках.",
+    "play_workspace.memory_saving": "Сохраняем память…",
+    "play_workspace.memory_error": "Не удалось сохранить память. Повтори выбор; прежнее значение сохранено.",
+    "play_workspace.library_hint": "Другой ритм игры? Открой свои установленные сборки.",
+    "modpacks.search_installed": "Найти установленный мод",
+    "modpacks.search_installed_empty": "Совпадений нет. Измени запрос или очисти поиск."
 }

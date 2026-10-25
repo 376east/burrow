@@ -7,6 +7,7 @@ import { PlayWorkspace, type PlayWorkspaceProps } from '../PlayWorkspace';
 const setVersion = vi.fn();
 const setNickname = vi.fn();
 const setLoader = vi.fn();
+const setMemoryGb = vi.fn();
 const setRuntimeMinecraft = vi.fn();
 const setRuntimeLoader = vi.fn();
 const invalidateInstance = vi.fn();
@@ -29,7 +30,7 @@ vi.mock('../../features/instances/hooks/useEffectiveInstance', () => ({
 vi.mock('../../features/instances/hooks/useInstanceConfigCommands', () => ({
   dispatchInstanceConfigCommand: (command: Promise<void>) => { void command; },
   useInstanceConfigCommands: () => ({
-    setMemoryGb: vi.fn(), setMinMemoryGb: vi.fn(), setVmOptions: vi.fn(), setGameExtraArgs: vi.fn(),
+    setMemoryGb, setMinMemoryGb: vi.fn(), setVmOptions: vi.fn(), setGameExtraArgs: vi.fn(),
     setGameResolution: vi.fn(), setAutoConnectServer: vi.fn(), setRuntimeMinecraft, setRuntimeLoader,
   }),
 }));
@@ -84,6 +85,7 @@ describe('PlayWorkspace', () => {
   beforeEach(() => {
     setVersion.mockReset(); setNickname.mockReset(); setLoader.mockReset();
     setRuntimeMinecraft.mockReset(); setRuntimeLoader.mockReset(); invalidateInstance.mockReset();
+    setMemoryGb.mockReset(); setMemoryGb.mockResolvedValue(undefined);
     navigate.mockReset(); setMode.mockReset();
     setRuntimeMinecraft.mockResolvedValue(undefined); setRuntimeLoader.mockResolvedValue(undefined);
     instanceState = {
@@ -154,4 +156,21 @@ describe('PlayWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Повторить' }));
     await waitFor(() => expect(invalidateInstance).toHaveBeenCalledWith('classic'));
   });
+  it('persists quick memory through the canonical command and locks launch until it settles', async () => {
+    let finish!: () => void;
+    setMemoryGb.mockImplementation(() => new Promise<void>(resolve => { finish = resolve; }));
+    renderWorkspace();
+    fireEvent.change(screen.getByRole('slider', { name: 'settings.ram' }), { target: { value: '8' } });
+    expect(setMemoryGb).toHaveBeenCalledWith(8);
+    expect(screen.getByTestId('play-workspace-launch')).toHaveProperty('disabled', true);
+    finish();
+    await waitFor(() => expect(screen.getByTestId('play-workspace-launch')).toHaveProperty('disabled', false));
+  });
+
+  it('opens the real library without inventing prototype collections', () => {
+    renderWorkspace();
+    fireEvent.click(screen.getByRole('button', { name: 'Библиотека' }));
+    expect(setMode).toHaveBeenCalledWith('modpacks');
+  });
+
 });

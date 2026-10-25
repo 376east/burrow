@@ -1166,9 +1166,9 @@
     "settings.save_theme": "Save",
     "settings.rename_theme": "Rename",
     "settings.delete_theme": "Delete",
-    "play_workspace.title": "Play",
+    "play_workspace.title": "Your world is waiting.",
     "play_workspace.kicker": "Minecraft Java Edition",
-    "play_workspace.intro": "Choose a version, enter your nickname, and launch Minecraft.",
+    "play_workspace.intro": "Choose a version, set up your game, and make yourself at home.",
     "play_workspace.launch_title": "Launch game",
     "play_workspace.vanilla": "Vanilla",
     "play_workspace.loader_unsupported": "The selected modloader does not support this Minecraft version. Choose another modloader or version.",
@@ -1229,5 +1229,11 @@
     "modpacks.contents_shader": "Shaders",
     "modpacks.contents_other": "Other included files",
     "modpacks.contents_empty": "This version’s manifest does not list included files.",
-    "modpacks.contents_truncated": "Only the first 500 included files are shown."
+    "modpacks.contents_truncated": "Only the first 500 included files are shown.",
+    "play_workspace.memory_hint": "More memory and Java options are in advanced settings.",
+    "play_workspace.memory_saving": "Saving memory…",
+    "play_workspace.memory_error": "Could not save memory. Try again; the previous value is unchanged.",
+    "play_workspace.library_hint": "A different kind of adventure? Open your installed modpacks.",
+    "modpacks.search_installed": "Search installed mods",
+    "modpacks.search_installed_empty": "No matches. Change your query or clear the search."
 }
