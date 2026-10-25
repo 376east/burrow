@@ -294,7 +294,7 @@ test('Product Next empty screenshots span the same width as the screenshot works
 
 test('Product Next keeps mod content mounted while switching Vanilla and Forge', async ({ page }) => {
   await openProduct(page);
-  const tabs = page.getByRole('tablist', { name:'Content',exact:true });
+  const tabs = page.getByRole('tablist', { name:'Mods and worlds',exact:true });
   const beforeTabs = await tabs.elementHandle();
   const list = page.getByRole('list', { name:'Installed Mods',exact:true });
   await expect(list).toBeVisible();
@@ -384,6 +384,46 @@ test('play artwork loads and stays still while launch controls remain fixed', as
   await expect.poll(() => artwork.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
   expect(parseFloat(await artwork.evaluate((el) => getComputedStyle(el).transitionDuration))).toBeLessThanOrEqual(.001);
 });
+
+test('game settings stay above installed content in visual and keyboard order', async ({ page }) => {
+  await openProduct(page, 1280, 900);
+  const settings = page.locator('.next-advanced-section');
+  const content = page.locator('.next-content-section');
+  expect((await settings.boundingBox())!.y).toBeLessThan((await content.boundingBox())!.y);
+  await expect(settings.getByRole('button', { name: 'Advanced settings', exact: true })).toBeInViewport();
+  expect(await settings.evaluate((node) => Boolean(node.compareDocumentPosition(document.querySelector('.next-content-section')!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+});
+
+test('vertical wheel over content tabs keeps scrolling the Play page', async ({ page }) => {
+  await openProduct(page, 420, 800);
+  const scroller = page.locator('.next-play-body').locator('..');
+  await page.getByRole('tablist', { name: 'Mods and worlds', exact: true }).hover();
+  const before = await scroller.evaluate(node => node.scrollTop);
+  await page.mouse.wheel(0, 300);
+  await expect.poll(() => scroller.evaluate(node => node.scrollTop)).toBeGreaterThan(before);
+});
+
+for (const reducedMotion of ['reduce', 'no-preference'] as const) {
+  test(`loader inventory selection follows rapid changes and resize with ${reducedMotion}`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion });
+    await openProduct(page, 1280, 900);
+    const loader = page.getByTestId('play-workspace-loader');
+    await loader.getByRole('button', { name: 'Forge', exact: true }).click();
+    await loader.getByRole('button', { name: 'Vanilla', exact: true }).click();
+    await loader.getByRole('button', { name: 'Fabric', exact: true }).click();
+    const selection = page.getByTestId('loader-selection');
+    const active = loader.getByRole('button', { name: 'Fabric', exact: true });
+    const aligned = async () => Math.abs((await selection.boundingBox())!.x - (await active.boundingBox())!.x);
+    await expect.poll(aligned).toBeLessThan(1);
+    await expect(active).toHaveAttribute('aria-pressed', 'true');
+    await page.setViewportSize({ width: 420, height: 900 });
+    await expect.poll(aligned).toBeLessThan(1);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await loader.getByRole('button', { name: 'Vanilla', exact: true }).click();
+    await expect.poll(async () => Math.abs((await selection.boundingBox())!.x - (await loader.getByRole('button', { name: 'Vanilla', exact: true }).boundingBox())!.x)).toBeLessThan(1);
+    await assertNoHorizontalOverflow(page);
+  });
+}
 
 test('pack information uses separate sections and a labeled theme-aware description', async ({ page }) => {
   await openProduct(page);

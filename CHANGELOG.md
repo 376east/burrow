@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Экран игры объединяет иллюстрацию и запуск в компактный блок. Расширенные настройки находятся над содержимым сборки; панель модов стала плотнее. Рамка выбранного загрузчика движется как слот инвентаря и учитывает reduced motion. Прокрутка над вкладками больше не перехватывается, а пустая Vanilla-сборка не предлагает доступную кнопку добавления мода.
+
 - Демо и снимки пересняты из Burrow 0.14.0: подписи вынесены под окно, русская озвучка доступна через локальный Windows engine. В provenance отдельно отмечены проверки кадров и незавершённое человеческое прослушивание. Эталонные снимки macOS обновлены после просмотра новых текстов и кнопок темы.
 
 - Игровая оболочка получила угловатые кнопки, компактный экран запуска и спокойные поверхности; убраны декоративные надписи и увеличение иллюстрации при наведении. Подсказки игры, сборок и тем переписаны на русском и английском. Кнопки импорта и экспорта темы переносятся без обрезания.
@@ -34,6 +36,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Play combines its artwork and controls into a compact launch area, with advanced settings above pack content and a denser mod toolbar. The selected loader frame moves like an inventory slot and respects reduced motion. Content tabs no longer intercept vertical scrolling, and empty Vanilla instances keep add-mod actions disabled.
 
 - The demo and screenshots use Burrow 0.14.0, with captions below the window and a local Windows option for Russian speech. Provenance separates frame checks from pending human listening. Reviewed macOS baselines reflect the new copy and wrapping theme actions.
 

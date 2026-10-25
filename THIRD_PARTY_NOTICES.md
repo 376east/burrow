@@ -25,6 +25,10 @@ Runtime and development dependencies are declared in `package.json` and resolved
 
 Before redistributing a release, generate or review the dependency license inventory for the exact package output; do not treat this summary as a complete machine-generated bill of materials.
 
+## GSAP
+
+Burrow uses GSAP **3.15.0** for the selected mod-loader inventory slot. Copyright (c) 2008-2026, GreenSock. GSAP is distributed under its [standard no-charge license](https://gsap.com/standard-license), not Burrow's MIT license. The official [3.13 announcement](https://gsap.com/blog/3-13/) describes free commercial use. Original copyright notices remain in the bundled library. Burrow does not include the React Bits components or Lenis.
+
 ## Minecraft and provider content
 
 Minecraft, Mojang, Microsoft, Modrinth, CurseForge, Java distributions, mods, modpacks, resource packs, shaders, and provider metadata retain their respective trademarks, copyrights, and distribution terms. Burrow is not affiliated with Mojang or Microsoft.

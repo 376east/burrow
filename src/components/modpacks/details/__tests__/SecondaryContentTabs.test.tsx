@@ -262,6 +262,14 @@ function ModsUnverifiedRuntimeHarness() {
 }
 
 describe('secondary content tabs', () => {
+  it('keeps every add-mod action disabled for an empty Vanilla instance', async () => {
+    instanceModsListMock.mockResolvedValue([]);
+    render(<ModsTab instanceId="classic" compact showAddButton addDisabled />);
+    await screen.findByText('No mods installed');
+    const actions = screen.getAllByRole('button', { name: /Add Mod/i });
+    expect(actions).toHaveLength(2);
+    for (const action of actions) expect(action).toHaveProperty('disabled', true);
+  });
   beforeEach(() => {
     cleanup();
     mockMatchMedia(false);
