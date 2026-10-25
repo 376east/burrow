@@ -2,46 +2,53 @@
 
 Настольный лаунчер Minecraft для своих сборок и игры с друзьями.
 
-<p><a href="PLAN.md"><img src="https://img.shields.io/badge/stage-preview-orange?style=flat" alt="stage: preview"></a> <a href="package.json"><img src="https://img.shields.io/badge/version-0.14.0-blue?style=flat" alt="version: 0.14.0"></a> <a href="docs/AGENT_GUIDE.md"><img src="https://img.shields.io/badge/stack-Electron%20%2B%20React%20%2B%20TypeScript-blue?style=flat" alt="stack: Electron + React + TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/badge/demo-52%20seconds-blue?style=flat" alt="demo: 52 seconds"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="license: MIT"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI: live workflow status"></a></p>
+<p><a href="#статус-и-ограничения"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81&amp;message=%D0%B2+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Статус: в разработке"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B5%D0%BA&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Стек: Electron · React · TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/static/v1?label=%D0%94%D0%B5%D0%BC%D0%BE&amp;message=00%3A52&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Демо: 00:52"></a></p>
 
-**[Демо](docs/assets/demo/burrow-next-demo.mp4) · [Что работает](#что-работает) · [Запуск](#запуск) · [Документация](docs/README.md) · [Ограничения](#статус-и-ограничения)**
+**[Скриншоты](#как-выглядит) · [Возможности](#что-работает) · [Запуск](#запуск) · [Архитектура](#архитектура) · [Ограничения](#статус-и-ограничения) · [Разработка](#разработка)**
 
 ## Как выглядит
 
-Интерфейс 0.14.0: игра, библиотека сборок и светлая тема. [Демо, 52 секунды](docs/assets/demo/burrow-next-demo.mp4) показывает переходы между экранами и настройки. На снимках и в ролике используются вымышленные локальные сборки; настоящие аккаунты и запуск Minecraft не показаны. [Состав и проверки демо](docs/assets/demo/provenance.json).
+<a href="docs/assets/readme/overview.svg"><img src="docs/assets/readme/overview.svg" alt="Обзор интерфейса Burrow" width="760"></a>
 
-**Играть: версия, никнейм и модлоадер рядом.**
+Запуск Minecraft, библиотека сборок и светлая тема. На снимках вымышленные локальные сборки; настоящие аккаунты и запуск игры не показаны. [Источник снимков](docs/assets/screenshots/next/provenance.json).
 
-<img src="docs/assets/screenshots/next/play.png" width="760" alt="Главный экран Burrow 0.14.0: панорама Minecraft и настройки запуска">
+**[Демо MP4](docs/assets/demo/burrow-next-demo.mp4)** · 00:52 · [Материалы демо](docs/DEMO.md)
 
-**Библиотека: компактные карточки и фильтры сборок.**
+<details>
+<summary>Ещё два экрана</summary>
 
-<img src="docs/assets/screenshots/next/library.png" width="760" alt="Библиотека Burrow 0.14.0 с синтетическими сборками">
+**Библиотека Burrow 0.14.0 с синтетическими сборками.**
 
-**Светлая тема: те же элементы и расположение.**
+<a href="docs/assets/screenshots/next/library.png"><img src="docs/assets/readme/screen-2.svg" alt="Библиотека Burrow 0.14.0 с синтетическими сборками" width="760"></a>
 
-<img src="docs/assets/screenshots/next/light.png" width="760" alt="Burrow 0.14.0 в светлой теме">
+**Burrow 0.14.0 в светлой теме.**
 
-[Источник снимков](docs/assets/screenshots/next/provenance.json). [Как переснять демо](docs/DEMO.md).
+<a href="docs/assets/screenshots/next/light.png"><img src="docs/assets/readme/screen-3.svg" alt="Burrow 0.14.0 в светлой теме" width="760"></a>
+
+</details>
 
 ## Что работает
 
-- Выбрать Minecraft и модлоадер, указать никнейм, настроить память и Java, запустить игру: [экран «Играть»](src/product/PlayWorkspace.tsx), [сервис запуска](electron/services/launcher).
-- Создать отдельную сборку, установить модпак из Modrinth или импортировать локальный архив; экспортировать сборку: [библиотека](src/components/modpacks), [каталог и установка](electron/services/mods/platform/modPlatformService.ts).
-- Управлять модами, ресурспаками, шейдерами, мирами и скриншотами внутри сборки: [сервисы контента](electron/services).
-- Пригласить друга в открытый LAN-мир или подключиться по коду Burrow Link: [экран «Вместе»](src/product/FriendsWorkspace.tsx), [сервис соединения](electron/services/network/burrowLinkService.ts).
-- Выбрать светлую или тёмную тему, сохранить свои цвета и переключить русский/английский: [настройки](src/product/SettingsWorkspace.tsx), [хранение настроек](src/contexts/SettingsContext.tsx).
+- **Основное:** выбрать Minecraft и модлоадер, указать никнейм, настроить память и Java, запустить игру. [Экран запуска](src/product/PlayWorkspace.tsx), [сервис запуска](electron/services/launcher).
+- **Дополнительно:** создавать и импортировать сборки, устанавливать модпаки Modrinth, управлять модами, ресурспаками, шейдерами, мирами и скриншотами, экспортировать сборку и подключаться по Burrow Link; менять тему и язык. [Библиотека](src/components/modpacks), [контент](electron/services), [совместная игра](src/product/FriendsWorkspace.tsx), [настройки](src/product/SettingsWorkspace.tsx).
+- **Данные:** локальные сборки, настройки и журнал операций; UI обращается к сервисам Electron через типизированный IPC. [Архитектура](docs/ru/architecture.md).
 
 ## Запуск
 
+### Требования
+
 Нужны Node.js 24.x, npm 11.x и Git: [версии](package.json), [.nvmrc](.nvmrc).
 
-```bash
+### Быстрый старт
+
+```powershell
 git clone https://github.com/malyarq/burrow.git
 cd burrow
 npm ci
 npm run dev
 ```
+
+### Данные и доступ
 
 Это запуск текущего preview из исходников: `npm run dev` открывает приложение Electron через Vite ([конфигурация](vite.config.ts)). Для обычного запуска API-ключи не нужны. Необязательные переменные описаны в [`.env.example`](.env.example), команды и окружение - в [руководстве по разработке](docs/ru/development.md).
 
@@ -65,13 +72,24 @@ flowchart LR
 
 ## Статус и ограничения
 
-Текущая версия **0.14.0**, стадия **preview, в разработке**: [package.json](package.json), [PLAN](PLAN.md).
+| Параметр | Состояние |
+| --- | --- |
+| Стадия | В разработке. [План](PLAN.md). |
+| Версия | 0.14.0, preview. [package.json](package.json). |
+| Лицензия | MIT для собственного кода. [LICENSE](LICENSE), [сторонние компоненты](THIRD_PARTY_NOTICES.md). |
+
+### Ограничения
 
 Microsoft-вход отсутствует, Quilt не поддерживается. Каталог CurseForge отключён в официальной сборке; импорт архивов с загрузкой модов требует доступного провайдера. Burrow Link зависит от сети и требует проверки на двух устройствах. [Подробные ограничения](docs/ru/known-issues.md).
 
 Автоматические проверки кода и macOS Chromium UI выполняет [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml). Совместимость всех игровых версий, модлоадеров и сетей этим не подтверждается; настоящие игровые установки и пакеты на Windows/macOS/Linux проверяются отдельно. [Состав проверок](docs/ru/testing.md), [проверенное и оставшиеся задачи](PLAN.md).
 
 ## Разработка
+
+[Документация](docs/README.md) · [План](PLAN.md) · [Правила](AGENTS.md) · [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml)
+
+<details>
+<summary>Проверки и работа над проектом</summary>
 
 Команды, окружение и устройство проекта описаны в [руководстве по разработке](docs/ru/development.md) и [архитектуре](docs/ru/architecture.md). Перед изменениями прочитайте [правила участия](CONTRIBUTING.md) и [AGENTS.md](AGENTS.md). [Как переснять демо](docs/DEMO.md).
 
@@ -82,3 +100,5 @@ Microsoft-вход отсутствует, Quilt не поддерживаетс
 [Проверки и команды](docs/AGENT_GUIDE.md#проверки) · [CI (требует доступа к репозиторию)](https://github.com/malyarq/burrow/actions/workflows/ci.yml). Репозиторий PRIVATE; приложение запускается локально.
 
 [English](README.en.md).
+
+</details>
