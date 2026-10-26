@@ -1079,6 +1079,20 @@ export function seedManualVerificationStorage(view: string) {
 
 export function installManualVerificationEnvironment() {
   const view = getManualVerificationView();
+  const demoLaunchFailure = view === 'product-next' && new URLSearchParams(location.search).get('launchOutcome') === 'fail-once';
+  const russian = localStorage.getItem('settings_language') === 'ru';
+  if (demoLaunchFailure && !document.getElementById('manual-launch-outcome-note')) {
+    const note = document.createElement('aside');
+    note.id = 'manual-launch-outcome-note';
+    note.setAttribute('role', 'note');
+    note.setAttribute('data-testid', 'manual-launch-outcome-note');
+    note.textContent = russian
+      ? 'Тестовая среда: один учебный сбой запуска и повтор. Minecraft не открывается.'
+      : 'Test fixture: one simulated launch failure and retry. Minecraft will not open.';
+    note.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:10000;max-width:calc(100vw - 24px);padding:8px 12px;border:1px solid #a3b18a;border-radius:4px;background:#202822;color:#f1f2e9;font:11px/1.5 sans-serif;pointer-events:none';
+    document.body.appendChild(note);
+  }
+  let failNextLaunch = demoLaunchFailure;
   const state = createState(view);
 
   const instancesApi = createManualInstancesApi(state);
@@ -1472,6 +1486,12 @@ export function installManualVerificationEnvironment() {
   let launchSession = { revision: 0, phase: 'idle' as const };
   const launcher: BurrowApi['launcher'] = {
     launch: async () => {
+      if (failNextLaunch) {
+        failNextLaunch = false;
+        throw new Error(russian
+          ? 'Учебный сбой запуска в тестовом окружении. Игровой процесс не создавался. Повторная попытка разрешена.'
+          : 'Simulated launch failure in the test fixture. No game process was created. You can retry.');
+      }
       // This is a renderer fixture only. It exercises the launch state machine
       // without claiming that a Minecraft process was created.
       for (const listener of launchLogListeners) listener('Manual preview accepted the launch request; no game process is started.');

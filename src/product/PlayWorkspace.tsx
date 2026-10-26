@@ -1,9 +1,11 @@
 import { PlayLaunchStatus } from './PlayLaunchStatus';
+import { getPlayLaunchBlocker, getPlayLaunchLabel } from './playReadiness';
+import { PlayConfigurationRetry } from './PlayConfigurationRetry';
 import { LoaderSelection } from './LoaderSelection';
 import { PlayMemoryControl } from './PlayMemoryControl';
 import { PlayArtwork } from './PlayArtwork';
 import { resolvePlayLoaderVersions } from './playLoaderVersions';
-import { useCallback, useId, useMemo, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { ChevronDown, Play } from 'lucide-react';
 import type { AppLayoutProps } from '../components/AppLayout';
 import { GameTab } from '../components/settings/tabs/GameTab';
@@ -22,7 +24,6 @@ import {
 import { useInstanceInvalidation } from '../features/instances/hooks/useInstanceInvalidation';
 import { useModSupportedVersions } from '../features/launcher/hooks/useModSupportedVersions';
 import {
-  getLaunchActionLabel,
   isLoaderSupported,
 } from '../features/launcher/services/launcherService';
 import { buildModpackRuntimeSummary } from '../features/modpacks/hooks/useModpackRuntimeSummary';
@@ -51,6 +52,9 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [memorySaving, setMemorySaving] = useState(false);
   const advancedId = useId();
+  const statusId = useId();
+  const launchPanel = useRef<HTMLElement>(null);
+  const advancedTrigger = useRef<HTMLButtonElement>(null);
   const { setMode } = useUIMode();
   const effectiveInstance = useEffectiveInstance();
   const instanceId = effectiveInstance.status === 'ready' ? effectiveInstance.data.id : null;
@@ -69,12 +73,13 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
     mcVersion: launch.version,
     ...loaderVersions,
   });
-  const canLaunch = !busy && loaderSupported && effectiveInstance.status === 'ready';
-  const actionLabel = getLaunchActionLabel(runtime.launchStage, t);
+  const blocker = getPlayLaunchBlocker({ memorySaving, version: launch.version, loaderSupported });
+  const canLaunch = !runtime.isLaunching && blocker === null && effectiveInstance.status === 'ready';
+  const actionLabel = getPlayLaunchLabel(runtime.launchStage, t);
   const showProgress = busy && runtime.launchStage === 'downloading' && typeof runtime.progress === 'number';
 
   const retry = useCallback(() => {
-    void invalidateInstance(CLASSIC_MODPACK_ID);
+    return invalidateInstance(CLASSIC_MODPACK_ID);
   }, [invalidateInstance]);
   const updateVersion = useCallback((version: string) => {
     launch.setVersion(version);
@@ -119,7 +124,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
           description={unavailable
             ? text(t, 'play_workspace.unavailable_desc', 'Обновите конфигурацию и попробуйте снова.')
             : toDisplayErrorMessage(effectiveInstance.error.message, text(t, 'play_workspace.error_desc', 'Повторите попытку, не закрывая этот экран.'))}
-          footer={<Button variant="secondary" size="sm" onClick={retry}>{text(t, 'operations.retry', 'Повторить')}</Button>}
+          footer={<PlayConfigurationRetry onRetry={retry} t={t} />}
         />
       </main>
     );
@@ -142,7 +147,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
         <div className="next-play-overview">
           <PlayArtwork disableAnimations={disableAnimations} t={t} />
 
-        <section className="next-launch-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
+        <section ref={launchPanel} className="next-launch-panel grid gap-5 p-5 sm:p-6" aria-label={text(t, 'play_workspace.launch_title', 'Запуск игры')}>
           <CurrentGame name={config?.name} version={launch.version} loader={launch.loaderType} t={t} />
           <div className="next-launch-fields">
             <Select
@@ -152,6 +157,7 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               disabled={busy}
               data-testid="play-workspace-version"
             >
+              {!launch.version && <option value="" disabled>{t('play_workspace.version_placeholder')}</option>}
               {launch.version && !launch.versions.some((version) => version.id === launch.version) && <option value={launch.version}>{launch.version}</option>}
               {launch.versions.map((version) => (
                 <option key={version.id} value={version.id}>{version.id}</option>
@@ -192,27 +198,25 @@ export function PlayWorkspace({ launch, runtime, actions }: PlayWorkspaceProps) 
               size="md"
               onClick={runtime.onLaunch}
               disabled={!canLaunch}
+              aria-describedby={statusId}
               progress={showProgress ? runtime.progress : undefined}
               className="w-full"
               data-testid="play-workspace-launch"
             >
               <Play className="h-5 w-5" fill="currentColor" />
-              {busy ? actionLabel : text(t, 'general.play', 'Играть')}
+              {actionLabel}
             </Button>
           </div>
 
-        {!loaderSupported ? (
-          <p className="border-l-2 border-border px-3 text-sm leading-6 text-secondary" role="status">
-            {text(t, 'play_workspace.loader_unsupported', 'Выбранный загрузчик не поддерживает эту версию Minecraft. Выберите другой загрузчик или версию.')}
-          </p>
-        ) : null}
-
-        <PlayLaunchStatus runtime={runtime} showProgress={showProgress} t={t} />
+        <PlayLaunchStatus runtime={runtime} showProgress={showProgress} t={t} blocker={blocker} id={statusId}
+          onSettings={() => { setAdvancedOpen(true); advancedTrigger.current?.focus(); }}
+          onChooseVersion={() => launchPanel.current?.querySelector('select')?.focus()}
+          onChooseLoader={() => launchPanel.current?.querySelector<HTMLButtonElement>('[data-testid="play-workspace-loader"] button:not(:disabled)')?.focus()} />
         </section>
         </div>
 
         <section className="next-advanced-section border-y border-border/70 py-1">
-          <button type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}
+          <button ref={advancedTrigger} type="button" className="next-disclosure-trigger" aria-expanded={advancedOpen}
             aria-controls={advancedId} onClick={() => setAdvancedOpen((open) => !open)}>
             <ChevronDown className={advancedOpen ? 'rotate-180' : ''} aria-hidden="true" />
             {text(t, 'play_workspace.advanced_title', 'Расширенные настройки')}

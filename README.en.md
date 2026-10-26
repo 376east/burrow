@@ -2,28 +2,30 @@
 
 A desktop Minecraft launcher for your own modpacks and playing with friends.
 
-<p><a href="#status-and-limitations"><img src="https://img.shields.io/static/v1?label=Status&amp;message=in+development&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Status: in development"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=Stack&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Stack: Electron · React · TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/static/v1?label=Demo&amp;message=00%3A52&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Demo: 00:52"></a></p>
+<p><a href="#status-and-limitations"><img src="https://img.shields.io/static/v1?label=Status&amp;message=in+development&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Status: in development"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=Stack&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Stack: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=Demo&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Demo: 00:21"></a></p>
 
 **[Screenshots](#screenshots) · [Features](#implemented-features) · [Run](#run) · [Architecture](#architecture) · [Limitations](#status-and-limitations) · [Development](#development)**
 
 ## Screenshots
 
-<a href="docs/assets/readme/overview.svg"><img src="docs/assets/readme/overview.svg" alt="Burrow interface overview" width="760"></a>
+<a href="docs/assets/readme/overview.svg"><img src="docs/assets/readme/overview.svg" alt="Launch preparation in the renderer fixture" width="760"></a>
 
-Play, pack library, and light theme. Screenshots use fictional local packs; real accounts and a Minecraft launch are not shown. [Capture source](docs/assets/screenshots/next/provenance.json).
+Launch preparation now explains readiness; a failed launch offers settings, logs, and retry. These renderer-fixture captures use a fictional pack and a simulated failure. They do not demonstrate a real Minecraft launch. [Capture source](docs/assets/readme/prototype-transfer.json).
 
-**[MP4 demo](docs/assets/demo/burrow-next-demo.mp4)** · 00:52 · [Demo materials](docs/DEMO.md)
+**[Current MP4 demo](docs/assets/readme/current-flow.mp4)** · 00:21 · 26 October 2026 · [Capture details](docs/assets/readme/current-flow.json)
+
+[Previous demo, 00:52](docs/assets/demo/burrow-next-demo.mp4) · [Demo materials](docs/DEMO.md)
 
 <details>
 <summary>Two more screens</summary>
 
-**Pack library.**
+**Launch error and retry.**
 
-<a href="docs/assets/screenshots/next/library.png"><img src="docs/assets/readme/screen-2.svg" alt="Burrow pack library" width="760"></a>
+<a href="docs/assets/readme/screen-2.svg"><img src="docs/assets/readme/screen-2.svg" alt="Launch error and retry" width="760"></a>
 
-**Light theme.**
+**Recovery on a narrow screen.**
 
-<a href="docs/assets/screenshots/next/light.png"><img src="docs/assets/readme/screen-3.svg" alt="Burrow in light mode" width="760"></a>
+<a href="docs/assets/readme/screen-3.svg"><img src="docs/assets/readme/screen-3.svg" alt="Recovery on a narrow screen" width="760"></a>
 
 </details>
 

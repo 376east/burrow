@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-26",
+  "code_commit": "bf475f364e131efb920fd0c7ca4507f088cc72bd",
+  "code_commit_source": "work/product-flows-2026-10-26/source-heads.json",
+  "code_commit_note": "Implementation SHA, independent of later media-only commits",
+  "data": "synthetic fixtures only; no personal accounts or files",
+  "environment": "renderer-fixture; fictional pack and simulated launch failure",
+  "captures": [
+    {
+      "file": "overview.svg",
+      "label": "Подготовка к запуску",
+      "source_capture": "outputs/product-flows-2026-10-26/screens/burrow-ready-desktop.jpg",
+      "source_width": 2560,
+      "source_height": 1312,
+      "embedded_jpeg_sha256": "ba84d9e1f5a397aac7f6cb6134aa9381c44ddad5ad6283f9b4a3384c2227e399",
+      "mime_type": "image/jpeg",
+      "transform": "Original bytes, uniformly scaled and centered with xMidYMid meet; no crop or retouch",
+      "environment": "renderer-fixture",
+      "native_application_capture": false,
+      "game_launch_shown": false
+    },
+    {
+      "file": "screen-2.svg",
+      "label": "Ошибка запуска и повтор",
+      "source_capture": "outputs/product-flows-2026-10-26/screens/burrow-failed-desktop.jpg",
+      "source_width": 2560,
+      "source_height": 1312,
+      "embedded_jpeg_sha256": "36d708f74ec4f39da9122eab4553d663cd4852b874614b59878e210c654f5f5d",
+      "mime_type": "image/jpeg",
+      "transform": "Original bytes, uniformly scaled and centered with xMidYMid meet; no crop or retouch",
+      "environment": "renderer-fixture",
+      "native_application_capture": false,
+      "game_launch_shown": false
+    },
+    {
+      "file": "screen-3.svg",
+      "label": "Восстановление на узком экране",
+      "source_capture": "outputs/product-flows-2026-10-26/screens/burrow-failed-mobile.jpg",
+      "source_width": 390,
+      "source_height": 844,
+      "embedded_jpeg_sha256": "40efab2521fb0c8f57870cbf6ebd3dfa9a1a69c8024f1d79749af932a28a4ef8",
+      "mime_type": "image/jpeg",
+      "transform": "Original bytes, uniformly scaled and centered with xMidYMid meet; no crop or retouch",
+      "environment": "renderer-fixture",
+      "native_application_capture": false,
+      "game_launch_shown": false
+    }
+  ]
+}

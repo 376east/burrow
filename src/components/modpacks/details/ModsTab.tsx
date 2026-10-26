@@ -147,7 +147,7 @@ export function ModsTab({
     return (
         <div className={cn('space-y-5', className)}>
             <div className="space-y-4 border-b border-border/65 pb-4">
-                <div className="flex flex-col gap-3 min-[900px]:flex-row min-[900px]:items-start min-[900px]:justify-between">
+                <div className="mods-tab-header flex flex-col gap-3 min-[900px]:flex-row min-[900px]:items-start min-[900px]:justify-between">
                     <div className="min-w-0 flex-1 space-y-2">
                         <div className="kicker-label">{t('modpacks.tab_mods')}</div>
                         <div>

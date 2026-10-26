@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Экран игры объясняет готовность к подготовке и препятствия запуска. При ошибке доступны повтор, переход к настройкам Java и памяти и раскрываемый журнал. Повтор чтения конфигурации защищён от дубликатов и показывает ошибку восстановления.
+
 - По кнопке на экране игры открывается авторская 3D-иллюстрация со сменой дня, биома и ракурса. Она не отображает настоящий мир или состав сборки, загружается отдельно и отключается при reduced motion или ошибке GPU.
 
 - Главный экран получил компоновку «Мастерской»: иллюстрация и запуск находятся в одном блоке, реальный контент - рядом. Быстрый слайдер памяти сохраняет штатную конфигурацию и блокирует запуск до окончания записи. Поиск установленных модов работает по названию и имени файла; повторные переключения и изменения во время запуска заблокированы.
@@ -42,6 +44,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- The play screen explains preparation readiness and launch blockers. Failed launches offer retry, focused access to Java and memory settings, and an expandable log. Configuration recovery prevents duplicate reads and reports retry failures.
 
 - Play offers an optional authored 3D illustration with day, biome, and camera controls. It does not represent a real world or modpack contents, loads separately, and falls back to static artwork for reduced motion or GPU failure.
 

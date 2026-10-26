@@ -144,7 +144,7 @@ describe('PlayWorkspace', () => {
   it('blocks an unsupported loader without hiding the launch surface', () => {
     renderWorkspace({ launch: { loaderType: 'fabric', version: '1.12.2', supportedVersions: { forge: [], fabric: [], optiFine: [], neoForge: [] } } });
 
-    expect(screen.getByRole('status').textContent).toContain('Выбранный загрузчик');
+    expect(screen.getByRole('status').textContent).toContain('play_workspace.readiness_loader_detail');
     expect(screen.getByTestId('play-workspace-launch')).toHaveProperty('disabled', true);
   });
 
@@ -153,7 +153,7 @@ describe('PlayWorkspace', () => {
     renderWorkspace();
 
     expect(screen.getByTestId('play-workspace-error').textContent).toContain('Classic unavailable');
-    fireEvent.click(screen.getByRole('button', { name: 'Повторить' }));
+    fireEvent.click(screen.getByRole('button', { name: 'operations.retry' }));
     await waitFor(() => expect(invalidateInstance).toHaveBeenCalledWith('classic'));
   });
   it('persists quick memory through the canonical command and locks launch until it settles', async () => {
@@ -171,6 +171,26 @@ describe('PlayWorkspace', () => {
     renderWorkspace();
     fireEvent.click(screen.getByRole('button', { name: 'Библиотека' }));
     expect(setMode).toHaveBeenCalledWith('modpacks');
+  });
+
+  it('blocks an empty version even for Vanilla and focuses the actual version field', () => {
+    renderWorkspace({ launch: { version: '', versions: [], loaderType: 'vanilla' } });
+    expect(screen.getByTestId('play-workspace-launch')).toHaveProperty('disabled', true);
+    fireEvent.click(screen.getByRole('button', { name: 'play_workspace.choose_version' }));
+    expect(document.activeElement).toBe(screen.getByTestId('play-workspace-version'));
+  });
+
+  it('keeps one real launch action for retry and opens game settings in place', () => {
+    const onLaunch = vi.fn();
+    renderWorkspace({ runtime: { launchStage: 'failed', statusDetail: 'Java requirement mismatch', onLaunch } });
+    const button = screen.getByTestId('play-workspace-launch');
+    expect(button.textContent).toContain('play_workspace.retry_launch');
+    fireEvent.click(screen.getByRole('button', { name: 'play_workspace.review_runtime' }));
+    const advanced = screen.getByRole('button', { name: 'Расширенные настройки' });
+    expect(advanced.getAttribute('aria-expanded')).toBe('true');
+    expect(document.activeElement).toBe(advanced);
+    fireEvent.click(button);
+    expect(onLaunch).toHaveBeenCalledTimes(1);
   });
 
 });

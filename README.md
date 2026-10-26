@@ -2,28 +2,30 @@
 
 Настольный лаунчер Minecraft для своих сборок и игры с друзьями.
 
-<p><a href="#статус-и-ограничения"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81&amp;message=%D0%B2+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Статус: в разработке"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B5%D0%BA&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Стек: Electron · React · TypeScript"></a> <a href="docs/assets/demo/burrow-next-demo.mp4"><img src="https://img.shields.io/static/v1?label=%D0%94%D0%B5%D0%BC%D0%BE&amp;message=00%3A52&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Демо: 00:52"></a></p>
+<p><a href="#статус-и-ограничения"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81&amp;message=%D0%B2+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Статус: в разработке"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B5%D0%BA&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Стек: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=%D0%94%D0%B5%D0%BC%D0%BE&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Демо: 00:21"></a></p>
 
 **[Скриншоты](#как-выглядит) · [Возможности](#что-работает) · [Запуск](#запуск) · [Архитектура](#архитектура) · [Ограничения](#статус-и-ограничения) · [Разработка](#разработка)**
 
 ## Как выглядит
 
-<a href="docs/assets/readme/overview.svg"><img src="docs/assets/readme/overview.svg" alt="Обзор интерфейса Burrow" width="760"></a>
+<a href="docs/assets/readme/overview.svg"><img src="docs/assets/readme/overview.svg" alt="Подготовка к запуску" width="760"></a>
 
-Запуск Minecraft, библиотека сборок и светлая тема. На снимках вымышленные локальные сборки; настоящие аккаунты и запуск игры не показаны. [Источник снимков](docs/assets/screenshots/next/provenance.json).
+Экран запуска объясняет готовность к подготовке, а после ошибки предлагает проверить настройки, открыть журнал и повторить запуск. Здесь показан renderer-fixture с вымышленной сборкой и учебным сбоем. Это снимки тестового интерфейса, они не подтверждают настоящий запуск Minecraft. [Источник снимков](docs/assets/readme/prototype-transfer.json).
 
-**[Демо MP4](docs/assets/demo/burrow-next-demo.mp4)** · 00:52 · [Материалы демо](docs/DEMO.md)
+**[Актуальное демо MP4](docs/assets/readme/current-flow.mp4)** · 00:21 · 26 октября 2026 · [Источник записи](docs/assets/readme/current-flow.json)
+
+[Предыдущее демо, 00:52](docs/assets/demo/burrow-next-demo.mp4) · [Материалы демо](docs/DEMO.md)
 
 <details>
 <summary>Ещё два экрана</summary>
 
-**Библиотека Burrow 0.14.0 с синтетическими сборками.**
+**Ошибка запуска и повтор.**
 
-<a href="docs/assets/screenshots/next/library.png"><img src="docs/assets/readme/screen-2.svg" alt="Библиотека Burrow 0.14.0 с синтетическими сборками" width="760"></a>
+<a href="docs/assets/readme/screen-2.svg"><img src="docs/assets/readme/screen-2.svg" alt="Ошибка запуска и повтор" width="760"></a>
 
-**Burrow 0.14.0 в светлой теме.**
+**Восстановление на узком экране.**
 
-<a href="docs/assets/screenshots/next/light.png"><img src="docs/assets/readme/screen-3.svg" alt="Burrow 0.14.0 в светлой теме" width="760"></a>
+<a href="docs/assets/readme/screen-3.svg"><img src="docs/assets/readme/screen-3.svg" alt="Восстановление на узком экране" width="760"></a>
 
 </details>
 

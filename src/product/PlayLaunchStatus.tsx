@@ -1,26 +1,32 @@
 import type { PlayWorkspaceProps } from './PlayWorkspace';
 import { ProgressBar } from '../components/ui/ProgressBar';
+import { Button } from '../components/ui/Button';
 import { getLaunchStageTitle } from '../features/launcher/services/launcherService';
+import { toRecoveryErrorMessage } from '../utils/displayError';
 import { RestartGameButton } from './RestartGameButton';
 
-function text(t: (key: string) => string, key: string, fallback: string) {
-  const translated = t(key);
-  return translated === key ? fallback : translated;
-}
+import type { PlayLaunchBlocker } from './playReadiness';
+type Translate = (key: string) => string;
 
-export function PlayLaunchStatus({ runtime, showProgress, t }: { runtime: PlayWorkspaceProps['runtime']; showProgress: boolean; t: (key: string) => string }) {
-  const stageTitle = getLaunchStageTitle(runtime.launchStage, t);
-  return (<>
-        {runtime.statusText || runtime.statusDetail ? (
-          <section className="border-y border-border/70 py-4" aria-live="polite" aria-label={text(t, 'dashboard.launch_status', 'Статус запуска')}>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <p className="text-sm font-medium text-foreground">{runtime.statusText || stageTitle}</p>
-              {runtime.canForceRestart && <RestartGameButton />}
-            </div>
-            {runtime.statusDetail ? <p className="mt-1 text-sm leading-6 text-secondary">{runtime.statusDetail}</p> : null}
-            {showProgress ? <ProgressBar className="mt-4" value={runtime.progress ?? 0} valueLabel={`${Math.round(runtime.progress ?? 0)}%`} /> : null}
-          </section>
-        ) : null}
-
-  </>);
+export function PlayLaunchStatus({ runtime, showProgress, t, blocker, id, onSettings, onChooseVersion, onChooseLoader }: {
+  runtime: PlayWorkspaceProps['runtime']; showProgress: boolean; t: Translate; blocker: PlayLaunchBlocker; id: string;
+  onSettings: () => void; onChooseVersion: () => void; onChooseLoader: () => void;
+}) {
+  const failed = runtime.launchStage === 'failed';
+  const state = blocker ?? (failed ? 'failed' : runtime.isLaunching ? 'active' : 'ready');
+  const title = state === 'active' ? getLaunchStageTitle(runtime.launchStage, t) : t(`play_workspace.readiness_${state}`);
+  const fallback = t(`play_workspace.readiness_${state}_detail`);
+  const detail = blocker ? fallback : toRecoveryErrorMessage(runtime.statusDetail || runtime.statusText, fallback);
+  return <section id={id} className="next-launch-readiness" data-state={state} role={failed && !blocker ? 'alert' : 'status'} aria-atomic="true" aria-label={t('dashboard.launch_status')}>
+    <div className="next-launch-readiness-heading"><h3>{title}</h3>{runtime.canForceRestart && <RestartGameButton />}</div>
+    <p>{detail}</p>
+    {state === 'failed' && <>
+      <p className="next-launch-next-step">{t('play_workspace.failure_next_step')}</p>
+      <Button variant="secondary" size="sm" onClick={onSettings}>{t('play_workspace.review_runtime')}</Button>
+      {runtime.logs.length > 0 && <details className="next-launch-diagnostics"><summary>{t('play_workspace.failure_log')}</summary><pre>{runtime.logs.slice(-100).join('\n')}</pre></details>}
+    </>}
+    {state === 'version' && <Button variant="secondary" size="sm" onClick={onChooseVersion}>{t('play_workspace.choose_version')}</Button>}
+    {state === 'loader' && <Button variant="secondary" size="sm" onClick={onChooseLoader}>{t('play_workspace.choose_loader')}</Button>}
+    {showProgress && <ProgressBar value={runtime.progress ?? 0} valueLabel={`${Math.round(runtime.progress ?? 0)}%`} />}
+  </section>;
 }
