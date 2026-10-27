@@ -2,6 +2,12 @@
 
 This guide covers the current stable release. For confirmed limitations, see [Known issues](known-issues.md).
 
+## Pack selection and preparation
+
+Play opens the built-in Classic pack. For your own pack, open Library, create it or choose Make active. Launching from Library uses the active pack; Minecraft version, loader, and memory are stored separately for each pack and survive closing Burrow.
+
+Configuration valid means the selected configuration is compatible, not that game files are installed. On launch, Burrow checks Java and game files and downloads missing files if needed. During preparation, choose Cancel preparation and wait for the current file operation to finish; Burrow then reopens without starting the game. Another launch is blocked until cancellation finishes. On a Play error, review settings, inspect the log, and retry; the pack is not deleted.
+
 ## Appearance themes
 
 Appearance settings offer Neutral, Warm Stone and Ocean. Midnight is available only in dark mode; switching to light replaces it with Neutral. Custom colors include a labeled preview. To save the complete appearance, enter a name under Saved themes and choose Save. Select its name to restore the theme, mode, accent and background effects; adjacent actions rename or remove it.

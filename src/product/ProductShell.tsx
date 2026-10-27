@@ -48,6 +48,7 @@ export function ProductShell(props: AppLayoutProps) {
   const { t, disableAnimations } = useSettings();
   const { uiMode, setMode } = useUIMode();
   const { overlays, actions, runtime, updates } = props;
+  const preparing = runtime.isLaunching && ['preparing', 'downloading', 'launching'].includes(runtime.launchStage);
   const page: Page = overlays.showSettings ? 'settings' : overlays.showMultiplayer ? 'friends' : uiMode === 'modpacks' ? 'library' : 'play';
   const [settingsVisited, setSettingsVisited] = useState(page === 'settings');
   if (page === 'settings' && !settingsVisited) setSettingsVisited(true);
@@ -92,7 +93,7 @@ export function ProductShell(props: AppLayoutProps) {
           {runtime.isLaunching && <div className="next-runtime-strip" role="status">
             <span className="next-status-dot" />
             <div className="min-w-0 flex-1 truncate">{runtime.statusText}<span className="ml-2 text-secondary">{runtime.statusDetail}</span></div>
-            {runtime.canForceRestart && page !== 'play' && <div className="ml-auto min-w-0 max-w-[60%] shrink-0"><RestartGameButton /></div>}
+            {(preparing || runtime.canForceRestart) && page !== 'play' && <div className="ml-auto min-w-0 max-w-[60%] shrink-0"><RestartGameButton preparing={preparing} /></div>}
           </div>}
           <div className="next-content" data-testid="app-layout-main">
             {page === 'play' && <PlayWorkspace launch={props.launch} runtime={runtime} actions={actions} />}

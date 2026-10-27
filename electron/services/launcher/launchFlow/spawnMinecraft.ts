@@ -1,7 +1,7 @@
 import { launch, type LaunchOption } from '@xmcl/core';
 import { getLegacyWindowsDpiJvmArgs, withWindowsDpiCompatLayer } from './dpiCompat';
 import type { SupportedJavaVersion } from '../../../../shared/minecraftRuntime';
-import type { ChildProcess } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 
 export async function spawnMinecraft(params: {
   launchOptions: LaunchOption;
@@ -10,8 +10,9 @@ export async function spawnMinecraft(params: {
   onLog: (data: string) => void;
   onSpawn?: (process: ChildProcess) => void;
   onGameStart?: () => void;
+  checkPreparation?: () => void;
 }) {
-  const { launchOptions, requiredJava, effectiveVmOptions, onLog, onSpawn, onGameStart } = params;
+  const { launchOptions, requiredJava, effectiveVmOptions, onLog, onSpawn, onGameStart, checkPreparation } = params;
 
   const legacyWindowsDpiFix = getLegacyWindowsDpiJvmArgs({ requiredJava });
   const extraJVMArgs = [
@@ -38,6 +39,12 @@ export async function spawnMinecraft(params: {
       const process = await launch({
         ...launchOptions,
         extraJVMArgs,
+        spawn: (command, args, options) => {
+          // XMCL awaits metadata and prechecks before calling spawn. Cancellation
+          // must be checked here, with no async gap before creating Java.
+          checkPreparation?.();
+          return launchOptions.spawn ? launchOptions.spawn(command, args, options) : spawn(command, args ?? [], options ?? {});
+        },
       });
       onSpawn?.(process);
       return process;

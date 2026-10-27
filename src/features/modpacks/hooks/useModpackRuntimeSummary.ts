@@ -347,7 +347,7 @@ export function getModpackRuntimeStatusLabel(
 ): string {
   switch (status) {
     case 'healthy':
-      return translateWithFallback(t, 'modpacks.runtime_status_healthy', 'Ready');
+      return translateWithFallback(t, 'modpacks.runtime_status_healthy', 'Configuration valid');
     case 'unverified':
       return translateWithFallback(t, 'modpacks.runtime_status_unverified', 'Unverified');
     case 'warning':

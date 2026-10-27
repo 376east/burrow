@@ -2,7 +2,7 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useLauncherState, type LauncherVersionInventory } from '../hooks/useLauncherState';
+import { useLauncherState } from '../hooks/useLauncherState';
 import {
   computeLaunchVersion,
   formatLastLaunch,
@@ -121,7 +121,7 @@ describe('canonical launcher behavior transfer', () => {
   });
 
   it('owns selection, nickname and network state without inventing hidden instance persistence', async () => {
-    const { result, unmount } = renderHook(() => useLauncherState(versionInventory));
+    const { result, unmount } = renderHook(() => useLauncherState());
 
     expect(result.current).toMatchObject({
       nickname: 'Player',
@@ -154,26 +154,22 @@ describe('canonical launcher behavior transfer', () => {
     act(() => window.dispatchEvent(new Event('offline')));
   });
 
-  it('cancels stale compatibility resets when support data changes or the hook unmounts', () => {
+  it('preserves saved loader and OptiFine while compatibility data is missing or refreshed', () => {
     vi.useFakeTimers();
     try {
-      const unsupported: LauncherVersionInventory = {
-        forgeVersions: [],
-        fabricVersions: [],
-        neoForgeVersions: [],
-        optiFineVersions: [],
-      };
-      const { rerender, unmount } = renderHook(
-        ({ inventory }) => useLauncherState(inventory),
-        { initialProps: { inventory: unsupported } },
-      );
+      const { result, rerender, unmount } = renderHook(() => useLauncherState());
 
-      rerender({ inventory: versionInventory });
       act(() => vi.runAllTimers());
       expect(mocked.setRuntimeLoader).not.toHaveBeenCalled();
       expect(mocked.patchConfig).not.toHaveBeenCalled();
 
-      rerender({ inventory: unsupported });
+      rerender();
+      act(() => vi.runAllTimers());
+      expect(mocked.setRuntimeLoader).not.toHaveBeenCalled();
+      expect(mocked.patchConfig).not.toHaveBeenCalled();
+
+      expect(result.current.loaderType).toBe('forge');
+      expect(result.current.useOptiFine).toBe(true);
       unmount();
       act(() => vi.runAllTimers());
       expect(mocked.setRuntimeLoader).not.toHaveBeenCalled();

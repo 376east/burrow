@@ -8,24 +8,14 @@ import {
 import { useEffectiveInstance } from '../../instances/hooks/useEffectiveInstance';
 import {
   computeLaunchVersion,
-  isLoaderSupported,
   loadPlayerNickname,
   savePlayerNickname,
-  shouldDisableOptiFine,
   type LaunchStage,
   type LoaderType,
 } from '../services/launcherService';
 
-export interface LauncherVersionInventory {
-  forgeVersions: string[];
-  fabricVersions: string[];
-  optiFineVersions: string[];
-  neoForgeVersions: string[];
-}
-
 /** Canonical renderer-owned selection state; native launch authority remains in main. */
-export function useLauncherState(params: LauncherVersionInventory) {
-  const { forgeVersions, fabricVersions, optiFineVersions, neoForgeVersions } = params;
+export function useLauncherState() {
   const [nickname, setNickname] = useState(loadPlayerNickname);
   const [isOffline, setIsOffline] = useState(() => !navigator.onLine);
   const effectiveInstance = useEffectiveInstance();
@@ -79,20 +69,13 @@ export function useLauncherState(params: LauncherVersionInventory) {
     }));
   }, [instanceConfig, patchConfig]);
 
+  // Remote compatibility inventories can be empty during startup or a network
+  // failure. They control launch availability, never the saved pack contents.
   useEffect(() => {
-    if (!isLoaderSupported({ loaderType, mcVersion: version, forgeVersions, fabricVersions, neoForgeVersions })) {
-      const timeout = window.setTimeout(() => {
-        dispatchInstanceConfigCommand(setRuntimeLoader('vanilla'));
-      }, 0);
-      return () => window.clearTimeout(timeout);
-    }
-  }, [fabricVersions, forgeVersions, loaderType, neoForgeVersions, setRuntimeLoader, version]);
-
-  useEffect(() => {
-    if (!shouldDisableOptiFine({ useOptiFine, mcVersion: version, loaderType, optiFineVersions })) return;
-    const timeout = window.setTimeout(() => setUseOptiFine(false), 0);
-    return () => window.clearTimeout(timeout);
-  }, [loaderType, optiFineVersions, setUseOptiFine, useOptiFine, version]);
+    if (!useOptiFine || loaderType === 'forge') return;
+    // OptiFine requires Forge regardless of what the remote inventory reports.
+    setUseOptiFine(false);
+  }, [loaderType, setUseOptiFine, useOptiFine]);
 
   const launchVersion = useMemo(
     () => computeLaunchVersion({ loaderType, mcVersion: version }),

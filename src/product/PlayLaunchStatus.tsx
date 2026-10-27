@@ -13,12 +13,13 @@ export function PlayLaunchStatus({ runtime, showProgress, t, blocker, id, onSett
   onSettings: () => void; onChooseVersion: () => void; onChooseLoader: () => void;
 }) {
   const failed = runtime.launchStage === 'failed';
+  const preparing = runtime.isLaunching && ['preparing', 'downloading', 'launching'].includes(runtime.launchStage);
   const state = blocker ?? (failed ? 'failed' : runtime.isLaunching ? 'active' : 'ready');
   const title = state === 'active' ? getLaunchStageTitle(runtime.launchStage, t) : t(`play_workspace.readiness_${state}`);
   const fallback = t(`play_workspace.readiness_${state}_detail`);
   const detail = blocker ? fallback : toRecoveryErrorMessage(runtime.statusDetail || runtime.statusText, fallback);
   return <section id={id} className="next-launch-readiness" data-state={state} role={failed && !blocker ? 'alert' : 'status'} aria-atomic="true" aria-label={t('dashboard.launch_status')}>
-    <div className="next-launch-readiness-heading"><h3>{title}</h3>{runtime.canForceRestart && <RestartGameButton />}</div>
+    <div className="next-launch-readiness-heading"><h3>{title}</h3>{(preparing || runtime.canForceRestart) && <RestartGameButton preparing={preparing} />}</div>
     <p>{detail}</p>
     {state === 'failed' && <>
       <p className="next-launch-next-step">{t('play_workspace.failure_next_step')}</p>

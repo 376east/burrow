@@ -50,4 +50,17 @@ describe('RestartGameButton', () => {
     render(<RestartGameButton />);
     expect(screen.queryByRole('button')).toBeNull();
   });
+
+  it('cancels preparation once and explains the safe drain before reopening', async () => {
+    let finish!: () => void;
+    restart.mockImplementation(() => new Promise<void>((resolve) => { finish = resolve; }));
+    render(<RestartGameButton preparing />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel preparation' }));
+    const pending = screen.getByRole('button', { name: 'Cancelling preparation…' });
+    fireEvent.click(pending);
+    expect(pending).toHaveProperty('disabled', true);
+    expect(screen.getByRole('status').textContent).toContain('without starting Minecraft');
+    expect(restart).toHaveBeenCalledOnce();
+    await act(async () => finish());
+  });
 });

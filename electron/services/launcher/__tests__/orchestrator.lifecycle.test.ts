@@ -65,6 +65,46 @@ describe('LauncherManager public lifecycle', () => {
     await expect(manager.launchGame(options, vi.fn(), vi.fn(), vi.fn())).rejects.toThrow('shutting down');
   });
 
+  it('cancels preparation through the restart action and admits a later launch', async () => {
+    const pending = deferred<typeof prepared>();
+    mocked.prepare.mockReturnValueOnce(pending.promise);
+    const spawn = vi.fn();
+    const manager = createLauncher(spawn);
+    const first = manager.launchGame(options, vi.fn(), vi.fn(), vi.fn());
+    const failure = expect(first).rejects.toThrow('cancelled');
+    const cancellation = manager.killGameProcess();
+    await expect(manager.launchGame(options, vi.fn(), vi.fn(), vi.fn())).rejects.toThrow('already in progress');
+    pending.resolve(prepared);
+    await failure;
+    await cancellation;
+    expect(spawn).not.toHaveBeenCalled();
+    expect(manager.getSessionState().phase).toBe('idle');
+    // A fresh attempt reaches preparation again instead of a stale busy guard.
+    mocked.prepare.mockRejectedValueOnce(new Error('fresh preparation reached'));
+    await expect(manager.launchGame(options, vi.fn(), vi.fn(), vi.fn())).rejects.toThrow('fresh preparation reached');
+  });
+
+  it('passes cancellation into the native spawn boundary during async prechecks', async () => {
+    const entered = deferred<void>();
+    const precheck = deferred<void>();
+    const actualSpawn = vi.fn();
+    const manager = createLauncher(async ({ checkPreparation }) => {
+      entered.resolve();
+      await precheck.promise;
+      checkPreparation?.();
+      return actualSpawn();
+    });
+    const launch = manager.launchGame(options, vi.fn(), vi.fn(), vi.fn());
+    await entered.promise;
+    const failure = expect(launch).rejects.toThrow('cancelled');
+    const cancellation = manager.killGameProcess();
+    precheck.resolve();
+    await failure;
+    await cancellation;
+    expect(actualSpawn).not.toHaveBeenCalled();
+    expect(manager.getSessionState().phase).toBe('idle');
+  });
+
   it.each([false, true])('closes once without reattaching an early-exit child; shutdown=%s', async (shutdownRequested) => {
     const settled = deferred<void>();
     const attached = deferred<void>();

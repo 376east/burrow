@@ -8,6 +8,8 @@ This file summarizes current product versions. Git history remains the detailed 
 
 ### Русский
 
+- Загрузка или ошибка списка совместимых версий больше не заменяет сохранённый загрузчик на Vanilla и не отключает OptiFine. Подготовку на экране игры можно отменить: Burrow дождётся безопасного завершения текущей операции с файлами и вернётся без запуска Minecraft.
+
 - Экран игры объясняет готовность к подготовке и препятствия запуска. При ошибке доступны повтор, переход к настройкам Java и памяти и раскрываемый журнал. Повтор чтения конфигурации защищён от дубликатов и показывает ошибку восстановления.
 
 - По кнопке на экране игры открывается авторская 3D-иллюстрация со сменой дня, биома и ракурса. Она не отображает настоящий мир или состав сборки, загружается отдельно и отключается при reduced motion или ошибке GPU.
@@ -44,6 +46,8 @@ This file summarizes current product versions. Git history remains the detailed 
 - Перекрывающиеся поиски Java после перехода между экранами разделяют результат, чтобы запоздавший ответ не сбрасывал доступный выбор.
 
 ### English
+
+- Loading or failed compatibility inventories no longer replace the saved loader with Vanilla or turn off OptiFine. Preparation can be cancelled from Play: Burrow waits for the current file operation to finish safely and reopens without starting Minecraft.
 
 - The play screen explains preparation readiness and launch blockers. Failed launches offer retry, focused access to Java and memory settings, and an expandable log. Configuration recovery prevents duplicate reads and reports retry failures.
 

@@ -77,7 +77,7 @@ function MainApp() {
     isOffline,
     launchVersion,
     loaderType,
-  } = useLauncherState({ forgeVersions, fabricVersions, optiFineVersions, neoForgeVersions });
+  } = useLauncherState();
 
   const handleLaunch = useLaunchHandler({
     launchGame,

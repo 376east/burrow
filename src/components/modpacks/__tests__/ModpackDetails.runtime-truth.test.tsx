@@ -162,7 +162,7 @@ describe('Modpack details runtime truth', () => {
     );
 
     expect(screen.getByText('The Minecraft version and modloader selected for this pack.')).toBeTruthy();
-    expect(screen.getByTestId('modpack-dependency-status').textContent).toBe('Ready');
+    expect(screen.getByTestId('modpack-dependency-status').textContent).toBe('Configuration valid');
     expect(screen.getByTestId('modpack-dependency-status').getAttribute('data-tone')).toBe('healthy');
     expect(within(screen.getByTestId('modpack-details-metadata')).getByText('Forge 47.2.0')).toBeTruthy();
     expect(screen.queryByText('Taken from the pack metadata. Check the game settings before launching.')).toBeNull();

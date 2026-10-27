@@ -229,6 +229,7 @@ export class LauncherManager {
         effectiveVmOptions,
         onLog,
         onSpawn: attachProcess,
+        checkPreparation: () => this.checkPreparation(launch),
         onGameStart: () => {
           if (this.activeLaunch?.id === launch.id) this.publishState({ phase: 'running' });
           (this.gameStartListener ?? onGameStart)?.();
@@ -282,7 +283,7 @@ export class LauncherManager {
   private failPreparation(launch: ActiveLaunch): void {
     if (this.activeLaunch?.id !== launch.id) return;
     this.activeLaunchHidesWindow = false;
-    this.publishState({ phase: 'failed' });
+    this.publishState({ phase: launch.cancelled ? 'idle' : 'failed' });
   }
 
   private completeLaunch(launch: ActiveLaunch, exitCode: number): void {
