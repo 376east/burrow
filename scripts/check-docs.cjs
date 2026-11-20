@@ -112,8 +112,8 @@ function main() {
   }
 
   const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8')
-  if (!readme.includes('https://github.com/376east/burrow/releases/tag/v0.13.0')) {
-    failures.push('README.md does not link to the archived GitHub release')
+  if (!readme.includes('https://github.com/376east/burrow/releases/latest')) {
+    failures.push('README.md does not link to the current GitHub release')
   }
   if (!readme.includes('[Русский](README.ru.md)') || !readme.includes('## Run')) {
     failures.push('README.md must link to the Russian guide and show how to run Burrow')

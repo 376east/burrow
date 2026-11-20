@@ -2,13 +2,13 @@
 
 [![CI](https://github.com/376east/burrow/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/376east/burrow/actions/workflows/ci.yml) [![Stack](https://img.shields.io/badge/Stack-Electron%20%C2%B7%20TypeScript-555?style=flat)](package.json)
 
-**[Archived installers](https://github.com/376east/burrow/releases/tag/v0.13.0)** · [Русский](README.ru.md)
+**[Download Burrow](https://github.com/376east/burrow/releases/latest)** · [Русский](README.ru.md)
 
 Build and manage Minecraft modpacks in one desktop launcher. Choose a game version and modloader, install Modrinth packs, and manage mods and worlds from the library.
 
 ## Run
 
-The current preview runs from source. The installers above belong to the archived 0.13.0 line.
+Download the Windows Setup, macOS DMG, or Linux AppImage for your platform. To run Burrow from source, use the commands below.
 
 Requires Node.js 24 and npm 11.
 

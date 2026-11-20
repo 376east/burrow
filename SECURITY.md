@@ -2,13 +2,13 @@
 
 ## Supported versions
 
-Security fixes are made on `main` and released for the latest stable release only. Older releases are not supported; reproduce an issue on the latest stable release before reporting when it is safe to do so.
+Security fixes are made on `master` and released for the latest stable release only. Older releases are not supported; reproduce an issue on the latest stable release before reporting when it is safe to do so.
 
 ## Report a vulnerability
 
 Do **not** open a public issue with exploit details, credentials, private server addresses, or user data.
 
-Use [GitHub private vulnerability reporting](https://github.com/malyarq/burrow/security/advisories/new). Include:
+Use [GitHub private vulnerability reporting](https://github.com/376east/burrow/security/advisories/new). Include:
 
 - affected Burrow version and operating system;
 - impact and the trust boundary that is crossed;
@@ -20,4 +20,4 @@ Remove real account tokens, passwords, cookies, signing material, and personal d
 
 The maintainer will investigate privately, coordinate a fix and release where warranted, and credit the reporter if requested. There is no guaranteed response-time SLA. Please allow a reasonable remediation period before public disclosure.
 
-Ordinary crashes, UI regressions, and non-sensitive bugs belong in [GitHub Issues](https://github.com/malyarq/burrow/issues/new). The implementation threat model and known residual risks are documented in [docs/en/security.md](docs/en/security.md) and [docs/en/known-issues.md](docs/en/known-issues.md).
+Ordinary crashes, UI regressions, and non-sensitive bugs belong in [GitHub Issues](https://github.com/376east/burrow/issues/new). The implementation threat model and known residual risks are documented in [docs/en/security.md](docs/en/security.md) and [docs/en/known-issues.md](docs/en/known-issues.md).
