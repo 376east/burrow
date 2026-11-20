@@ -138,11 +138,11 @@ describe('AppLayout product shell', () => {
     snapshotReady = true;
   });
 
-  it('does not enable library launch before the selected snapshot is ready', () => {
+  it('does not enable library launch before the selected snapshot is ready', async () => {
     snapshotReady = false;
     render(<ShellHarness />);
     fireEvent.click(screen.getByTestId('next-nav-library'));
-    expect(screen.getByTestId('library-launch-dock').querySelector('button')?.disabled).toBe(true);
+    expect((await screen.findByTestId('library-launch-dock')).querySelector('button')?.disabled).toBe(true);
   });
 
   it('keeps title-bar, notifications and the safe area in their platform seam', () => {
@@ -160,18 +160,18 @@ describe('AppLayout product shell', () => {
     expect(screen.getByText('Play workspace')).toBeTruthy();
   });
 
-  it('switches every product page and preserves settings when returning', () => {
+  it('switches every product page and preserves settings when returning', async () => {
     render(<ShellHarness />);
 
     fireEvent.click(screen.getByTestId('next-nav-library'));
-    expect(screen.getByText('Library workspace')).toBeTruthy();
+    expect(await screen.findByText('Library workspace')).toBeTruthy();
     expect(screen.getByTestId('library-launch-dock')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId('next-nav-friends'));
-    expect(screen.getByText('Together workspace')).toBeTruthy();
+    expect(await screen.findByText('Together workspace')).toBeTruthy();
 
     fireEvent.click(screen.getByTestId('next-nav-settings'));
-    const settingsInput = screen.getByRole('textbox', { name: 'Settings workspace' });
+    const settingsInput = await screen.findByRole('textbox', { name: 'Settings workspace' });
     fireEvent.change(settingsInput, { target: { value: 'persisted choice' } });
 
     fireEvent.click(screen.getByTestId('next-nav-play'));
@@ -180,12 +180,12 @@ describe('AppLayout product shell', () => {
     expect((screen.getByRole('textbox', { name: 'Settings workspace' }) as HTMLInputElement).value).toBe('persisted choice');
   });
 
-  it('removes the shell launch dock when the library route owns the primary action', () => {
+  it('removes the shell launch dock when the library route owns the primary action', async () => {
     primaryActionOwnership = 'route';
     render(<ShellHarness />);
 
     fireEvent.click(screen.getByTestId('next-nav-library'));
-    expect(screen.getByText('Library workspace')).toBeTruthy();
+    expect(await screen.findByText('Library workspace')).toBeTruthy();
     expect(screen.queryByTestId('library-launch-dock')).toBeNull();
   });
 });

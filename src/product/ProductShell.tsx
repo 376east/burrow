@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Library, Play, Settings2, Users } from 'lucide-react';
 import type { AppLayoutProps } from '../components/AppLayout';
 import TitleBar from '../components/TitleBar';
 import { UpdateNotification } from '../components/UpdateNotification';
 import { BackgroundLayer } from '../components/layout/BackgroundLayer';
-import { ModpackRouter } from '../components/modpacks/ModpackRouter';
 import { useModpackPrimaryActionOwnership } from '../components/modpacks/primaryActionOwnership';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -14,10 +13,12 @@ import { getLaunchActionLabel } from '../features/launcher/services/launcherServ
 import { windowControlsIPC } from '../services/ipc/windowControlsIPC';
 import { BurrowEasterEgg } from './BurrowEasterEgg';
 import { PlayWorkspace } from './PlayWorkspace';
-import { SettingsWorkspace } from './SettingsWorkspace';
-import { FriendsWorkspace } from './FriendsWorkspace';
 import { RestartGameButton } from './RestartGameButton';
 import './product.css';
+
+const ModpackRouter = lazy(() => import('../components/modpacks/ModpackRouter').then(({ ModpackRouter }) => ({ default: ModpackRouter })));
+const SettingsWorkspace = lazy(() => import('./SettingsWorkspace').then(({ SettingsWorkspace }) => ({ default: SettingsWorkspace })));
+const FriendsWorkspace = lazy(() => import('./FriendsWorkspace').then(({ FriendsWorkspace }) => ({ default: FriendsWorkspace })));
 
 type Page = 'play' | 'library' | 'friends' | 'settings';
 
@@ -50,6 +51,7 @@ export function ProductShell(props: AppLayoutProps) {
   const { overlays, actions, runtime, updates } = props;
   const preparing = runtime.isLaunching && ['preparing', 'downloading', 'launching'].includes(runtime.launchStage);
   const page: Page = overlays.showSettings ? 'settings' : overlays.showMultiplayer ? 'friends' : uiMode === 'modpacks' ? 'library' : 'play';
+  const pageLoading = <div role="status" className="p-4 text-secondary">{t('modpacks.loading')}</div>;
   const [settingsVisited, setSettingsVisited] = useState(page === 'settings');
   if (page === 'settings' && !settingsVisited) setSettingsVisited(true);
   const shellContract = windowControlsIPC.shellContract();
@@ -97,9 +99,15 @@ export function ProductShell(props: AppLayoutProps) {
           </div>}
           <div className="next-content" data-testid="app-layout-main">
             {page === 'play' && <PlayWorkspace launch={props.launch} runtime={runtime} actions={actions} />}
-            {page === 'library' && <div className="next-library-workspace"><ModpackRouter onLaunch={props.modpackOnLaunch ?? runtime.onLaunch} /><LibraryLaunchDock {...props} /></div>}
-            {page === 'friends' && <div className="next-page-scroll"><FriendsWorkspace /></div>}
-            {(settingsVisited || page === 'settings') && <div hidden={page !== 'settings'} className="next-page-scroll"><SettingsWorkspace onStartTour={actions.onStartTour} /></div>}
+            {page === 'library' && <Suspense fallback={pageLoading}>
+              <div className="next-library-workspace"><ModpackRouter onLaunch={props.modpackOnLaunch ?? runtime.onLaunch} /><LibraryLaunchDock {...props} /></div>
+            </Suspense>}
+            {page === 'friends' && <Suspense fallback={pageLoading}>
+              <div className="next-page-scroll"><FriendsWorkspace /></div>
+            </Suspense>}
+            {(settingsVisited || page === 'settings') && <div hidden={page !== 'settings'} className="next-page-scroll">
+              <Suspense fallback={pageLoading}><SettingsWorkspace onStartTour={actions.onStartTour} /></Suspense>
+            </div>}
           </div>
         </div>
       </div>
