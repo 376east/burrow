@@ -41,7 +41,7 @@
 
 English documentation mirrors the Russian source and describes the same product behavior.
 
-Run the current preview from source using the [README](../README.en.md#run). GitHub Releases installers belong to the previous product line; the downloaded-package instructions below do not replace the current preview setup. [Versions and archive](REPOSITORY.md).
+Run the current preview from source using the [README](../README.md#run). GitHub Releases installers belong to the previous product line; the downloaded-package instructions below do not replace the current preview setup. [Versions and archive](REPOSITORY.md).
 
 ### Players
 

@@ -5,7 +5,7 @@ const path = require('node:path')
 const root = path.join(__dirname, '..')
 const requiredRootDocs = [
   'README.md',
-  'README.en.md',
+  'README.ru.md',
   'CHANGELOG.md',
   'CONTRIBUTING.md',
   'SECURITY.md',
@@ -112,11 +112,11 @@ function main() {
   }
 
   const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8')
-  if (!readme.includes('https://github.com/376east/burrow/releases/latest')) {
-    failures.push('README.md does not link to the latest GitHub release')
+  if (!readme.includes('https://github.com/376east/burrow/releases/tag/v0.13.0')) {
+    failures.push('README.md does not link to the archived GitHub release')
   }
-  if (!readme.includes('[English](README.en.md)') || !readme.includes('Настольный лаунчер Minecraft')) {
-    failures.push('README.md must remain the Russian primary project page with an English mirror link')
+  if (!readme.includes('[Русский](README.ru.md)') || !readme.includes('## Run')) {
+    failures.push('README.md must link to the Russian guide and show how to run Burrow')
   }
 
   if (failures.length) {
