@@ -4,116 +4,101 @@
     "node": "24.13.0",
     "npm": "11.6.2",
     "vite": "7.3.6",
-    "platform": "darwin",
-    "architecture": "arm64",
-    "commit": "4178b994046be111e56867d8ca1640e51df7964a",
-    "capturedAt": "2026-08-09T11:36:42.421Z"
+    "platform": "win32",
+    "architecture": "x64",
+    "commit": "5f59ed604a0c7c2cfcfc261ee5f4e8c9805a75d4",
+    "capturedAt": "2026-11-20T22:17:26.126Z"
   },
   "chunks": [
     {
-      "logicalPath": "MirrorsSettings",
-      "rawBytes": 10055,
-      "gzipBytes": 2878
-    },
-    {
       "logicalPath": "ModpackRouter",
-      "rawBytes": 97536,
-      "gzipBytes": 26407
+      "rawBytes": 100674,
+      "gzipBytes": 27558
     },
     {
-      "logicalPath": "SettingsPage",
-      "rawBytes": 33714,
-      "gzipBytes": 8898
+      "logicalPath": "MultiplayerConnectionControls",
+      "rawBytes": 14333,
+      "gzipBytes": 4842
+    },
+    {
+      "logicalPath": "SettingsContent",
+      "rawBytes": 87586,
+      "gzipBytes": 20814
     },
     {
       "logicalPath": "index",
-      "rawBytes": 448997,
-      "gzipBytes": 118295
+      "rawBytes": 572698,
+      "gzipBytes": 161986
     },
     {
       "logicalPath": "index.html",
-      "rawBytes": 32935,
-      "gzipBytes": 10887
+      "rawBytes": 384,
+      "gzipBytes": 255
     },
     {
       "logicalPath": "manual-verification.html",
-      "rawBytes": 99165,
-      "gzipBytes": 24483
-    },
-    {
-      "logicalPath": "src/components/MultiplayerPage.tsx",
-      "rawBytes": 14453,
-      "gzipBytes": 4797
+      "rawBytes": 136589,
+      "gzipBytes": 35500
     },
     {
       "logicalPath": "src/components/modpacks/AddModPage.tsx",
-      "rawBytes": 31655,
-      "gzipBytes": 7154
+      "rawBytes": 31690,
+      "gzipBytes": 7172
     },
     {
       "logicalPath": "src/components/modpacks/ExportModpackPage.tsx",
-      "rawBytes": 4657,
-      "gzipBytes": 2035
+      "rawBytes": 4696,
+      "gzipBytes": 2056
     },
     {
       "logicalPath": "src/components/modpacks/ImportModpackPreviewPage.tsx",
-      "rawBytes": 4355,
-      "gzipBytes": 1583
+      "rawBytes": 4394,
+      "gzipBytes": 1600
     },
     {
       "logicalPath": "src/components/modpacks/InstallModpackPage.tsx",
-      "rawBytes": 3959,
-      "gzipBytes": 1672
+      "rawBytes": 7210,
+      "gzipBytes": 2696
     },
     {
       "logicalPath": "src/components/modpacks/ModpackBrowser.tsx",
-      "rawBytes": 19216,
-      "gzipBytes": 6154
+      "rawBytes": 20595,
+      "gzipBytes": 6633
     },
     {
       "logicalPath": "src/components/modpacks/ModpackCreationWizard.tsx",
-      "rawBytes": 16442,
-      "gzipBytes": 5439
+      "rawBytes": 16476,
+      "gzipBytes": 5449
     },
     {
-      "logicalPath": "src/components/settings/tabs/DownloadsTab.tsx",
-      "rawBytes": 2390,
-      "gzipBytes": 804
+      "logicalPath": "src/product/FriendsWorkspace.tsx",
+      "rawBytes": 2193,
+      "gzipBytes": 866
     },
     {
-      "logicalPath": "src/components/settings/tabs/LauncherTab.tsx",
-      "rawBytes": 10249,
-      "gzipBytes": 3075
+      "logicalPath": "src/product/PlayWorldIllustration.tsx",
+      "rawBytes": 944627,
+      "gzipBytes": 254692
     },
     {
-      "logicalPath": "src/features/accounts/AccountsPage.tsx",
-      "rawBytes": 17153,
-      "gzipBytes": 4500
-    },
-    {
-      "logicalPath": "src/features/feedback/PrivacyFeedbackCard.tsx",
-      "rawBytes": 3559,
-      "gzipBytes": 1626
-    },
-    {
-      "logicalPath": "src/features/settings/statistics/StatisticsTab.tsx",
-      "rawBytes": 8194,
-      "gzipBytes": 2381
+      "logicalPath": "src/product/SettingsWorkspace.tsx",
+      "rawBytes": 1045,
+      "gzipBytes": 573
     },
     {
       "logicalPath": "vendor-icons",
-      "rawBytes": 15063,
-      "gzipBytes": 5386
+      "rawBytes": 18251,
+      "gzipBytes": 6396
     },
     {
       "logicalPath": "vendor-particles",
       "rawBytes": 147089,
-      "gzipBytes": 42261
+      "gzipBytes": 42260
     },
     {
       "logicalPath": "vendor-react",
-      "rawBytes": 390321,
-      "gzipBytes": 121846
+      "rawBytes": 394162,
+      "gzipBytes": 123348
     }
   ]
 }
