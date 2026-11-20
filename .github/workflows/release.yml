@@ -25,7 +25,7 @@ jobs:
   verify:
     name: Verify exact release candidate
     if: github.event_name == 'workflow_dispatch' || (github.event.created && !github.event.deleted)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       tag: ${{ steps.candidate.outputs.tag }}
       version: ${{ steps.candidate.outputs.version }}
@@ -123,7 +123,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
     steps:
       - name: Checkout exact candidate commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
