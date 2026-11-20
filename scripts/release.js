@@ -120,11 +120,11 @@ async function prepareDryRunReport(candidate, options) {
 export async function main(rawArgs = process.argv.slice(2)) {
   const options = parseReleaseArgs(rawArgs);
   if (!options.version) fail('version is required. Usage: npm run release -- 1.2.3 --dry-run [--platform-smoke path]');
-  if (!options.dryRun) fail('the local helper is evidence-only; use --dry-run, then dispatch release.yml with the exact version and commit');
+  if (!options.dryRun) fail('the local helper is evidence-only; use --dry-run, then dispatch release.yml for build verification');
   const candidate = readCandidate(options.version);
   const reportPath = await prepareDryRunReport(candidate, options);
   console.log(`Release dry run passed for ${candidate.tag}; report: ${reportPath}`);
-  console.log(`No commit, tag, push, remote, or GitHub release was created. Dispatch with: gh workflow run release.yml -f version=${candidate.version} -f commit=${candidate.commit}`);
+  console.log(`Build only: gh workflow run release.yml --ref ${candidate.branch} -f version=${candidate.version} -f commit=${candidate.commit}`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -106,7 +106,7 @@ node scripts/test-full.js --stage=fabric --only=1.20.1 --provider=mojang --launc
 
 [CI](../../.github/workflows/ci.yml) запускается на push в `main`, pull request в `main` и вручную через `workflow_dispatch`. Push рабочей ветки отдельно CI не запускает. Jobs `Shared quality contract` и `Visual regression (macOS Chromium)` сохраняют прежние команды проверок; каждый ограничен 30 минутами, токен имеет только `contents: read`, новый запуск отменяет предыдущий для той же ветки или PR. Результаты доступны в логах jobs; диагностические артефакты загружаются только при ошибке и хранятся 7 дней.
 
-[Release](../../.github/workflows/release.yml) запускается только вручную с версией и точным SHA `main`; push в `main` ничего не публикует. Он проверяет исходники, собирает Windows, Linux и macOS, проверяет пакеты и доказательства перед публикацией через окружение `release-publication`. YAML не задаёт required reviewers: ручное approval зависит от внешних настроек окружения. [Minecraft game smoke](../../.github/workflows/game-smoke.yml) также запускается отдельно вручную.
+[Release](../../.github/workflows/release.yml) проверяет исходники и установщики для Windows, Linux и macOS. Ручной запуск с версией и SHA выбранной ветки сохраняет проверенные пакеты в GitHub Actions. Публикация запускается по новому версионному тегу актуального коммита `master` и соблюдает правила окружения `release-publication`. [Minecraft game smoke](../../.github/workflows/game-smoke.yml) запускается отдельно вручную.
 
 Сам release workflow не запускает full-install harness или visual job. Перед UI-heavy stable tag нужен зелёный CI на `main` и ограниченные ручные проверки из [release runbook](releasing.md).
 

@@ -19,7 +19,6 @@
 
 - [Обзор кода и проверок](AGENT_GUIDE.md)
 - [Реализованное и оставшиеся задачи](../PLAN.md)
-- [Демо и процесс записи](DEMO.md)
 - [Разработка](ru/development.md) — окружение, команды и рабочий процесс
 - [Тестирование](ru/testing.md) — unit, visual, installation, CI и release-проверки
 - [Архитектура](ru/architecture.md) — границы процессов и ответственность каталогов
@@ -52,7 +51,7 @@ Run the current preview from source using the [README](../README.md#run). GitHub
 
 ### Contributors
 
-- [Code and verification overview](AGENT_GUIDE.md), [implemented behavior and remaining work](../PLAN.md), and [demo reproduction](DEMO.md) are maintained in Russian.
+- [Code and verification overview](AGENT_GUIDE.md) and [implemented behavior and remaining work](../PLAN.md) are maintained in Russian.
 - [Development](en/development.md) — environment, commands, and day-to-day workflow
 - [Testing](en/testing.md) — unit, visual, installation, CI, and release checks
 - [Architecture](en/architecture.md) — process boundaries and directory ownership

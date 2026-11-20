@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 type PackageSmoke = Readonly<{
   findPackagedArtifact(options: Readonly<{ releaseDir: string; version: string; platform: NodeJS.Platform }>): Readonly<{ path: string; kind: string; platform: string }>;
+  productNameForArtifact(artifactPath: string, version: string, platform: NodeJS.Platform): string;
   validatePackageSmokeEvidence(value: unknown): Readonly<{ valid: boolean; errors: string[] }>;
   assertRenderedVersion(value: unknown, expectedVersion: string, options?: Readonly<{ allowMissingMarker?: boolean }>): void;
   createPlatformAdapter(platform: NodeJS.Platform, options: unknown): Readonly<{ command: string; args: string[]; cleanup(): void }>;
@@ -59,11 +60,14 @@ describe('package smoke artifact contract', () => {
     const version = '0.8.0-rc.1';
     const releaseRoot = createRelease(version);
     roots.push(releaseRoot);
-    writeArtifact(releaseRoot, version, `Burrow Next-Mac-${version}-Installer.dmg`);
+    const name = `Burrow-Next-Mac-${version}-Installer.dmg`;
+    writeArtifact(releaseRoot, version, name);
 
     expect(smoke.findPackagedArtifact({ releaseDir: path.join(releaseRoot, version), version, platform: 'darwin' })).toMatchObject({
-      kind: 'dmg', platform: 'darwin', path: expect.stringMatching(new RegExp(`${version}-Installer\\.dmg$`)),
+      kind: 'dmg', platform: 'darwin', path: path.join(releaseRoot, version, name),
     });
+    expect(smoke.productNameForArtifact(name, version, 'darwin')).toBe('Burrow Next');
+    expect(smoke.productNameForArtifact(`Burrow-Mac-${version}-Installer.dmg`, version, 'darwin')).toBe('Burrow');
   });
 
   it('rejects missing, duplicate and source artifacts before process launch', () => {
@@ -77,6 +81,8 @@ describe('package smoke artifact contract', () => {
     expect(() => smoke.findPackagedArtifact({ releaseDir: releaseRoot, version, platform: 'darwin' })).not.toThrow();
     fs.writeFileSync(path.join(releaseRoot, version, 'Burrow Next-Mac-0.7.1-Installer.dmg'), 'fixture');
     expect(() => smoke.findPackagedArtifact({ releaseDir: releaseRoot, version, platform: 'darwin' })).not.toThrow();
+    writeArtifact(releaseRoot, version, `Burrow-Next-Mac-${version}-Installer.dmg`);
+    expect(() => smoke.findPackagedArtifact({ releaseDir: releaseRoot, version, platform: 'darwin' })).toThrow(/multiple/i);
     expect(() => smoke.findPackagedArtifact({ releaseDir: releaseRoot, version, platform: 'freebsd' })).toThrow(/unsupported/i);
   });
 

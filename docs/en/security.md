@@ -68,7 +68,7 @@ On Linux, a supported desktop keyring must be available for third-party accounts
 ## Releases and updates
 
 - Publication is manual and dispatch-only. The workflow revalidates the exact tag, commit, artifact checksums, platform smoke, and schema-valid pre-push report before its publish job.
-- The local pre-push report is evidence, not a security boundary or publication authorization. GitHub publication additionally requires approval from the repository-configured protected `release-publication` Environment; repository code cannot create or guarantee that protection.
+- The local report records the candidate checks. A new version tag triggers publication subject to the `release-publication` GitHub Environment rules. Configure required reviewers in the repository settings.
 - Release jobs build each platform from the tagged source and publish SHA-256 checksums.
 - Windows artifacts and macOS DMGs are not publisher-signed. The ad-hoc signature inside a local macOS build only keeps the fused Electron binary runnable; it does not authenticate the publisher. Checksums help detect mismatch but do not establish publisher identity. Gatekeeper and SmartScreen behavior must be checked manually on the target platform.
 - Release candidates are prereleases and non-latest.

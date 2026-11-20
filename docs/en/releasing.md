@@ -1,19 +1,19 @@
 # Release runbook
 
-Burrow releases use a tag-last, dispatch-only GitHub workflow. A protected publication job creates the immutable annotated SemVer tag only after source checks, native builds, package smoke, checksums, and downloaded-artifact evidence pass. A prerelease version is published as non-latest; a normal `MAJOR.MINOR.PATCH` version becomes the latest stable release.
+To publish Burrow, push a version tag for the current `master` commit. GitHub Actions checks the source and installers on three platforms, uploads the files to a draft, and verifies asset names and SHA-256 digests before publishing. A stable version becomes Latest. A prerelease stays off Latest.
 
 ## Prepare an exact candidate
 
-Current numbering uses plain `MAJOR.MINOR.PATCH`, without `next.N`: [package.json version](../../package.json). New features increment MINOR and fixes increment PATCH; development versions use `0.x.y`. Preview status is shown separately. `0.14.0` follows the published [0.13.0](https://github.com/malyarq/burrow/releases/tag/v0.13.0). Local installers from the former `1.0.0-next.*` branch have a higher SemVer number and require a manual transition; automatic downgrades are not enabled.
+Current numbering uses plain `MAJOR.MINOR.PATCH`, without `next.N`: [package.json version](../../package.json). New features increment MINOR and fixes increment PATCH; development versions use `0.x.y`. Preview status is shown separately. `0.14.0` follows the published [0.13.0](https://github.com/376east/burrow/releases/tag/v0.13.0). Local installers from the former `1.0.0-next.*` branch have a higher SemVer number and require a manual transition; automatic downgrades are not enabled.
 
-Start on a clean branch. The candidate version is committed before any release report is generated; the release helper never runs `npm version` for you.
+Start on a clean branch. Commit the candidate version and its matching `CHANGELOG.md` section before generating the release report.
 
 ```bash
 nvm use
 npm ci
 npm version <version> --no-git-tag-version --ignore-scripts
-git add package.json package-lock.json
-git commit -m "chore: prepare v<version> candidate"
+git add package.json package-lock.json CHANGELOG.md
+git commit -m "prepare release candidate"
 ```
 
 Confirm that `package.json` and `package-lock.json` contain the same version, the worktree is clean, and `v<version>` does not already exist. Then build local readiness evidence:
@@ -33,22 +33,23 @@ Review the pre-push report before asking for any release action. It names the ex
 
 Checksums establish artifact integrity only. The local report is decision evidence, not a security boundary, publisher-authentication proof, or publication authorization. Current macOS DMGs and Windows artifacts are not publisher-signed unless platform verification evidence says otherwise. A local ad-hoc macOS app signature proves neither publisher identity nor notarization; never infer either from a checksum or successful launch. Gatekeeper and SmartScreen prompts are OS/reputation behavior that must be checked manually on the target platform and recorded separately.
 
-## Dispatch publication
+## Verify and publish a candidate
 
-The local helper is evidence-only and never creates or pushes a tag. Commit the prepared version to `main`, confirm the exact commit, then dispatch the workflow with that version and commit:
+Use manual dispatch to verify a pushed candidate branch. The workflow checks the supplied SHA and stores installers, checksums, and reports as GitHub Actions artifacts.
 
 ```bash
-COMMIT=$(git rev-parse HEAD)
-gh workflow run release.yml -f version=<version> -f commit="$COMMIT"
+gh workflow run release.yml --ref <candidate-branch> -f version=<version> -f commit=<candidate-sha>
 ```
 
-The workflow rejects a commit that is no longer the exact `origin/master`, a mismatched `package.json` version, an existing tag, or an existing GitHub Release. Do not create the release tag locally first.
+After merging into `master`, push a single new tag on the current commit of that branch.
 
-Before dispatching publication, a repository administrator must configure **Settings → Environments → `release-publication`**:
+```bash
+git fetch origin master
+git tag -a v<version> origin/master -m "Release v<version>"
+git push origin refs/tags/v<version>
+```
 
-1. Add required reviewers.
-2. Restrict deployments to the approved release refs.
-3. Verify that the configured gate applies to the `publish` job.
+The `release-publication` environment must allow version tags. Publication waits for approval when the environment has required reviewers.
 
 Official release builds also require these GitHub repository variables:
 
@@ -57,9 +58,7 @@ Official release builds also require these GitHub repository variables:
 
 Before every public release, open PostHog **Settings → Project → General** and confirm that IP capture remains disabled, person profiles remain unused, and retention does not exceed 12 months. The workflow refuses to package without the project token, but hosted privacy settings require a manual owner check.
 
-Repository code cannot create or guarantee those protection rules. A maintainer starts **Build and Release** manually through `workflow_dispatch` and supplies the committed version plus the exact 40-character `main` commit. The workflow independently checks out that commit, downloads the previous published package on each native runner, verifies an in-place upgrade with preserved user data and the rendered candidate version, then validates artifacts, checksums, smoke, and schema-valid evidence. It waits for the protected `release-publication` Environment before creating anything public. Only that job creates the annotated SemVer tag and GitHub Release; no separate mutable `latest` tag is used. Release notes come from every `CHANGELOG.md` entry since the previous published stable release, so an abandoned tag cannot hide shipped changes.
-
-If asset upload fails before publication, the workflow removes its draft and newly created tag. After publication, repository immutability wins: the tag and assets are preserved and any follow-up failure must be fixed with a new patch release.
+Each platform tests an upgrade from the previous public stable release when one exists. Release notes come from the matching `CHANGELOG.md` section. A rerun skips an already published release. An upload or asset verification failure leaves the tag and draft in place. Review an incomplete draft before retrying. The workflow rejects an existing draft and preserves its assets.
 
 ## Failure and rollback
 

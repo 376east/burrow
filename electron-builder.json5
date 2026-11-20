@@ -49,7 +49,7 @@
     "target": [
       "dmg"
     ],
-    "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+    "artifactName": "Burrow-Next-Mac-${version}-Installer.${ext}",
     "icon": "public/icon-macos.png"
   },
   "win": {
@@ -61,7 +61,7 @@
         ]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    "artifactName": "Burrow-Next-Windows-${version}-Setup.${ext}",
     "icon": "public/icon.ico"
   },
   "nsis": {
@@ -74,7 +74,7 @@
     "target": [
       "AppImage"
     ],
-    "artifactName": "${productName}-Linux-${version}.${ext}",
+    "artifactName": "Burrow-Next-Linux-${version}.${ext}",
     "icon": "public/icon.png",
     "category": "Game",
     "syncDesktopName": true

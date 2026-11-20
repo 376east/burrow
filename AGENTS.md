@@ -75,8 +75,8 @@ Stack: `Electron` + `React` + `TypeScript` + `TailwindCSS` + `Vite`.
 
 ## README maintenance
 
-README основной ветки оформляйте по единому шаблону портфолио: четыре плашки в порядке «Статус → CI → Стек → Демо», одинаковая навигация по шести разделам, одна обложка и два дополнительных экрана в раскрывающемся блоке. Файлы `docs/assets/readme/*.svg` имеют формат 1600×1000 и содержат исходные согласованные скриншоты без изменения интерфейса. Версия, стадия и лицензия указаны в таблице раздела «Статус и ограничения». Сохраняйте этот формат при обновлении снимков и текста.
-- Keep the root README aligned with the shared project format: useful standard Shields.io flat badges at their natural size, navigation and the six existing sections in their current order. Update screenshots, metadata and release archive labels together; preserve the English mirror and verify the rendered default-branch page through authorized access. Never imply CI success or stable release from a documentation update.
+Keep the English README concise. Use the product nameplate, CI and Stack badges, and link to README.ru.md for the Russian guide. Display only current product captures and label previews or older versions accurately.
+
 
 - Badge links must support their claim. CI requires a live status badge visible through authorized access or an ordinary workflow link; never fake green CI. Do not send private metadata or credentials to badge services.
 

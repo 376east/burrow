@@ -1,10 +1,22 @@
 # История изменений / Changelog
 
-Здесь кратко описаны текущие версии продукта. Подробная история разработки остаётся в Git, а [GitHub Releases](https://github.com/malyarq/burrow/releases) служит основным источником установочных файлов.
+Здесь кратко описаны текущие версии продукта. Подробная история разработки остаётся в Git, а [GitHub Releases](https://github.com/376east/burrow/releases) служит основным источником установочных файлов.
 
-This file summarizes current product versions. Git history remains the detailed development record, and [GitHub Releases](https://github.com/malyarq/burrow/releases) is the canonical source for downloadable artifacts.
+This file summarizes current product versions. Git history remains the detailed development record, and [GitHub Releases](https://github.com/376east/burrow/releases) is the canonical source for downloadable artifacts.
 
-## Unreleased
+## [0.16.0] - 2026-11-21
+
+### English
+
+- Build and launch Minecraft profiles from the updated workspace. Pack settings stay intact during cancellation, and preparation errors include recovery actions.
+- Install a versioned package for Windows, macOS or Linux. GitHub Actions verifies the packages before publication.
+
+### Русский
+
+- Обновлён экран запуска Minecraft. При отмене подготовки сохраняются настройки сборки, а сообщение об ошибке предлагает действия для восстановления.
+- Установщики для Windows, macOS и Linux проверяются GitHub Actions перед публикацией.
+
+## Development history
 
 ### Русский
 

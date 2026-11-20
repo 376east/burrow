@@ -65,7 +65,7 @@ const CURRENT_PRODUCT_NAME = 'Burrow Next';
 const STABLE_PRODUCT_NAME = 'Burrow';
 
 function expectedArtifactName(version, platform) {
-  return artifactNameForProduct(CURRENT_PRODUCT_NAME, version, platform);
+  return artifactNameForProduct(CURRENT_PRODUCT_NAME.replaceAll(' ', '-'), version, platform);
 }
 
 function artifactNameForProduct(productName, version, platform) {
@@ -79,6 +79,7 @@ function artifactNameForProduct(productName, version, platform) {
 
 export function productNameForArtifact(artifactPath, version, platform) {
   const artifactName = basename(artifactPath);
+  if (artifactName === expectedArtifactName(version, platform)) return CURRENT_PRODUCT_NAME;
   for (const productName of [CURRENT_PRODUCT_NAME, STABLE_PRODUCT_NAME]) {
     if (artifactName === artifactNameForProduct(productName, version, platform)) return productName;
   }
@@ -100,11 +101,13 @@ export function findPackagedArtifact({ releaseDir, version, platform }) {
   const resolvedReleaseDir = resolve(releaseDir);
   const artifactDirectory = ensureInside(releaseDir, resolvedReleaseDir.endsWith(`${sep}${version}`) ? resolvedReleaseDir : join(resolvedReleaseDir, version));
   const expectedName = expectedArtifactName(version, platform);
+  const legacyName = artifactNameForProduct(CURRENT_PRODUCT_NAME, version, platform);
   if (!existsSync(artifactDirectory)) throw new Error(`missing release directory for ${platform}: ${artifactDirectory}`);
   const matches = readdirSync(artifactDirectory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name === expectedName)
+    .filter((entry) => entry.isFile() && [expectedName, legacyName].includes(entry.name))
     .map((entry) => join(artifactDirectory, entry.name));
-  if (matches.length !== 1) throw new Error(`missing exact ${platform} package artifact: ${expectedName}`);
+  if (matches.length === 0) throw new Error(`missing exact ${platform} package artifact: ${expectedName}`);
+  if (matches.length > 1) throw new Error(`multiple ${platform} package artifacts for ${version}`);
   return { path: matches[0], kind: artifactKind(platform), platform };
 }
 

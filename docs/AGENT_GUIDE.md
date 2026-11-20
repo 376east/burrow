@@ -65,4 +65,4 @@ Node/npm закреплены в [package.json](../package.json) и [.nvmrc](../
 3. При записи - ошибка до commit, recovery и отмена. При UI - размер окна, темы, язык, фокус и reduced motion.
 4. Коммит/push законченного результата; SHA, проверки и блокер при передаче. Не force-push.
 
-Необновлённые платформенные/игровые проверки, Microsoft-вход, Quilt, подпись и XMCL перечислены в [PLAN](../PLAN.md) и [known issues](ru/known-issues.md). Демо - UI с синтетическими данными: [команды](DEMO.md).
+Необновлённые платформенные/игровые проверки, Microsoft-вход, Quilt, подпись и XMCL перечислены в [PLAN](../PLAN.md) и [known issues](ru/known-issues.md).
