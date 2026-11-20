@@ -1,8 +1,12 @@
 # Burrow
 
-Настольный лаунчер Minecraft для своих сборок и игры с друзьями.
+Настольный лаунчер Minecraft для своих сборок и игры с друзьями. Выберите версию игры и модлоадер, добавьте моды и запустите сборку из одной библиотеки.
 
-<p><a href="#статус-и-ограничения"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81&amp;message=%D0%B2+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Статус: в разработке"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B5%D0%BA&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Стек: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=%D0%94%D0%B5%D0%BC%D0%BE&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Демо: 00:21"></a></p>
+**[Запустить текущий preview](#запуск)** · [Смотреть демо · 21 с](docs/assets/readme/current-flow.mp4) · [English](README.en.md)
+
+Текущий preview запускается из исходников. [Установщики 0.13.0](https://github.com/376east/burrow/releases/tag/v0.13.0) относятся к архивной версии.
+
+<p><a href="#статус-и-ограничения"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81&amp;message=%D0%B2+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Статус: в разработке"></a> <a href="https://github.com/376east/burrow/actions/workflows/ci.yml"><img src="https://github.com/376east/burrow/actions/workflows/ci.yml/badge.svg?branch=master&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=%D0%A1%D1%82%D0%B5%D0%BA&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Стек: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=%D0%94%D0%B5%D0%BC%D0%BE&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Демо: 00:21"></a></p>
 
 **[Скриншоты](#как-выглядит) · [Возможности](#что-работает) · [Запуск](#запуск) · [Архитектура](#архитектура) · [Ограничения](#статус-и-ограничения) · [Разработка](#разработка)**
 
@@ -44,7 +48,7 @@
 ### Быстрый старт
 
 ```powershell
-git clone https://github.com/malyarq/burrow.git
+git clone https://github.com/376east/burrow.git
 cd burrow
 npm ci
 npm run dev
@@ -56,7 +60,7 @@ npm run dev
 
 [Старые установщики в GitHub Releases](https://github.com/376east/burrow/releases/latest) относятся к прежней линии и оставлены как архив. Для текущего preview используйте исходники выше. Локальная сборка без публикации: `npm run build -- --publish never`.
 
-Основная ветка GitHub - `main`; прежняя версия сохранена в архивной ветке. [Архив и точная команда отката](docs/REPOSITORY.md).
+Основная ветка GitHub - `master`; прежняя версия сохранена в архивной ветке. [Архив и точная команда отката](docs/REPOSITORY.md).
 
 ## Архитектура
 
@@ -84,11 +88,11 @@ flowchart LR
 
 Microsoft-вход отсутствует, Quilt не поддерживается. Каталог CurseForge отключён в официальной сборке; импорт архивов с загрузкой модов требует доступного провайдера. Burrow Link зависит от сети и требует проверки на двух устройствах. [Подробные ограничения](docs/ru/known-issues.md).
 
-Автоматические проверки кода и macOS Chromium UI выполняет [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml). Совместимость всех игровых версий, модлоадеров и сетей этим не подтверждается; настоящие игровые установки и пакеты на Windows/macOS/Linux проверяются отдельно. [Состав проверок](docs/ru/testing.md), [проверенное и оставшиеся задачи](PLAN.md).
+Автоматические проверки кода и macOS Chromium UI выполняет [CI](https://github.com/376east/burrow/actions/workflows/ci.yml). Совместимость всех игровых версий, модлоадеров и сетей этим не подтверждается; настоящие игровые установки и пакеты на Windows/macOS/Linux проверяются отдельно. [Состав проверок](docs/ru/testing.md), [проверенное и оставшиеся задачи](PLAN.md).
 
 ## Разработка
 
-[Документация](docs/README.md) · [План](PLAN.md) · [Правила](AGENTS.md) · [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml)
+[Документация](docs/README.md) · [План](PLAN.md) · [Правила](AGENTS.md) · [CI](https://github.com/376east/burrow/actions/workflows/ci.yml)
 
 <details>
 <summary>Проверки и работа над проектом</summary>
@@ -99,8 +103,6 @@ Microsoft-вход отсутствует, Quilt не поддерживаетс
 
 Для кода сохранена существующая [MIT-лицензия](LICENSE). Minecraft и сторонние компоненты сохраняют свои права: [уведомления](THIRD_PARTY_NOTICES.md). Burrow не связан с Mojang или Microsoft.
 
-[Проверки и команды](docs/AGENT_GUIDE.md#проверки) · [CI (требует доступа к репозиторию)](https://github.com/malyarq/burrow/actions/workflows/ci.yml). Репозиторий PRIVATE; приложение запускается локально.
-
-[English](README.en.md).
+[Проверки и команды](docs/AGENT_GUIDE.md#проверки) · [37.6 East](https://github.com/376east)
 
 </details>

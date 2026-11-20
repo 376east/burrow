@@ -1,8 +1,12 @@
 # Burrow
 
-A desktop Minecraft launcher for your own modpacks and playing with friends.
+A desktop Minecraft launcher for your own modpacks and playing with friends. Pick a game version and modloader, add mods, and launch from one library.
 
-<p><a href="#status-and-limitations"><img src="https://img.shields.io/static/v1?label=Status&amp;message=in+development&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Status: in development"></a> <a href="https://github.com/malyarq/burrow/actions/workflows/ci.yml"><img src="https://github.com/malyarq/burrow/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=Stack&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Stack: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=Demo&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Demo: 00:21"></a></p>
+**[Run the current preview](#run)** · [Watch the 21-second demo](docs/assets/readme/current-flow.mp4) · [Русский](README.md)
+
+The current preview runs from source. The [0.13.0 installers](https://github.com/376east/burrow/releases/tag/v0.13.0) are archived.
+
+<p><a href="#status-and-limitations"><img src="https://img.shields.io/static/v1?label=Status&amp;message=in+development&amp;color=orange&amp;labelColor=555&amp;style=flat" alt="Status: in development"></a> <a href="https://github.com/376east/burrow/actions/workflows/ci.yml"><img src="https://github.com/376east/burrow/actions/workflows/ci.yml/badge.svg?branch=master&amp;event=push" alt="CI"></a> <a href="package.json"><img src="https://img.shields.io/static/v1?label=Stack&amp;message=Electron+%C2%B7+React+%C2%B7+TypeScript&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Stack: Electron · React · TypeScript"></a> <a href="docs/assets/readme/current-flow.mp4"><img src="https://img.shields.io/static/v1?label=Demo&amp;message=00%3A21&amp;color=blue&amp;labelColor=555&amp;style=flat" alt="Demo: 00:21"></a></p>
 
 **[Screenshots](#screenshots) · [Features](#implemented-features) · [Run](#run) · [Architecture](#architecture) · [Limitations](#status-and-limitations) · [Development](#development)**
 
@@ -44,7 +48,7 @@ Node.js 24.x, npm 11.x and Git: [versions](package.json), [.nvmrc](.nvmrc).
 ### Quick start
 
 ```powershell
-git clone https://github.com/malyarq/burrow.git
+git clone https://github.com/376east/burrow.git
 cd burrow
 npm ci
 npm run dev
@@ -54,9 +58,9 @@ npm run dev
 
 This runs the current preview from source: `npm run dev` opens Electron through Vite ([configuration](vite.config.ts)). No API keys are required for ordinary use. Optional variables are listed in [`.env.example`](.env.example); commands and environment setup are in the [development guide](docs/en/development.md).
 
-[Older installers in GitHub Releases](https://github.com/malyarq/burrow/releases/latest) belong to the previous product line and remain as an archive. Use the source instructions above for the current preview. `npm run build -- --publish never` builds locally without publishing.
+[Older installers in GitHub Releases](https://github.com/376east/burrow/releases/latest) belong to the previous product line and remain as an archive. Use the source instructions above for the current preview. `npm run build -- --publish never` builds locally without publishing.
 
-The default branch is `main`; the previous version is preserved in the archive branch. [Archive and rollback](docs/REPOSITORY.md).
+The default branch is `master`; the previous version is preserved in the archive branch. [Archive and rollback](docs/REPOSITORY.md).
 
 ## Architecture
 
@@ -84,11 +88,11 @@ Actions cross [IPC wrappers](src/services/ipc) and [contracts](shared/contracts)
 
 Microsoft authentication and Quilt are unavailable. The CurseForge catalog is disabled in official builds; archive imports that download mods need an available provider. Burrow Link depends on the network and needs verification on two devices. [Detailed limitations](docs/en/known-issues.md).
 
-[CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml) checks code and the macOS Chromium UI. This does not establish compatibility with every game version, modloader, or network; real game installations and Windows/macOS/Linux packages need separate checks. [Check coverage](docs/en/testing.md), [verified behavior and remaining work](PLAN.md).
+[CI](https://github.com/376east/burrow/actions/workflows/ci.yml) checks code and the macOS Chromium UI. This does not establish compatibility with every game version, modloader, or network; real game installations and Windows/macOS/Linux packages need separate checks. [Check coverage](docs/en/testing.md), [verified behavior and remaining work](PLAN.md).
 
 ## Development
 
-[Documentation](docs/README.md) · [Plan](PLAN.md) · [Rules](AGENTS.md) · [CI](https://github.com/malyarq/burrow/actions/workflows/ci.yml)
+[Documentation](docs/README.md) · [Plan](PLAN.md) · [Rules](AGENTS.md) · [CI](https://github.com/376east/burrow/actions/workflows/ci.yml)
 
 <details>
 <summary>Checks and development</summary>
@@ -99,7 +103,7 @@ Commands, environment setup, and project structure are in the [development guide
 
 The existing [MIT license](LICENSE) applies to code. Minecraft and third-party components retain their own terms: [notices](THIRD_PARTY_NOTICES.md). Burrow is not affiliated with Mojang or Microsoft.
 
-[Checks and commands](docs/AGENT_GUIDE.md) · [CI (repository access required)](https://github.com/malyarq/burrow/actions/workflows/ci.yml). The repository is PRIVATE; the application runs locally.
+[Checks and commands](docs/AGENT_GUIDE.md) · [37.6 East](https://github.com/376east)
 
 [Русский](README.md).
 
