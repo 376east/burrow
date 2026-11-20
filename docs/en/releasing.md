@@ -42,7 +42,7 @@ COMMIT=$(git rev-parse HEAD)
 gh workflow run release.yml -f version=<version> -f commit="$COMMIT"
 ```
 
-The workflow rejects a commit that is no longer the exact `origin/main`, a mismatched `package.json` version, an existing tag, or an existing GitHub Release. Do not create the release tag locally first.
+The workflow rejects a commit that is no longer the exact `origin/master`, a mismatched `package.json` version, an existing tag, or an existing GitHub Release. Do not create the release tag locally first.
 
 Before dispatching publication, a repository administrator must configure **Settings → Environments → `release-publication`**:
 

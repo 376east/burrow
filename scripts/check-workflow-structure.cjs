@@ -20,7 +20,7 @@ function checkWorkflowStructure({ ci, release }) {
   if (/^\s*push\s*:/m.test(release) || /tags\s*:/m.test(release)) errors.push('release workflow must not have a push/tag trigger')
   if (!/workflow_dispatch\s*:/m.test(release) || !/inputs:\s*[\s\S]*?version\s*:[\s\S]*?commit\s*:/m.test(release)) errors.push('release workflow must be dispatch-only with version and exact commit inputs')
   if (!/ref:\s*\$\{\{\s*inputs\.commit\s*\}\}/.test(release)) errors.push('release workflow must checkout the requested exact commit before build')
-  if (!/git ls-remote origin refs\/heads\/main/.test(release)) errors.push('release workflow must prove the candidate is still the exact origin/main commit')
+  if (!/git ls-remote origin refs\/heads\/master/.test(release)) errors.push('release workflow must prove the candidate is still the exact origin/master commit')
   if (!/npm run quality:check -- --profile=release/.test(release)) errors.push('release builds must invoke the shared release quality contract')
   if (!/xvfb-run --auto-servernum (?:npm run quality:check -- --profile=release|node scripts\/package-smoke\.js)/.test(release)) errors.push('Linux release artifact verification must provide a virtual display')
   if (!/playwright install(?: --with-deps)? chromium/.test(ci) || !/playwright install(?: --with-deps)? chromium/.test(release)) errors.push('measured quality jobs must install Chromium explicitly')

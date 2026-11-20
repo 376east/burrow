@@ -2,7 +2,7 @@ import pkg from '../../../package.json';
 import { detectAnalyticsPlatform } from '../analytics/analyticsClient';
 import type { SystemReadinessReport } from '@shared/contracts';
 
-const ISSUE_URL = 'https://github.com/malyarq/burrow/issues/new';
+const ISSUE_URL = 'https://github.com/376east/burrow/issues/new';
 
 export function buildSafeIssueBody(options: {
   analyticsEnabled: boolean;

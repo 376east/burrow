@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       commit:
-        description: 'Exact 40-character commit SHA currently at origin/main'
+        description: 'Exact 40-character commit SHA currently at origin/master'
         required: true
         type: string
 
@@ -58,7 +58,7 @@ jobs:
           [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
           TAG="v$VERSION"
           test "$COMMIT" = "$(git rev-parse HEAD)"
-          test "$COMMIT" = "$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$COMMIT" = "$(git ls-remote origin refs/heads/master | awk '{print $1}')"
           test "$VERSION" = "$(node -p "require('./package.json').version")"
           test -z "$(git ls-remote --tags origin "refs/tags/$TAG" "refs/tags/$TAG^{}")"
           ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
@@ -331,7 +331,7 @@ jobs:
           test -f release-assets/SHA256SUMS.txt
           test "$COMMIT" = "$(git rev-parse HEAD)"
           (cd release-assets && sha256sum --check SHA256SUMS.txt)
-          test "$COMMIT" = "$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$COMMIT" = "$(git ls-remote origin refs/heads/master | awk '{print $1}')"
           test -z "$(git ls-remote --tags origin "refs/tags/$TAG" "refs/tags/$TAG^{}")"
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 && { echo 'release already exists; immutable assets cannot be overwritten' >&2; exit 1; }
           node scripts/changelog-release-notes.js --current "${TAG#v}" --output release-notes.md

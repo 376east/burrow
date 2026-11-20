@@ -112,7 +112,7 @@ function main() {
   }
 
   const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8')
-  if (!readme.includes('https://github.com/malyarq/burrow/releases/latest')) {
+  if (!readme.includes('https://github.com/376east/burrow/releases/latest')) {
     failures.push('README.md does not link to the latest GitHub release')
   }
   if (!readme.includes('[English](README.en.md)') || !readme.includes('Настольный лаунчер Minecraft')) {

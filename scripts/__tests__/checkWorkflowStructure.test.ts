@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: \${{ inputs.commit }}
-      - run: git ls-remote origin refs/heads/main
+      - run: git ls-remote origin refs/heads/master
       - run: npx playwright install --with-deps chromium
   build:
     env:
@@ -73,7 +73,7 @@ jobs:
         with:
           name: verified-release-assets
       - run: |
-          git ls-remote origin refs/heads/main
+          git ls-remote origin refs/heads/master
           sha256sum --check SHA256SUMS.txt
           node scripts/changelog-release-notes.js --current 0.9.2 --output release-notes.md
           cleanup_unpublished_tag() { git push origin ":refs/tags/$TAG"; }
@@ -95,7 +95,7 @@ test -n "$VITE_POSTHOG_PROJECT_TOKEN"
 }
 
 describe('offline workflow structure enforcement', () => {
-  it('accepts tag-last protected publication from an exact main commit', () => {
+  it('accepts tag-last protected publication from an exact master commit', () => {
     expect(checker.checkWorkflowStructure(fixture())).toEqual({ valid: true, errors: [] });
   });
 
@@ -107,7 +107,7 @@ describe('offline workflow structure enforcement', () => {
     ['clobber', fixture({ release: `${fixture().release}\n      - run: gh release upload tag asset --clobber\n` })],
     ['missing evidence verifier dependency', fixture({ release: fixture().release.replace('needs: verify-evidence', 'needs: build') })],
     ['broad release artifact pattern', fixture({ release: fixture().release.replace('pattern: release-package-*', 'pattern: release-*') })],
-    ['missing exact commit checkout', fixture({ release: fixture().release.replaceAll('ref: ${{ inputs.commit }}', 'ref: main') })],
+    ['missing exact commit checkout', fixture({ release: fixture().release.replaceAll('ref: ${{ inputs.commit }}', 'ref: master') })],
     ['missing deterministic smoke aggregation', fixture({ release: fixture().release.replace('node scripts/aggregate-platform-smoke.js', 'node inline-aggregate.js') })],
     ['flattened artifact download path', fixture({ release: fixture().release.replaceAll('/release-assets/${{ needs.verify.outputs.version }}', '/release-assets') })],
     ['tag created before protected publish', fixture({ release: fixture().release.replace('  verify:\n', '  verify:\n    env:\n      EARLY: git tag -a "$TAG"\n') })],

@@ -42,7 +42,7 @@ COMMIT=$(git rev-parse HEAD)
 gh workflow run release.yml -f version=<version> -f commit="$COMMIT"
 ```
 
-Workflow отклоняет commit, который уже не является точным `origin/main`, несовпадающую версию в `package.json`, существующий тег или существующий GitHub Release. Не создавайте релизный тег локально заранее.
+Workflow отклоняет commit, который уже не является точным `origin/master`, несовпадающую версию в `package.json`, существующий тег или существующий GitHub Release. Не создавайте релизный тег локально заранее.
 
 Перед dispatch публикации администратор репозитория настраивает **Settings → Environments → `release-publication`**:
 
